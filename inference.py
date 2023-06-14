@@ -196,11 +196,10 @@ class Inference(object):
 
 
     def predict(self, prompt=None):
-        from config import MODEL_SET
         assert self.args.data is not None, "Please load data first!"
 
         if self.model == "chatgpt":
-            raise NotImplementedError
+            raise NotImplementedError("Please implement the api inference for chatgpt! ")
         else:
             results = self.predict_by_local_inference(self.model, prompt)
         return results

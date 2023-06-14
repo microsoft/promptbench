@@ -44,11 +44,11 @@ We support a range of datasets to facilitate comprehensive analysis, including:
 
 #### Create your own dataset
 
-You can customize your own dataset in `dataload.py`, the details can be found in `dataload.py/class Dataset`.
+To create a personalized dataset, modify the `dataload.py` script. Specific instructions for customization are located within `dataload.py` under the `class Dataset`.
 
-Next, you should customize the function that **process of the input** in `inference.py`, e.g., `process_input` and `_process_cls_input`.
+Following this, adapt the function handling **input processing** within `inference.py`, specifically, `process_input` and `_process_cls_input`.
 
-Additionally, you should fill the `config.py LABEL_SET, GENERATE_LEN`. The LABEL_SET is used to prevent attacks on words that is label (or some words that is important for task, e.g. the word 'translation' for translation tasks.)
+It is also necessary to define the `config.py LABEL_SET, GENERATE_LEN`. `LABEL_SET` is employed to safeguard against attacks on label words or any other words crucial to a task (for example, the word 'translation' for translation tasks).
 
 
 
@@ -63,19 +63,19 @@ Additionally, you should fill the `config.py LABEL_SET, GENERATE_LEN`. The LABEL
 - google/flan-ul2
 - chatgpt
 
-Note that for LLaMa and Vicuna model, you are supposed to download by yourself and assign the  `--model_dir your_model_path`.
+Please be aware that for the LLaMa and Vicuna models, you must download them manually and specify the `--model_dir your_model_path`.
 
-For ChatGPT, you are required to fill the OpenAI API key in `config.py`.
+For the utilization of ChatGPT, please refer to the instructions on the [OpenAI API website](https://platform.openai.com/docs/introduction) to construct the `predict` function in `inference.py`.
 
 
 
 #### Create your own model
 
-You can customize your own model by adding it into `inference.py create_model`.
+To create a customized model, add it to `inference.py create_model`.
 
-Next, add the model into `config.py MODEL_SET`.
+Subsequently, include the model in `config.py MODEL_SET`.
 
-Finally, you should customize the function that process the output of the function in `inference.py process_pred`.
+Lastly, modify the function that processes the output in `inference.py process_pred`.
 
 
 
@@ -114,7 +114,7 @@ python main.py --model google/flan-t5-large --dataset mmlu --attack semantic --s
 
 ## Inference
 
-If you would like to inference on certain prompt to obtain the accuracy, follow the code in `main.py` to construct model and dataset. Then use the following command to predict:
+To carry out inference on a certain prompt and obtain the accuracy, follow the code outlined in `main.py` to construct your model and dataset. Then, execute the command below to predict:
 
 ```
 score = inference_model.predict(prompt)
@@ -235,7 +235,7 @@ For a more user-friendly experience and to explore the adversarial prompts in de
 ## Acknowledgements
 
 - TextAttack: https://github.com/QData/TextAttack.
-- We thank the volunteers that conduct the semantic preserving experiment.
+- We thank the volunteers: Hanyuan Zhang, Lingrui Li, Yating Zh0u for conducting the semantic preserving experiment.
 
 
 
