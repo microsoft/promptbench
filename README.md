@@ -1,6 +1,6 @@
 # PromptBench
 
-<img src="./imgs/fig-promptbench.pdf" alt="image-20230612192645202" style="zoom:100%;" />
+<img src="./imgs/fig-promptbench.pdf" alt="fig-promptbench" style="zoom:100%;" />
 
 PromptBench is a powerful tool designed to scrutinize and analyze the interaction of large language models with various prompts. It provides a convenient infrastructure to simulate **black-box** adversarial  **prompt attacks** on the models and evaluate their performances. This repository hosts the necessary codebase, datasets, and instructions to facilitate these experiments.
 
