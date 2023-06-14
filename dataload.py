@@ -6,9 +6,32 @@ import json
 from datasets import load_dataset
 
 
+"""
+====================================================================================================
+3 functions need to be implemented.
+
+__init__(): load data from file or other sources.
+
+get_content_by_idx(): return a dict with relevant informations.
+
+get_few_shot_examples(): return a string with few-shot examples.
+
+====================================================================================================
+"""
+
 class Dataset(object):
+    def __init__(self):
+        self.data = None
+
+    def __len__(self):
+        assert self.data is not None, "self.data is None. Please load data first."
+        return len(self.data)
+
     def get_content_by_idx(self, idx, *args):  
         raise NotImplementedError("get_content_by_idx() must be implemented in the subclass.")
+    
+    def get_few_shot_examples(self, task):
+        raise NotImplementedError("get_few_shot_examples() must be implemented in the subclass.")
 
 
 class Math(Dataset):
@@ -19,9 +42,6 @@ class Math(Dataset):
             for d in math_dataset[task]:
                 d["task"] = task
                 self.data.append(d)
-
-    def __len__(self):
-        return len(self.data)
 
     def get_content_by_idx(self, idx, *args):
         return self.data[idx]
@@ -66,9 +86,6 @@ class UnMulti(object):
                 }
                 idx += 1
     
-    def __len__(self):
-        return len(self.data)
-    
     def get_content_by_idx(self, idx, task=None):
         return self.data[idx]
     
@@ -101,9 +118,6 @@ class SQUAD_V2(Dataset):
         random.seed(42)
         random.shuffle(self.data)
         self.data = self.data[:200]
-
-    def __len__(self):
-        return len(self.data)
 
     def get_content_by_idx(self, idx, *args):
         content = "Context: " + self.data[idx]["context"] + "\n" \
@@ -141,11 +155,6 @@ class MMLU(Dataset):
                      'us_foreign_policy', 'high_school_macroeconomics', 'computer_security', 'moral_scenarios', 'moral_disputes', 
                      'electrical_engineering', 'astronomy', 'college_biology']
         
-        # self.tasks = ['high_school_european_history']
-        
-        # self.data = []
-        # self.few_shot_data = {}
-        
         with open("data/MMLU.json", "r") as file:
             self.raw_data = json.load(file)
 
@@ -154,21 +163,16 @@ class MMLU(Dataset):
 
         for task in self.tasks:
             cnt[task] = 0
-        # print(cnt)
+
         for d in self.raw_data:
             task = d["task"].replace(" ", "_")
             if cnt[task] < 10:
                 self.data.append(d)
                 cnt[task] += 1
         
-        # print(len(self.data))
-        # exit()
         with open("data/MMLU_few_shot.json", "r") as file:
             self.few_shot_data = json.load(file)        
     
-
-    def __len__(self):
-        return len(self.data)
 
     def get_content_by_idx(self, idx, *args):
         return self.data[idx]
@@ -188,7 +192,6 @@ class MMLU(Dataset):
         return content
             
 
-
 class GLUE(Dataset):
     def __init__(self, task, dataset_type="validation"):
         
@@ -205,9 +208,6 @@ class GLUE(Dataset):
             self.data = concatenate_datasets([matched, mismatched])
         else:
             self.data = load_dataset("glue", task)[dataset_type]
-
-    def __len__(self):
-        return len(self.data)
 
     def get_few_shot_examples(self, task):
         from prompts.three_shot.few_shot_examples import examples
