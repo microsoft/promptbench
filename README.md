@@ -6,6 +6,10 @@ PromptBench is a powerful tool designed to scrutinize and analyze the interactio
 
 
 
+Check our paper: [PromptBench: Towards Evaluating the Robustness of Large Language Models on Adversarial Prompts](https://arxiv.org/abs/2306.04528).
+
+
+
 ## Repository Structure
 
 The repository is organized into several directories, each housing specific components of the project:
@@ -42,7 +46,7 @@ We support a range of datasets to facilitate comprehensive analysis, including:
 
 You can customize your own dataset in `dataload.py`, the details can be found in `dataload.py/class Dataset`.
 
-Next, you should customize the function that **process of the input** in `inference.py`, e.g., `process_input` and `__process_cls_input`.
+Next, you should customize the function that **process of the input** in `inference.py`, e.g., `process_input` and `_process_cls_input`.
 
 Additionally, you should fill the `config.py LABEL_SET, GENERATE_LEN`. The LABEL_SET is used to prevent attacks on words that is label (or some words that is important for task, e.g. the word 'translation' for translation tasks.)
 
@@ -231,7 +235,7 @@ For a more user-friendly experience and to explore the adversarial prompts in de
 ## Acknowledgements
 
 - TextAttack: https://github.com/QData/TextAttack.
-- We thank the volunteers that conduct the experiments to check if adv. prompts preserve semantic meaning.
+- We thank the volunteers that conduct the semantic preserving experiment.
 
 
 
@@ -239,13 +243,11 @@ For a more user-friendly experience and to explore the adversarial prompts in de
 
 If you find this work helpful, please cite it as:
 ```
-@misc{PromptBench2023,
-  author = {Zhu, Kaijie and Wang, Jindong and Zhou, Jiaheng and Wang, Zeek and Chen, Hao and Wang, Yidong and Yang, Linyi and Ye, Wei and Gong, Neil Zhenqiang and Zhang, Yue and Xie, Xing},
-  title = {PromptBench: towards evaluating the robustness of large language models to adversarial prompts},
-  year = {2023},
-  publisher = {GitHub},
-  journal = {GitHub repository},
-  howpublished = {\url{https://github.com/microsoft/promptbench}},
+@article{zhu2023promptbench,
+  title={PromptBench: Towards Evaluating the Robustness of Large Language Models on Adversarial Prompts},
+  author={Zhu, Kaijie and Wang, Jindong and Zhou, Jiaheng and Wang, Zichen and Chen, Hao and Wang, Yidong and Yang, Linyi and Ye, Wei and Gong, Neil Zhenqiang and Zhang, Yue and others},
+  journal={arXiv preprint arXiv:2306.04528},
+  year={2023}
 }
 ```
 
