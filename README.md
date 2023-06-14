@@ -2,7 +2,9 @@
 
 ![](https://wjdcloud.blob.core.windows.net/tools/promptbench-overview.jpg)
 
-PromptBench is a powerful tool designed to scrutinize and analyze the interaction of large language models with various prompts. It provides a convenient infrastructure to simulate ** black-box ** adversarial ** prompt ** attacks on the models and evaluate their performances. This repository hosts the necessary codebase, datasets, and instructions to facilitate these experiments.
+PromptBench is a powerful tool designed to scrutinize and analyze the interaction of large language models with various prompts. It provides a convenient infrastructure to simulate **black-box adversarial prompt** attacks on the models and evaluate their performances. This repository hosts the necessary codebase, datasets, and instructions to facilitate these experiments.
+
+Check our paper: [PromptBench: Towards Evaluating the Robustness of Large Language Models on Adversarial Prompts](https://arxiv.org/abs/2306.04528).
 
 ## Repository Structure
 
@@ -102,13 +104,11 @@ For a more user-friendly experience and to explore the adversarial prompts in de
 
 If you find this work helpful, please cite it as:
 ```
-@misc{PromptBench2023,
-  author = {Zhu, Kaijie and Wang, Jindong and Zhou, Jiaheng and Wang, Zeek and Chen, Hao and Wang, Yidong and Yang, Linyi and Ye, Wei and Gong, Neil Zhenqiang and Zhang, Yue and Xie, Xing},
-  title = {PromptBench: towards evaluating the robustness of large language models to adversarial prompts},
-  year = {2023},
-  publisher = {GitHub},
-  journal = {GitHub repository},
-  howpublished = {\url{https://github.com/microsoft/promptbench}},
+@article{zhu2023promptbench,
+  title={PromptBench: Towards Evaluating the Robustness of Large Language Models on Adversarial Prompts},
+  author={Zhu, Kaijie and Wang, Jindong and Zhou, Jiaheng and Wang, Zichen and Chen, Hao and Wang, Yidong and Yang, Linyi and Ye, Wei and Gong, Neil Zhenqiang and Zhang, Yue and others},
+  journal={arXiv preprint arXiv:2306.04528},
+  year={2023}
 }
 ```
 
