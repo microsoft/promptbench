@@ -47,6 +47,7 @@ MODEL_SET = [
     # 'facebook/opt-66b', 
     'llama-13b',
     'vicuna-13b',
+    'vicuna-13b-v1.3',
     'google/flan-ul2',
     'cerebras/Cerebras-GPT-13B',
     'databricks/dolly-v1-6b',

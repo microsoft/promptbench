@@ -77,6 +77,8 @@ Subsequently, include the model in `config.py MODEL_SET`.
 
 Lastly, modify the function that processes the output in `inference.py process_pred`.
 
+(Set the `generate_len` for this new model in `config.py`)
+
 
 
 ## Installation

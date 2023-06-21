@@ -15,7 +15,6 @@ class Inference(object):
         self.error_analysis = False
         self.args = args
         self.model = args.model
-        self.openai_config = args.openai_config
         self.create_model()
 
 
@@ -68,7 +67,16 @@ class Inference(object):
 
                 self.tokenizer = AutoTokenizer.from_pretrained(model_dir, device_map="auto", use_fast=False)
                 self.pipe = AutoModelForCausalLM.from_pretrained(model_dir, device_map="auto", torch_dtype=torch.float16)
-            
+
+            elif self.model.lower() == "vicuna-13b-v1.3":
+
+                from transformers import AutoModelForCausalLM, AutoTokenizer
+
+                model_dir = os.path.join(self.args.model_dir, self.model)
+
+                self.tokenizer = AutoTokenizer.from_pretrained(model_dir, device_map="auto", use_fast=False)
+                self.pipe = AutoModelForCausalLM.from_pretrained(model_dir, device_map="auto", torch_dtype=torch.float16)
+
             elif self.model == "google/flan-ul2":
 
                 from transformers import T5ForConditionalGeneration, AutoTokenizer
@@ -261,7 +269,7 @@ class Inference(object):
             outputs = self.pipe.generate(input_ids)
             out = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
  
-        elif model in ["llama-13b", "vicuna-13b"]:
+        elif model in ["llama-13b", "vicuna-13b", "vicuna-13b-v1.3"]:
             outputs = self.pipe.generate(input_ids, 
                                          temperature=0,
                                          max_new_tokens=self.args.generate_len, 

@@ -54,7 +54,7 @@ def get_args():
     
     parser.add_argument('--output_dir', type=str, default='./')
 
-    parser.add_argument('--model_dir', type=str, default="/data/llms/")
+    parser.add_argument('--model_dir', type=str, default="/home/v-kaijiezhu/")
 
     parser.add_argument('--shot', type=int, default=0)
 
