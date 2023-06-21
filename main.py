@@ -60,6 +60,8 @@ def get_args():
 
     parser.add_argument('--generate_len', type=int, default=2)
 
+    parser.add_argument('--prompt_selection', action='store_true')
+
     args = parser.parse_args()
     return args
 
@@ -118,6 +120,13 @@ def attack(args, inference_model, RESULTS_DIR):
         for prompts in run_list:
             
             sorted_prompts = prompt_selection(args.logger, inference_model, prompts)
+            if args.prompt_selection:
+                for prompt, acc in sorted_prompts:
+                    args.logger.info("Prompt: {}, acc: {:.2f}%\n".format(prompt, acc*100))
+                    with open(RESULTS_DIR+args.save_file_name+".txt", "a+") as f:
+                        f.write("Prompt: {}, acc: {:.2f}%\n".format(prompt, acc*100))
+                
+                continue
 
             for init_prompt, init_acc in sorted_prompts[:3]:
                 if init_acc > 0:
