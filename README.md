@@ -141,7 +141,7 @@ The main results are shown in the following tables. For more descriptions and di
 
 
 
-### Results on Differeent Attacks
+### Results on Different Attacks
 
 | **Dataset**  | **TextBugger**             | **DeepWordBug**            | **TextFooler**             | **BertAttack**             | **CheckList**              | **StressTest**              | **Semantic**               |
 |:------------:|:--------------------------:|:--------------------------:|:--------------------------:|:--------------------------:|:--------------------------:|:---------------------------:|:--------------------------:|
@@ -162,7 +162,7 @@ The main results are shown in the following tables. For more descriptions and di
 
 
 
-### Results on Differeent Models
+### Results on Different Models
 
 | **Dataset**  | **T5**                     | **Vicuna**                 | **UL2**                    | **ChatGPT**              |
 |:------------:|:--------------------------:|:--------------------------:|:--------------------------:|:--------------------------:|
