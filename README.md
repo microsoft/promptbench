@@ -128,7 +128,7 @@ score = inference_model.predict(prompt)
 
 ### Evaluation Metric
 
-we introduce a unified metric, the \emph{Performance Drop Rate} (PDR). PDR quantifies the relative performance decline following a prompt attack, offering a contextually normalized measure for comparing different attacks, datasets, and models.
+we introduce a unified metric, the **Performance Drop Rate (PDR)**. PDR quantifies the relative performance decline following a prompt attack, offering a contextually normalized measure for comparing different attacks, datasets, and models.
 The PDR is given by:
 $$
 \mathit{PDR}(A, P, f_\theta, \mathcal{D}) = 1 - \frac{\sum_{(x;y) \in \mathcal{D}} { \mathcal{M} [ f_{\theta}([A(P), x]), y]}}{ \sum_{(x;y) \in \mathcal{D}} {\mathcal{M} [f_{\theta}([P, x]), y]}},
