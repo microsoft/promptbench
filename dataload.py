@@ -58,7 +58,7 @@ class Math(Dataset):
         return few_shot_examples
         
 
-class UnMulti(object):
+class UnMulti(Dataset):
 
     def __init__(self, data_path, supported_languages):
         import json
