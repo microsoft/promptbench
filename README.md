@@ -9,6 +9,9 @@ PromptBench is a powerful tool designed to scrutinize and analyze the interactio
 Check our paper: [PromptBench: Towards Evaluating the Robustness of Large Language Models on Adversarial Prompts](https://arxiv.org/abs/2306.04528).
 
 
+## News
+- 2023/07/30 Now we supports for llama2-13b and GPT4.
+
 
 ## Repository Structure
 

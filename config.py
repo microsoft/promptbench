@@ -25,15 +25,15 @@ LABEL_SET = {
 }
 
 GENERATE_LEN = {
-    'sst2': {'google/flan-t5-large': 20, 'vicuna-13b': 5, 'google/flan-ul2': 20, "chatgpt": 2},
-    'mnli': {'google/flan-t5-large': 20, 'vicuna-13b': 5, 'google/flan-ul2': 20, "chatgpt": 3},
-    'qqp': {'google/flan-t5-large': 20, 'vicuna-13b': 5, 'google/flan-ul2': 20, "chatgpt": 3},
-    'qnli': {'google/flan-t5-large': 20, 'vicuna-13b': 5, 'google/flan-ul2': 20, "chatgpt": 4},
-    'rte': {'google/flan-t5-large': 20, 'vicuna-13b': 5, 'google/flan-ul2': 20, "chatgpt": 4},
-    'cola': {'google/flan-t5-large': 20, 'vicuna-13b': 5, 'google/flan-ul2': 20, "chatgpt": 3},
-    'mrpc': {'google/flan-t5-large': 20, 'vicuna-13b': 5, 'google/flan-ul2': 20, "chatgpt": 3},
-    'wnli': {'google/flan-t5-large': 20, 'vicuna-13b': 5, 'google/flan-ul2': 20, "chatgpt": 4},
-    'mmlu': {'google/flan-t5-large': 2, 'vicuna-13b': 2, 'google/flan-ul2': 2, "chatgpt": 2},
+    'sst2': {'google/flan-t5-large': 20, 'vicuna-13b': 5, 'google/flan-ul2': 20, "chatgpt": 2, 'llama2-13b': 2,},
+    'mnli': {'google/flan-t5-large': 20, 'vicuna-13b': 5, 'google/flan-ul2': 20, "chatgpt": 3, 'llama2-13b': 3,},
+    'qqp': {'google/flan-t5-large': 20, 'vicuna-13b': 5, 'google/flan-ul2': 20, "chatgpt": 3, 'llama2-13b': 4},
+    'qnli': {'google/flan-t5-large': 20, 'vicuna-13b': 5, 'google/flan-ul2': 20, "chatgpt": 4, 'llama2-13b': 2,},
+    'rte': {'google/flan-t5-large': 20, 'vicuna-13b': 5, 'google/flan-ul2': 20, "chatgpt": 4, 'llama2-13b': 3,},
+    'cola': {'google/flan-t5-large': 20, 'vicuna-13b': 5, 'google/flan-ul2': 20, "chatgpt": 3, 'llama2-13b': 3,},
+    'mrpc': {'google/flan-t5-large': 20, 'vicuna-13b': 5, 'google/flan-ul2': 20, "chatgpt": 3, 'llama2-13b': 2,},
+    'wnli': {'google/flan-t5-large': 20, 'vicuna-13b': 5, 'google/flan-ul2': 20, "chatgpt": 4, 'llama2-13b': 3,},
+    'mmlu': {'google/flan-t5-large': 2, 'vicuna-13b': 2, 'google/flan-ul2': 2, "chatgpt": 2, 'llama2-13b': 3,},
     'squad_v2': {'google/flan-t5-large': 20, 'google/flan-ul2': 20, "chatgpt": 20},
     'iwslt': {'google/flan-t5-large': 70, 'google/flan-ul2': 70, 'chatgpt': 70},
     'un_multi': {'google/flan-t5-large': 140, 'google/flan-ul2': 140, 'chatgpt': 140},
@@ -46,12 +46,15 @@ MODEL_SET = [
     'tiiuae/falcon-40b-instruct',
     # 'facebook/opt-66b', 
     'llama-13b',
+    'llama2-13b',
+    'llama2-13b-chat',
     'vicuna-13b',
     'vicuna-13b-v1.3',
     'google/flan-ul2',
     'cerebras/Cerebras-GPT-13B',
     'databricks/dolly-v1-6b',
-    'chatgpt'
+    'chatgpt',
+    'gpt4'
 ]
 
 LABEL_TO_ID = {
@@ -86,6 +89,7 @@ SUPPORTED_LANGUAGES = {
     'google/flan-t5-large': ['en', 'de', 'fr'],
     'google/flan-ul2': ['en', 'de', 'fr'],
     'vicuna-13b': ['en', 'de', 'fr'],
+    'llama2-13b-chat': ['en', 'de', 'fr'],
     'chatgpt': ['en', 'de', 'fr'],
 }
 

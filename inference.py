@@ -50,7 +50,7 @@ class Inference(object):
             #     self.tokenizer = AutoTokenizer.from_pretrained(model, device_map="auto", use_fast=False)
             #     self.pipe = AutoModelForCausalLM.from_pretrained(model, device_map="auto", torch_dtype=torch.float16)
             
-            elif self.model.lower() == "llama-13b":
+            elif self.model.lower() in ["llama-13b", "llama2-13b", 'llama2-13b-chat']:
                 
                 from transformers import LlamaForCausalLM, LlamaTokenizer
                 
@@ -58,8 +58,9 @@ class Inference(object):
 
                 self.tokenizer = LlamaTokenizer.from_pretrained(model_dir, device_map="auto")
                 self.pipe = LlamaForCausalLM.from_pretrained(model_dir, device_map="auto", torch_dtype=torch.float16)
-            
-            elif self.model.lower() == "vicuna-13b":
+                
+                
+            elif self.model.lower() in ["vicuna-13b", "vicuna-13b-v1.3"]:
 
                 from transformers import AutoModelForCausalLM, AutoTokenizer
 
@@ -68,14 +69,6 @@ class Inference(object):
                 self.tokenizer = AutoTokenizer.from_pretrained(model_dir, device_map="auto", use_fast=False)
                 self.pipe = AutoModelForCausalLM.from_pretrained(model_dir, device_map="auto", torch_dtype=torch.float16)
 
-            elif self.model.lower() == "vicuna-13b-v1.3":
-
-                from transformers import AutoModelForCausalLM, AutoTokenizer
-
-                model_dir = os.path.join(self.args.model_dir, self.model)
-
-                self.tokenizer = AutoTokenizer.from_pretrained(model_dir, device_map="auto", use_fast=False)
-                self.pipe = AutoModelForCausalLM.from_pretrained(model_dir, device_map="auto", torch_dtype=torch.float16)
 
             elif self.model == "google/flan-ul2":
 
@@ -206,11 +199,15 @@ class Inference(object):
     def predict(self, prompt=None):
         assert self.args.data is not None, "Please load data first!"
 
-        if self.model == "chatgpt":
-            raise NotImplementedError("Please implement the api inference for chatgpt! ")
+        if self.model in ["chatgpt", "gpt4"]:
+            results = self.predict_by_openai_api(self.model, prompt)
         else:
             results = self.predict_by_local_inference(self.model, prompt)
         return results
+
+
+    def predict_by_openai_api(self, model, prompt):
+        raise NotImplementedError
 
 
     def predict_by_local_inference(self, model, prompt):
@@ -269,7 +266,7 @@ class Inference(object):
             outputs = self.pipe.generate(input_ids)
             out = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
  
-        elif model in ["llama-13b", "vicuna-13b", "vicuna-13b-v1.3"]:
+        elif model in ["llama-13b", "llama2-13b", 'llama2-13b-chat', "vicuna-13b", "vicuna-13b-v1.3"]:
             outputs = self.pipe.generate(input_ids, 
                                          temperature=0,
                                          max_new_tokens=self.args.generate_len, 
