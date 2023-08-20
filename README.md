@@ -10,6 +10,7 @@ Check our paper: [PromptBench: Towards Evaluating the Robustness of Large Langua
 
 
 ## News
+- 2023/08/20 Add new datasets: bool logic, valid parentheses from [BigBench](https://github.com/google/BIG-bench).
 - 2023/07/30 Now we supports for llama2-13b and GPT4.
 
 
@@ -42,6 +43,8 @@ We support a range of datasets to facilitate comprehensive analysis, including:
 - IWSLT 2017
 - UN Multi
 - Math
+- Bool Logic
+- Valid Parentheses
 
 
 
@@ -60,11 +63,14 @@ It is also necessary to define the `config.py LABEL_SET, GENERATE_LEN`. `LABEL_S
 - google/flan-t5-large
 - databricks/dolly-v1-6b
 - llama-13b
-- vicuna-13
+- llama2-13b-chat
+- vicuna-13b
+- vicuna-13b-v1.3
 - cerebras/Cerebras-GPT-13B
 - EleutherAI/gpt-neox-20b
 - google/flan-ul2
 - chatgpt
+- gpt4
 
 Please be aware that for the LLaMa and Vicuna models, you must download them manually and specify the `--model_dir your_model_path`.
 
