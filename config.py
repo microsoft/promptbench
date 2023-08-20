@@ -22,6 +22,8 @@ LABEL_SET = {
     'iwslt': ['translate', 'translate\''],
     'un_multi': ['translate', 'translate\''],
     'math': ['math', 'math\''],
+    'bool_logic': ['True', 'False', 'True\'', 'False\'', "bool", "boolean", "bool\'", "boolean\'"],
+    'valid_parentheses': ['Valid', 'Invalid', 'Valid\'', 'Invalid\'', 'matched', 'matched\'', 'valid', 'invalid', 'valid\'', 'invalid\''],
 }
 
 GENERATE_LEN = {
@@ -38,6 +40,7 @@ GENERATE_LEN = {
     'iwslt': {'google/flan-t5-large': 70, 'google/flan-ul2': 70, 'chatgpt': 70},
     'un_multi': {'google/flan-t5-large': 140, 'google/flan-ul2': 140, 'chatgpt': 140},
     'math': {'google/flan-t5-large': 20, 'google/flan-ul2': 20, 'chatgpt': 20},
+    'bool_logic': {'google/flan-t5-large': 4,},
 }
 
 MODEL_SET = [ 

@@ -34,10 +34,11 @@ def create_logger(log_path):
 def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--model', type=str, default='google/flan-t5-large', choices=MODEL_SET)
-    parser.add_argument('--dataset', type=str, default='mnli', choices=["sst2", "cola", "qqp", 
+    parser.add_argument('--dataset', type=str, default='bool_logic', choices=["sst2", "cola", "qqp", 
                                                                         "mnli", "mnli_matched", "mnli_mismatched", 
                                                                         "qnli", "wnli", "rte", "mrpc",
                                                                         "mmlu", "squad_v2", "un_multi", "iwslt", "math",
+                                                                        "bool_logic", "valid_parentheses",
                                                                         ])
 
     parser.add_argument('--query_budget', type=float, default=float("inf"))
@@ -58,7 +59,7 @@ def get_args():
 
     parser.add_argument('--shot', type=int, default=0)
 
-    parser.add_argument('--generate_len', type=int, default=2)
+    parser.add_argument('--generate_len', type=int, default=4)
 
     parser.add_argument('--prompt_selection', action='store_true')
 

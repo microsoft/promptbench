@@ -33,7 +33,40 @@ class Dataset(object):
     def get_few_shot_examples(self, task):
         raise NotImplementedError("get_few_shot_examples() must be implemented in the subclass.")
 
+class BoolLogic(Dataset):
+    def __init__(self):
+        import json
+        with open("data/bool_logic.json", 'r') as f:
+            data = json.load(f)
+        self.data = [{"question": d["question"], "answer": "true" if d["answer"] else "false"} for d in data]
+            
+    def get_content_by_idx(self, idx, *args):
+        return self.data[idx]
+    
+    def get_few_shot_examples(self):
+        from prompts.three_shot.few_shot_examples import examples
+        few_shot_examples = examples["bool_logic"]
+        return few_shot_examples
 
+
+class ValidParentheses(Dataset):
+    def __init__(self):
+        self.data = []
+        import json
+        with open("data/valid_parentheses.json", 'r') as f:
+            data = json.load(f)["examples"][:100]
+        for d in data:
+            self.data.append({"question": d["input"], "answer": "valid" if d["target_scores"]["Valid"] == 1 else "invalid"})
+
+    def get_content_by_idx(self, idx, *args):
+        return self.data[idx]
+    
+    def get_few_shot_examples(self):
+        from prompts.three_shot.few_shot_examples import examples
+        few_shot_examples = examples["valid_parentheses"]
+        return few_shot_examples
+        
+        
 class Math(Dataset):
     def __init__(self) -> None:
         from data.math import math_dataset
@@ -247,5 +280,16 @@ def create_dataset(dataset_name, *args):
         return IWSLT("data/iwslt.json", args[0])
     elif dataset_name == 'math':
         return Math()
+    elif dataset_name == 'bool_logic':
+        return BoolLogic()
+    elif dataset_name == 'valid_parentheses':
+        return ValidParentheses()
     else:
         raise NotImplementedError
+
+if __name__ == "__main__":
+    dataset = ValidParentheses()
+    # dataset = BoolLogic()
+    d = dataset.get_content_by_idx(0)
+    print(type(d['answer']))
+    print(d)

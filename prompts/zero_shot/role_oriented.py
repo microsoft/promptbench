@@ -6,6 +6,32 @@ This file contains the prompt sets for the zeroshot role-oriented prompts.
 """
 
 ROLE_ORIENTED_PROMPT_SET = {
+    'valid_parenthesis': [
+        "As a syntax validator, assess the given sequence of brackets and determine whether it conforms to proper bracket rules. Respond Valid if the brakets are matched, Invaild otherwise.",
+        "In your role as an expression evaluator, analyze the provided arrangement of parentheses and ascertain its validity. Respond Valid if the brakets are matched, Invaild otherwise.",
+        "You are a bracket expert. Examine the sequence of brackets given and decide if it follows correct syntax rules. Respond Valid if the brakets are matched, Invaild otherwise.",
+        "As a parenthesis specialist, review the arrangement of brackets provided and determine whether it is a valid sequence. Respond Valid if the brakets are matched, Invaild otherwise.",
+        "In your capacity as a syntax verifier, analyze the string of brackets and identify if the order of parentheses is correct. Respond Valid if the brakets are matched, Invaild otherwise.",
+        "Investigate the validity of the given bracket sequence, ensuring it adheres to appropriate rules for a valid arrangement. Respond Valid if the brakets are matched, Invaild otherwise.",
+        "As a sequence assessor, evaluate the arrangement of brackets provided and ascertain whether it represents a valid expression. Respond Valid if the brakets are matched, Invaild otherwise.",
+        "You are a bracket authority. Examine the provided sequence of brackets and determine if it adheres to valid syntax conventions. Respond Valid if the brakets are matched, Invaild otherwise.",
+        "In your role as a syntax checker, assess the bracket arrangement and conclude whether it conforms to the requirements for validity. Respond Valid if the brakets are matched, Invaild otherwise.",
+        "As a bracket sequence expert, analyze the given string of brackets and judge whether it displays proper syntax and organization. Respond Valid if the brakets are matched, Invaild otherwise.",    
+    ], 
+    
+    'bool_logic': [
+        "In your role as a logical evaluator, determine the truth value of the following expression. Respond True if it is, False otherwise.",
+        "As a computer scientist, evaluate the given boolean expression's truth value. Respond True if it is, False otherwise.",
+        "You are a debugging expert. Analyze the expression, determine its truth value. Respond True if it is, False otherwise.",
+        "As a software engineer, assess the boolean logic, what is the truth value? Respond True if it is, False otherwise.",
+        "In your capacity as a systems engineer, evaluate the expression, answer its truth value. Respond True if it is, False otherwise.",
+        "You are a decision-making specialist. Determine the truth value of this bool expression. Respond True if it is, False otherwise.",
+        "In your role as a problem solver, what is the truth value of this boolean expression? Respond True if it is, False otherwise.",
+        "As a logical thinker, what is the truth value of the following expression? Respond True if it is, False otherwise.",
+        "You are a code reviewer. Determine if the boolean logic is True or False. Respond True if it is, False otherwise.",
+        "In your role as a critical analyst, provide the bool expression's truth value. Respond True if it is, False otherwise.",
+    ],
+    
     'math': [
         "As a mathematics instructor, calculate the answer to the following problem related to {}: ",
         "Pretend you are a math teacher and solve this mathematical question concerning {}: ",

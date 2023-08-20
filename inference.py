@@ -17,13 +17,12 @@ class Inference(object):
         self.model = args.model
         self.create_model()
 
-
     def create_model(self):
         """
         ChatGPT is a special case, we use the openai api to create the model.
         """
 
-        if self.model != 'chatgpt':
+        if self.model not in ['chatgpt', 'gpt4']:
             import torch
             import os
             
@@ -99,7 +98,6 @@ class Inference(object):
             else:
                 raise NotImplementedError("The model is not implemented!")
 
-
     def process_input(self, prompt, raw_data):
         if self.args.dataset in ["cola", "sst2", "mrpc", "qqp", "mnli", "qnli", "rte", "wnli"]:
             return self._process_cls_input(prompt, raw_data)
@@ -111,10 +109,13 @@ class Inference(object):
             return self._process_trans_input(prompt, raw_data)
         elif self.args.dataset == 'math':
             return self._process_math_input(prompt, raw_data)
+        elif self.args.dataset == 'bool_logic':
+            return self._process_bool_logic_input(prompt, raw_data)
+        elif self.args.dataset == 'valid_parentheses':
+            return self._process_valid_parentheses_input(prompt, raw_data)
         else:
             raise NotImplementedError("The dataset is not implemented!")
     
-
     def process_pred(self, pred):
         if self.args.dataset in ["cola", "sst2", "mrpc", "qqp", "mnli", "qnli", "rte", "wnli"]:
             return self._process_cls_pred(pred)
@@ -126,13 +127,16 @@ class Inference(object):
             return self._process_trans_pred(pred)
         elif self.args.dataset == 'math':
             return self._process_math_pred(pred)
+        elif self.args.dataset == 'bool_logic':
+            return self._process_bool_logic_pred(pred)
+        elif self.args.dataset == 'valid_parentheses':
+            return self._process_valid_parentheses_pred(pred)
         else:
             raise NotImplementedError("The dataset is not implemented!")
 
-
     def eval(self, preds, gts):
         
-        if self.args.dataset in ["cola", "sst2", "mrpc", "qqp", "mnli", "qnli", "rte", "wnli", "mmlu"]:
+        if self.args.dataset in ["cola", "sst2", "mrpc", "qqp", "mnli", "qnli", "rte", "wnli", "mmlu", "bool_logic", "valid_parentheses"]:
             if self.args.dataset == "mmlu":
                 preds = [pred.lower() for pred in preds]
                 gts = [gt.lower() for gt in gts]
@@ -195,7 +199,6 @@ class Inference(object):
         else:
             raise NotImplementedError("Eval this dataset {self.args.dataset} is not implemented!")
 
-
     def predict(self, prompt=None):
         assert self.args.data is not None, "Please load data first!"
 
@@ -205,10 +208,8 @@ class Inference(object):
             results = self.predict_by_local_inference(self.model, prompt)
         return results
 
-
     def predict_by_openai_api(self, model, prompt):
         raise NotImplementedError
-
 
     def predict_by_local_inference(self, model, prompt):
 
@@ -241,7 +242,6 @@ class Inference(object):
 
         score = self.eval(preds, gts)
         return score
-
 
     def pred_by_generation(self, input_text, model):
         out = 'error!'
@@ -294,6 +294,27 @@ class Inference(object):
 
         return out
 
+    def _process_valid_parentheses_input(self, prompt, raw_data):
+        question, label = raw_data['question'], raw_data['answer']
+        input_text = prompt + '\n'
+        
+        if self.args.shot > 0:
+            input_text += "\n"+self.args.data.get_few_shot_examples(raw_data['task'])
+        
+        input_text += ("Question: " + question + '\nAnswer: ')
+
+        return input_text, label
+
+    def _process_bool_logic_input(self, prompt, raw_data):
+        question, label = raw_data['question'], raw_data['answer']
+        input_text = prompt + '\n'
+        
+        if self.args.shot > 0:
+            input_text += "\n"+self.args.data.get_few_shot_examples(raw_data['task'])
+        
+        input_text += ("Question: " + question + '\nAnswer: ')
+
+        return input_text, label
 
     def _process_math_input(self, prompt, raw_data):
         from config import MATH_QUESTION_TYPES
@@ -307,7 +328,6 @@ class Inference(object):
 
         return input_text, label
 
-
     def _process_trans_input(self, prompt, raw_data):
         from config import LANGUAGES
         source, target, task = raw_data['source'], raw_data['target'], raw_data['task']
@@ -320,7 +340,6 @@ class Inference(object):
         input_text += (source + '\nAnswer: ')
         return input_text, target
 
-
     def _process_squad_v2_input(self, prompt, raw_data):
         id, content = raw_data["id"], raw_data["content"]
         input_text = prompt
@@ -331,7 +350,6 @@ class Inference(object):
         input_text += (content + "Answer: ")
 
         return input_text, id
-
 
     def _process_qa_input(self, prompt, raw_data):
         task, content = raw_data["task"], raw_data["content"]
@@ -345,7 +363,6 @@ class Inference(object):
         input_text += content + "\nAnswer: "
         
         return input_text, label
-
 
     def _process_cls_input(self, prompt, raw_data):
         content = raw_data["content"]
@@ -363,6 +380,21 @@ class Inference(object):
 
         return input_text, label
 
+    def _process_bool_logic_pred(self, raw_pred):
+        pred = raw_pred.lower()
+        pred = pred.replace("<pad>", "")
+        pred = pred.replace("</s>", "")
+        pred = pred.strip(",._\"\'-+=!?()&^%$#@:\\|\{\}[]<>/`\n\t\r\v\f ")
+
+        return pred
+    
+    def _process_valid_parentheses_pred(self, raw_pred):
+        pred = raw_pred.lower()
+        pred = pred.replace("<pad>", "")
+        pred = pred.replace("</s>", "")
+        pred = pred.strip(",._\"\'-+=!?()&^%$#@:\\|\{\}[]<>/`\n\t\r\v\f ")
+
+        return pred
     
     def _process_math_pred(self, raw_pred):
         pred = raw_pred.lower()
@@ -372,7 +404,6 @@ class Inference(object):
 
         return pred
     
-
     def _process_trans_pred(self, raw_pred):
         pred = raw_pred.lower()
         pred = pred.replace("<pad>", "")
@@ -381,7 +412,6 @@ class Inference(object):
 
         return pred
 
-
     def _process_squad_v2_pred(self, raw_pred):
         pred = raw_pred.lower()
         pred = pred.replace("<pad>", "")
@@ -389,7 +419,6 @@ class Inference(object):
         pred = pred.strip(",._\"\'-+=!?()&^%$#@:\\|\{\}[]<>/`\n\t\r\v\f ")
 
         return pred
-
 
     def _process_cls_pred(self, raw_pred):
 
@@ -410,8 +439,7 @@ class Inference(object):
             pred = -1
         
         return pred
-    
-    
+        
     def _process_qa_pred(self, raw_pred):
         pred = raw_pred.lower()
         

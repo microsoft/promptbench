@@ -6,6 +6,26 @@ This file contains the fewshot examples for each dataset.
 """
 
 examples = {
+    'valid_parenthese':
+        "Here are three examples. \n" +
+        "Question: [ { ] } } ) [ ) [ } [ ) } ) { } ) [ { }\n" +
+        "Answer: Invalid\n"
+        "Question: { ( { [ ] } ) } [ { } { ( ) } { { } } ]\n" +
+        "Answer: Valid\n" +
+        "Question: [ ( ) ] ( [ [ ] ] )\n" +
+        "Answer: Valid\n"
+        ,
+
+    'bool_logic':
+        "Here are three examples. \n" +
+        "Question: False or not not ( False ) and not True is\n" +
+        "Answer: False\n"
+        "Question: False and not not False or not ( True ) is False\n" +
+        "Answer: True\n" +
+        "Question: and not ( False ) or True or True is\n" +
+        "Answer: True\n"
+        ,
+        
     'squad_v2':
         "Here are three examples. \n" +
         "Context: Time has long been a major subject of study in religion, philosophy, and science, but defining it in a manner applicable to all fields without circularity has consistently eluded scholars. Nevertheless, diverse fields such as business, industry, sports, the sciences, and the performing arts all incorporate some notion of time into their respective measuring systems. Some simple definitions of time include 'time is what clocks measure', which is a problematically vague and self-referential definition that utilizes the device used to measure the subject as the definition of the subject, and 'time is what keeps everything from happening at once', which is without substantive meaning in the absence of the definition of simultaneity in the context of the limitations of human sensation, observation of events, and the perception of such events.\n" +
