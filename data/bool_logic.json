@@ -1,0 +1,402 @@
+[
+    {
+        "question": "not ( not False and True ) or not True is ",
+        "answer": false
+    },
+    {
+        "question": "False or not not ( False ) and not True is ",
+        "answer": false
+    },
+    {
+        "question": "False and not not False or not ( True ) is ",
+        "answer": false
+    },
+    {
+        "question": "True and not ( False ) or True or True is ",
+        "answer": true
+    },
+    {
+        "question": "False or True and ( False and not True ) is ",
+        "answer": false
+    },
+    {
+        "question": "False and ( not False ) and False and True is ",
+        "answer": false
+    },
+    {
+        "question": "True and ( False ) or False and not False is ",
+        "answer": false
+    },
+    {
+        "question": "True or ( True and not False ) or True is ",
+        "answer": true
+    },
+    {
+        "question": "( not not False or False and not False ) is ",
+        "answer": false
+    },
+    {
+        "question": "( not not not ( ( False ) ) ) is ",
+        "answer": true
+    },
+    {
+        "question": "not True or True or False and False and True is ",
+        "answer": true
+    },
+    {
+        "question": "True or False and not True and ( False ) is ",
+        "answer": true
+    },
+    {
+        "question": "False or not True and not not False and True is ",
+        "answer": false
+    },
+    {
+        "question": "not not not False and True or ( False ) is ",
+        "answer": true
+    },
+    {
+        "question": "False and not ( True ) or False or True is ",
+        "answer": true
+    },
+    {
+        "question": "( not not not ( True or False ) ) is ",
+        "answer": false
+    },
+    {
+        "question": "( ( not not False ) ) or not False is ",
+        "answer": true
+    },
+    {
+        "question": "not True or True or not not not not True is ",
+        "answer": true
+    },
+    {
+        "question": "True or not not not ( False ) or False is ",
+        "answer": true
+    },
+    {
+        "question": "True and ( not False and False ) and False is ",
+        "answer": false
+    },
+    {
+        "question": "( False or not True and True ) and True is ",
+        "answer": false
+    },
+    {
+        "question": "True or False and not True or True or True is ",
+        "answer": true
+    },
+    {
+        "question": "True or not ( False ) and False and True is ",
+        "answer": true
+    },
+    {
+        "question": "( True ) and False and True or not False is ",
+        "answer": true
+    },
+    {
+        "question": "( False ) or False or ( not False ) is ",
+        "answer": true
+    },
+    {
+        "question": "True or not False and False and False and True is ",
+        "answer": true
+    },
+    {
+        "question": "True or not ( True and not not True ) is ",
+        "answer": true
+    },
+    {
+        "question": "( not ( False and False ) or False ) is ",
+        "answer": true
+    },
+    {
+        "question": "False and False or ( not ( True ) ) is ",
+        "answer": false
+    },
+    {
+        "question": "( False or not False ) and True or False is ",
+        "answer": true
+    },
+    {
+        "question": "not ( False ) and True or ( True ) is ",
+        "answer": true
+    },
+    {
+        "question": "not not ( not False or False ) and False is ",
+        "answer": false
+    },
+    {
+        "question": "True and ( not not False and not False ) is ",
+        "answer": false
+    },
+    {
+        "question": "not False and not ( not False and False ) is ",
+        "answer": true
+    },
+    {
+        "question": "( not False ) and False and True or True is ",
+        "answer": true
+    },
+    {
+        "question": "( ( not True or False ) and False ) is ",
+        "answer": false
+    },
+    {
+        "question": "not not not ( False and False and True ) is ",
+        "answer": true
+    },
+    {
+        "question": "not not not not not True and ( False ) is ",
+        "answer": false
+    },
+    {
+        "question": "not ( not not False and False and True ) is ",
+        "answer": true
+    },
+    {
+        "question": "not False and ( False ) and not not True is ",
+        "answer": false
+    },
+    {
+        "question": "True and False or True and not ( False ) is ",
+        "answer": true
+    },
+    {
+        "question": "not not ( not True and True or False ) is ",
+        "answer": false
+    },
+    {
+        "question": "( True or not True or False ) or True is ",
+        "answer": true
+    },
+    {
+        "question": "not not False or True or not ( False ) is ",
+        "answer": true
+    },
+    {
+        "question": "False and ( False and not False and True ) is ",
+        "answer": false
+    },
+    {
+        "question": "True or ( False ) or not not not True is ",
+        "answer": true
+    },
+    {
+        "question": "not not not False or ( False and False ) is ",
+        "answer": true
+    },
+    {
+        "question": "not False and True and False or True or False is ",
+        "answer": true
+    },
+    {
+        "question": "( False or True and False or not False ) is ",
+        "answer": true
+    },
+    {
+        "question": "not ( True ) and True and ( False ) is ",
+        "answer": false
+    },
+    {
+        "question": "True and not False and True or not not False is ",
+        "answer": true
+    },
+    {
+        "question": "( True and not False ) and ( True ) is ",
+        "answer": true
+    },
+    {
+        "question": "not True or True or not False and not True is ",
+        "answer": true
+    },
+    {
+        "question": "False and not False and True or False or False is ",
+        "answer": false
+    },
+    {
+        "question": "not True or True or True and False and True is ",
+        "answer": true
+    },
+    {
+        "question": "True and not not ( True and not True ) is ",
+        "answer": false
+    },
+    {
+        "question": "( not False or True or not not True ) is ",
+        "answer": true
+    },
+    {
+        "question": "( not False or True and ( False ) ) is ",
+        "answer": true
+    },
+    {
+        "question": "False or ( True or not not not False ) is ",
+        "answer": true
+    },
+    {
+        "question": "not ( ( ( True or False ) ) ) is ",
+        "answer": false
+    },
+    {
+        "question": "not True or True or not not True or False is ",
+        "answer": true
+    },
+    {
+        "question": "True or ( not not not False or False ) is ",
+        "answer": true
+    },
+    {
+        "question": "not not True and not False and True or True is ",
+        "answer": true
+    },
+    {
+        "question": "False or not True or ( not not False ) is ",
+        "answer": false
+    },
+    {
+        "question": "not True or not not not False and not False is ",
+        "answer": true
+    },
+    {
+        "question": "True and True and not True or False or False is ",
+        "answer": false
+    },
+    {
+        "question": "True or not ( True ) or False or True is ",
+        "answer": true
+    },
+    {
+        "question": "not not not not False and False or not False is ",
+        "answer": true
+    },
+    {
+        "question": "not True and False or True or True and True is ",
+        "answer": true
+    },
+    {
+        "question": "True and ( ( not False ) ) and False is ",
+        "answer": false
+    },
+    {
+        "question": "True and ( not True ) or False or True is ",
+        "answer": true
+    },
+    {
+        "question": "True and not False and False and False or True is ",
+        "answer": true
+    },
+    {
+        "question": "False or not False or ( True ) or True is ",
+        "answer": true
+    },
+    {
+        "question": "( ( False ) or False or not False ) is ",
+        "answer": true
+    },
+    {
+        "question": "False or ( not not False or not True ) is ",
+        "answer": false
+    },
+    {
+        "question": "not False and True or True and not not False is ",
+        "answer": true
+    },
+    {
+        "question": "( ( ( True ) ) ) or not False is ",
+        "answer": true
+    },
+    {
+        "question": "not ( ( not not True ) ) and False is ",
+        "answer": false
+    },
+    {
+        "question": "False and False or True or not not not True is ",
+        "answer": true
+    },
+    {
+        "question": "( False or False and True or not False ) is ",
+        "answer": true
+    },
+    {
+        "question": "not ( ( not False ) ) and not True is ",
+        "answer": false
+    },
+    {
+        "question": "True and ( False or True or not True ) is ",
+        "answer": true
+    },
+    {
+        "question": "True and False or not False or False and True is ",
+        "answer": true
+    },
+    {
+        "question": "False and True and False or ( not False ) is ",
+        "answer": true
+    },
+    {
+        "question": "( not True ) and not not ( True ) is ",
+        "answer": false
+    },
+    {
+        "question": "False or not not not not not False or True is ",
+        "answer": true
+    },
+    {
+        "question": "True and False and not False or True and True is ",
+        "answer": true
+    },
+    {
+        "question": "True or ( False or True ) or not False is ",
+        "answer": true
+    },
+    {
+        "question": "True or True or not False and False or False is ",
+        "answer": true
+    },
+    {
+        "question": "( not ( not False ) ) or not False is ",
+        "answer": true
+    },
+    {
+        "question": "( True or True or not False and False ) is ",
+        "answer": true
+    },
+    {
+        "question": "( False ) and False or True or not True is ",
+        "answer": true
+    },
+    {
+        "question": "( False or True or not True and True ) is ",
+        "answer": true
+    },
+    {
+        "question": "False or not True or ( ( False ) ) is ",
+        "answer": false
+    },
+    {
+        "question": "not not not ( False and False ) and False is ",
+        "answer": false
+    },
+    {
+        "question": "( not True or True ) and False and True is ",
+        "answer": false
+    },
+    {
+        "question": "not True and not False or False and not True is ",
+        "answer": false
+    },
+    {
+        "question": "not True or not True and True or not False is ",
+        "answer": true
+    },
+    {
+        "question": "False or False and ( True ) or not True is ",
+        "answer": false
+    },
+    {
+        "question": "False and True or True and False and not False is ",
+        "answer": false
+    }
+]
