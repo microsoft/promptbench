@@ -6,7 +6,7 @@ This file contains the fewshot examples for each dataset.
 """
 
 examples = {
-    'valid_parenthese':
+    'valid_parentheses':
         "Here are three examples. \n" +
         "Question: [ { ] } } ) [ ) [ } [ ) } ) { } ) [ { }\n" +
         "Answer: Invalid\n"

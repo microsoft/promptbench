@@ -7,16 +7,16 @@ This file contains the prompt sets for the zeroshot task-oriented prompts.
 
 TASK_ORIENTED_PROMPT_SET = {
     'valid_parentheses': [
-        "Judge if the arrangement of brackets in the provided expression follows proper rules for validity. Respond Valid if the brakets are matched, Invaild otherwise.",
-        "Decide whether the sequence of parentheses presented is correctly balanced. Respond Valid if the brakets are matched, Invaild otherwise.",
-        "Evaluate the correctness of the given parenthesis configuration. Respond Valid if the brakets are matched, Invaild otherwise.",
-        "Analyze the order of brackets in the expression to determine if it is valid. Respond Valid if the brakets are matched, Invaild otherwise.",
-        "Examine the organization of parentheses in the given string to verify its validity. Respond Valid if the brakets are matched, Invaild otherwise.",
-        "Assess whether the arrangement of brackets follows the necessary rules for a valid expression. Respond Valid if the brakets are matched, Invaild otherwise.",
-        "Check if the presented combination of parentheses conforms to the requirements of valid syntax. Respond Valid if the brakets are matched, Invaild otherwise.",
-        "Verify whether the provided expression demonstrates appropriate use of parentheses. Respond Valid if the brakets are matched, Invaild otherwise.",
-        "Evaluate if the sequence of brackets is structured properly and is therefore valid. Respond Valid if the brakets are matched, Invaild otherwise.",
-        "Determine whether the given expression displays a correct arrangement of parentheses. Respond Valid if the brakets are matched, Invaild otherwise.",
+        "Judge if the arrangement of brackets in the provided expression follows proper rules for validity. Respond Valid if the brakets are matched, Invalid otherwise.",
+        "Decide whether the sequence of parentheses presented is correctly balanced. Respond Valid if the brakets are matched, Invalid otherwise.",
+        "Evaluate the correctness of the given parenthesis configuration. Respond Valid if the brakets are matched, Invalid otherwise.",
+        "Analyze the order of brackets in the expression to determine if it is valid. Respond Valid if the brakets are matched, Invalid otherwise.",
+        "Examine the organization of parentheses in the given string to verify its validity. Respond Valid if the brakets are matched, Invalid otherwise.",
+        "Assess whether the arrangement of brackets follows the necessary rules for a valid expression. Respond Valid if the brakets are matched, Invalid otherwise.",
+        "Check if the presented combination of parentheses conforms to the requirements of valid syntax. Respond Valid if the brakets are matched, Invalid otherwise.",
+        "Verify whether the provided expression demonstrates appropriate use of parentheses. Respond Valid if the brakets are matched, Invalid otherwise.",
+        "Evaluate if the sequence of brackets is structured properly and is therefore valid. Respond Valid if the brakets are matched, Invalid otherwise.",
+        "Determine whether the given expression displays a correct arrangement of parentheses. Respond Valid if the brakets are matched, Invalid otherwise.",
     ],
     
     'bool_logic': [
