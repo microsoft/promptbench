@@ -10,8 +10,8 @@ Check our paper: [PromptBench: Towards Evaluating the Robustness of Large Langua
 
 
 ## News
-- 2023/08/20 Add new datasets: bool logic, valid parentheses from [BigBench](https://github.com/google/BIG-bench).
-- 2023/07/30 Now we supports for llama2-13b and GPT4.
+- 2023/08/20 Add new datasets: [Boolean Expression](https://github.com/google/BIG-bench/tree/main/bigbench/benchmark_tasks/boolean_expressions), [Valid Parentheses](https://github.com/google/BIG-bench/tree/main/bigbench/benchmark_tasks/cs_algorithms) from [BigBench](https://github.com/google/BIG-bench).
+- 2023/07/30 Now we supports for Vicuna-13b-v1.3, llama2-13b and GPT4.
 
 
 ## Repository Structure
