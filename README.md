@@ -10,6 +10,7 @@ Check our paper: [PromptBench: Towards Evaluating the Robustness of Large Langua
 
 
 ## News
+- 2023/08/24 We have posted all transferability information in our [website](https://huggingface.co/spaces/March07/PromptBench). There, you can easily retrieve the relevant transferability information for specific models and attacks, distinguishing between samples that are highly transferable and those that are less so.
 - 2023/08/20 Add new datasets: [Boolean Expression](https://github.com/google/BIG-bench/tree/main/bigbench/benchmark_tasks/boolean_expressions), [Valid Parentheses](https://github.com/google/BIG-bench/tree/main/bigbench/benchmark_tasks/cs_algorithms) from [BigBench](https://github.com/google/BIG-bench).
 - 2023/07/30 Now we supports for Vicuna-13b-v1.3, llama2-13b and GPT4.
 
