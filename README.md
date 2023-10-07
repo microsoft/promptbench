@@ -65,6 +65,8 @@ It is also necessary to define the `config.py LABEL_SET, GENERATE_LEN`. `LABEL_S
 - databricks/dolly-v1-6b
 - llama-13b
 - llama2-13b-chat
+- llama2-7b
+- llama2-7b-chat
 - vicuna-13b
 - vicuna-13b-v1.3
 - cerebras/Cerebras-GPT-13B
@@ -81,13 +83,11 @@ For the utilization of ChatGPT, please refer to the instructions on the [OpenAI 
 
 #### Create your own model
 
-To create a customized model, add it to `inference.py create_model`.
-
-Subsequently, include the model in `config.py MODEL_SET`.
-
-Lastly, modify the function that processes the output in `inference.py process_pred`.
-
-(Set the `generate_len` for this new model in `config.py`)
+To create a customized model:
+- First, add the implementation in `create_model` function in `inference.py`.
+- Then, include the model in `MODEL_SET` variable in `config.py`.
+- Finally, modify the function that processes the output in `process_pred` function in `inference.py`.
+- You may need to set the `generate_len` for this new model in `config.py`)
 
 
 
@@ -109,7 +109,7 @@ Here are some example commands to run prompt attacks:
 
 ```python
 # dataset: sst2, cola, qqp, mrpc, mnli, qnli, rte, wnli, mmlu, squad, iwslt, un_multi, math
-# model: google/flan-t5-large, vicuna-13b, google/flan-ul2, chatgpt, llama-13b, databricks/dolly-v1-6b, cerebras/Cerebras-GPT-13B, EleutherAI/gpt-neox-20b
+# model: google/flan-t5-large, vicuna-13b, google/flan-ul2, chatgpt, llama-13b, databricks/dolly-v1-6b, cerebras/Cerebras-GPT-13B, EleutherAI/gpt-neox-20b, llama2-7b, llama2-13b, llama2-7b-chat, llama2-13b-chat
 # attack: textbugger, deepwordbug, bertattack, textfooler, checklist, stresstest, semantic
 # shot: 0 or 3 (3 means fewshot)
 # generate_len for each model and each dataset can be found in config.py

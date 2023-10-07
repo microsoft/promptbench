@@ -266,7 +266,7 @@ class Inference(object):
             outputs = self.pipe.generate(input_ids)
             out = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
  
-        elif model in ["llama-13b", "llama2-13b", 'llama2-13b-chat', "vicuna-13b", "vicuna-13b-v1.3"]:
+        elif model in ["llama-13b", "llama2-13b", 'llama2-13b-chat', "vicuna-13b", "vicuna-13b-v1.3", "llama2-7b", "llama2-7b-chat"]:
             outputs = self.pipe.generate(input_ids, 
                                          temperature=0,
                                          max_new_tokens=self.args.generate_len, 
