@@ -49,7 +49,7 @@ class Inference(object):
             #     self.tokenizer = AutoTokenizer.from_pretrained(model, device_map="auto", use_fast=False)
             #     self.pipe = AutoModelForCausalLM.from_pretrained(model, device_map="auto", torch_dtype=torch.float16)
             
-            elif self.model.lower() in ["llama-13b", "llama2-13b", 'llama2-13b-chat']:
+            elif self.model.lower() in ["llama-13b", "llama2-13b", 'llama2-13b-chat', 'llama2-7b', 'llama2-7b-chat']:
                 
                 from transformers import LlamaForCausalLM, LlamaTokenizer
                 

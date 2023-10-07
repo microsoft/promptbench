@@ -1,13 +1,15 @@
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT License.
 
-MNLI_LABEL = ['entailment', 'neutral', 'contradiction', 'entailment\'', 'neutral\'', 'contradiction\'']
+MNLI_LABEL = ['entailment', 'neutral', 'contradiction',
+              'entailment\'', 'neutral\'', 'contradiction\'']
 EQ_LABEL = ['equivalent', 'not_equivalent', 'equivalent\'', 'not_equivalent\'']
-ENTAIL_LABEL = ['entailment', 'not_entailment', 'entailment\'', 'not_entailment\'', '0', '1', '0\'', '1\'', 0, 1]
+ENTAIL_LABEL = ['entailment', 'not_entailment', 'entailment\'',
+                'not_entailment\'', '0', '1', '0\'', '1\'', 0, 1]
 
 LABEL_SET = {
     # 'positive\'', 'negative\'' is used for label constraint due to a bug of TextAttack repo.
-    'sst2': ['positive', 'negative', 'positive\'', 'negative\'', '0', '1', '0\'', '1\'',0, 1], 
+    'sst2': ['positive', 'negative', 'positive\'', 'negative\'', '0', '1', '0\'', '1\'', 0, 1],
     'mnli': MNLI_LABEL,
     'mnli_mismatched': MNLI_LABEL,
     'mnli_matched': MNLI_LABEL,
@@ -18,7 +20,8 @@ LABEL_SET = {
     'mrpc': EQ_LABEL,
     'wnli': ENTAIL_LABEL,
     'mmlu': ['A', 'B', 'C', 'D', 'A\'', 'B\'', 'C\'', 'D\'', 'a', 'b', 'c', 'd', 'a\'', 'b\'', 'c\'', 'd\''],
-    'squad_v2': ['unanswerable', 'unanswerable\''], # do not change the word 'nothing' in prompts.
+    # do not change the word 'nothing' in prompts.
+    'squad_v2': ['unanswerable', 'unanswerable\''],
     'iwslt': ['translate', 'translate\''],
     'un_multi': ['translate', 'translate\''],
     'math': ['math', 'math\''],
@@ -27,30 +30,32 @@ LABEL_SET = {
 }
 
 GENERATE_LEN = {
-    'sst2': {'google/flan-t5-large': 20, 'vicuna-13b': 5, 'google/flan-ul2': 20, "chatgpt": 2, 'llama2-13b': 2,},
-    'mnli': {'google/flan-t5-large': 20, 'vicuna-13b': 5, 'google/flan-ul2': 20, "chatgpt": 3, 'llama2-13b': 3,},
+    'sst2': {'google/flan-t5-large': 20, 'vicuna-13b': 5, 'google/flan-ul2': 20, "chatgpt": 2, 'llama2-13b': 2, },
+    'mnli': {'google/flan-t5-large': 20, 'vicuna-13b': 5, 'google/flan-ul2': 20, "chatgpt": 3, 'llama2-13b': 3, },
     'qqp': {'google/flan-t5-large': 20, 'vicuna-13b': 5, 'google/flan-ul2': 20, "chatgpt": 3, 'llama2-13b': 4},
-    'qnli': {'google/flan-t5-large': 20, 'vicuna-13b': 5, 'google/flan-ul2': 20, "chatgpt": 4, 'llama2-13b': 2,},
-    'rte': {'google/flan-t5-large': 20, 'vicuna-13b': 5, 'google/flan-ul2': 20, "chatgpt": 4, 'llama2-13b': 3,},
-    'cola': {'google/flan-t5-large': 20, 'vicuna-13b': 5, 'google/flan-ul2': 20, "chatgpt": 3, 'llama2-13b': 3,},
-    'mrpc': {'google/flan-t5-large': 20, 'vicuna-13b': 5, 'google/flan-ul2': 20, "chatgpt": 3, 'llama2-13b': 2,},
-    'wnli': {'google/flan-t5-large': 20, 'vicuna-13b': 5, 'google/flan-ul2': 20, "chatgpt": 4, 'llama2-13b': 3,},
-    'mmlu': {'google/flan-t5-large': 2, 'vicuna-13b': 2, 'google/flan-ul2': 2, "chatgpt": 2, 'llama2-13b': 3,},
+    'qnli': {'google/flan-t5-large': 20, 'vicuna-13b': 5, 'google/flan-ul2': 20, "chatgpt": 4, 'llama2-13b': 2, },
+    'rte': {'google/flan-t5-large': 20, 'vicuna-13b': 5, 'google/flan-ul2': 20, "chatgpt": 4, 'llama2-13b': 3, },
+    'cola': {'google/flan-t5-large': 20, 'vicuna-13b': 5, 'google/flan-ul2': 20, "chatgpt": 3, 'llama2-13b': 3, },
+    'mrpc': {'google/flan-t5-large': 20, 'vicuna-13b': 5, 'google/flan-ul2': 20, "chatgpt": 3, 'llama2-13b': 2, },
+    'wnli': {'google/flan-t5-large': 20, 'vicuna-13b': 5, 'google/flan-ul2': 20, "chatgpt": 4, 'llama2-13b': 3, },
+    'mmlu': {'google/flan-t5-large': 2, 'vicuna-13b': 2, 'google/flan-ul2': 2, "chatgpt": 2, 'llama2-13b': 3, },
     'squad_v2': {'google/flan-t5-large': 20, 'google/flan-ul2': 20, "chatgpt": 20},
     'iwslt': {'google/flan-t5-large': 70, 'google/flan-ul2': 70, 'chatgpt': 70},
     'un_multi': {'google/flan-t5-large': 140, 'google/flan-ul2': 140, 'chatgpt': 140},
     'math': {'google/flan-t5-large': 20, 'google/flan-ul2': 20, 'chatgpt': 20},
-    'bool_logic': {'google/flan-t5-large': 4,},
+    'bool_logic': {'google/flan-t5-large': 4, },
 }
 
-MODEL_SET = [ 
+MODEL_SET = [
     'google/flan-t5-large',
     'EleutherAI/gpt-neox-20b',
     'tiiuae/falcon-40b-instruct',
-    # 'facebook/opt-66b', 
+    # 'facebook/opt-66b',
     'llama-13b',
     'llama2-13b',
     'llama2-13b-chat',
+    'llama2-7b',
+    'llama2-7b-chat',
     'vicuna-13b',
     'vicuna-13b-v1.3',
     'google/flan-ul2',
@@ -63,9 +68,9 @@ MODEL_SET = [
 LABEL_TO_ID = {
     'mmlu': {'A': 'A', 'B': 'B', 'C': 'C', 'D': 'D'},
     'sst2': {'negative': 0, 'positive': 1, '0': 0, '1': 1, 0: 0, 1: 1},
-    'mnli': {'entailment': 0, 'neutral': 1, 'contradiction': 2, '0': 0, '1': 1, '2':2, 0: 0, 1: 1, 2: 2},
-    'mnli_mismatched': {'entailment': 0, 'neutral': 1, 'contradiction': 2, '0': 0, '1': 1, '2':2, 0: 0, 1: 1, 2: 2},
-    'mnli_matched': {'entailment': 0, 'neutral': 1, 'contradiction': 2, '0': 0, '1': 1, '2':2, 0: 0, 1: 1, 2: 2},
+    'mnli': {'entailment': 0, 'neutral': 1, 'contradiction': 2, '0': 0, '1': 1, '2': 2, 0: 0, 1: 1, 2: 2},
+    'mnli_mismatched': {'entailment': 0, 'neutral': 1, 'contradiction': 2, '0': 0, '1': 1, '2': 2, 0: 0, 1: 1, 2: 2},
+    'mnli_matched': {'entailment': 0, 'neutral': 1, 'contradiction': 2, '0': 0, '1': 1, '2': 2, 0: 0, 1: 1, 2: 2},
     'qqp': {'equivalent': 1, 'not_equivalent': 0, '0': 0, '1': 1, 0: 0, 1: 1},
     'qnli': {'entailment': 0, 'not_entailment': 1, '0': 0, '1': 1, 0: 0, 1: 1},
     'rte': {'entailment': 0, 'not_entailment': 1, '0': 0, '1': 1, 0: 0, 1: 1},
@@ -97,9 +102,9 @@ SUPPORTED_LANGUAGES = {
 }
 
 LANGUAGES = {
-    'ar': 'Arabic', 
-    'de': 'German', 
-    'en': 'English', 
+    'ar': 'Arabic',
+    'de': 'German',
+    'en': 'English',
     'es': 'Spanish',
     'fr': 'French',
     'ru': 'Russian',
@@ -121,7 +126,7 @@ MATH_QUESTION_TYPES = {
     'arithmetic_nearest_integer_root': ' arithmetic nearest integer root ',
     'comparison_closest': ' compare which one of given numbers is closest to target number ',
     'comparison_kth_biggest': ' compare which one of given numbers is kth biggest or smallest ',
-    'comparison_pair': ' comparison which one of given numbers is bigger or smaller ', 
+    'comparison_pair': ' comparison which one of given numbers is bigger or smaller ',
     'measurement_conversion': ' measurement conversion ',
     'numbers_base_conversion': ' numbers base conversion ',
     'numbers_div_remainder': ' numbers division and remainder ',
