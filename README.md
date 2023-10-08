@@ -63,7 +63,7 @@ It is also necessary to define the `config.py LABEL_SET, GENERATE_LEN`. `LABEL_S
 
 - google/flan-t5-large
 - databricks/dolly-v1-6b
-- llama-13b
+- llama2-13b
 - llama2-13b-chat
 - llama2-7b
 - llama2-7b-chat
@@ -75,9 +75,9 @@ It is also necessary to define the `config.py LABEL_SET, GENERATE_LEN`. `LABEL_S
 - chatgpt
 - gpt4
 
-Please be aware that for the LLaMa and Vicuna models, you must download them manually and specify the `--model_dir your_model_path`.
+Please be aware that for the Llama and Vicuna models, you must download them manually and specify the `--model_dir your_model_path`.
 
-For the utilization of ChatGPT, please refer to the instructions on the [OpenAI API website](https://platform.openai.com/docs/introduction) to construct the `predict` function in `inference.py`.
+For the utilization of ChatGPT, please refer to the instructions on the [OpenAI API website](https://platform.openai.com/docs/introduction) to include the API key in `config.py`.
 
 
 
