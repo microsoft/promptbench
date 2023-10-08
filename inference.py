@@ -226,7 +226,19 @@ class Inference(object):
         return results
 
     def predict_by_openai_api(self, model, prompt):
-        raise NotImplementedError
+        import openai
+        from config import OPENAI_API
+        gpt_model = "gpt-3.5-turbo-0613" if model == "chatgpt" else "gpt-4-0613"
+        openai.api_key = OPENAI_API
+        response = openai.Completion.create(
+            model=gpt_model,
+            prompt=prompt,
+            max_tokens=20,
+            temperature=0
+        )
+        result = response['choices'][0]['text']
+        return result
+
 
     def predict_by_local_inference(self, model, prompt):
 
