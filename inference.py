@@ -1,7 +1,6 @@
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT License.
 
-import openai
 from config import LABEL_SET, LABEL_TO_ID
 from tqdm import tqdm
 
@@ -216,20 +215,20 @@ class Inference(object):
             raise NotImplementedError(
                 "Eval this dataset {self.args.dataset} is not implemented!")
 
-    def predict(self, prompt=None):
+    def predict(self, prompt):
+        """Predict the final score (e.g., accuracy) for the input prompt using self.model
+
+        Args:
+            prompt (str): prompt
+
+        Returns:
+            float: score (e.g., accuracy)
+        """
         assert self.args.data is not None, "Please load data first!"
-
-        if self.model in ["chatgpt", "gpt4"]:
-            results = self.predict_by_openai_api(self.model, prompt)
-        else:
-            results = self.predict_by_local_inference(self.model, prompt)
-        return results
-
-    def predict_by_openai_api(self, model, prompt):
+        assert prompt is not None, "Please input prompt first!"
         data_len = len(self.args.data)
-        if data_len > 1000:
-            data_len = 1000
-
+        if self.args.max_sample > 0 and data_len > self.args.max_sample:
+            data_len = self.args.max_sample
         score = 0
         check_correctness = 100
         preds = []
@@ -240,41 +239,14 @@ class Inference(object):
             raw_data = self.args.data.get_content_by_idx(
                 idx, self.args.dataset)
             input_text, gt = self.process_input(prompt, raw_data)
-
-            raw_pred = self.call_openai_api(model, input_text)
-            pred = self.process_pred(raw_pred)
-
-            preds.append(pred)
-            gts.append(gt)
-
-            if check_correctness > 0:
-                self.args.logger.info("gt: {}".format(gt))
-                self.args.logger.info("Pred: {}".format(pred))
-                self.args.logger.info("sentence: {}".format(input_text))
-
-                check_correctness -= 1
-
-        score = self.eval(preds, gts)
-        return score
-
-
-    def predict_by_local_inference(self, model, prompt):
-        data_len = len(self.args.data)
-        if data_len > 1000:
-            data_len = 1000
-
-        score = 0
-        check_correctness = 100
-        preds = []
-        gts = []
-
-        for idx in tqdm(range(data_len)):
-
-            raw_data = self.args.data.get_content_by_idx(
-                idx, self.args.dataset)
-            input_text, gt = self.process_input(prompt, raw_data)
-
-            raw_pred = self.pred_by_generation(input_text, model)
+            if self.model in ['chatgpt', 'gpt4']:
+                if (idx+1) % 40 == 0:   # random sleep for every 40 requests
+                    import time
+                    import random
+                    time.sleep(random.random() * 10 + 5)
+                raw_pred = self.call_openai_api(self.model, input_text)
+            else:
+                raw_pred = self.pred_by_generation(input_text, self.model)
             pred = self.process_pred(raw_pred)
 
             preds.append(pred)
@@ -291,9 +263,12 @@ class Inference(object):
         return score
 
     def call_openai_api(self, model, prompt):
+        import random
+        import time
+        time.sleep(random.random() + 3)
         import openai
         from config import OPENAI_API
-        openai.api_key = OPENAI_API
+        openai.api_key = OPENAI_API()
         if model in ['chatgpt']:
             response = openai.Completion.create(
                 model="gpt-3.5-turbo-instruct",

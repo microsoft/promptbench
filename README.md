@@ -6,7 +6,7 @@ PromptBench is a powerful tool designed to scrutinize and analyze the interactio
 
 
 
-Check our paper: [PromptBench: Towards Evaluating the Robustness of Large Language Models on Adversarial Prompts](https://arxiv.org/abs/2306.04528).
+Check our paper: [PromptBench: Towards Evaluating the Robustness of Large Language Models on Adversarial Prompts](https://arxiv.org/abs/2306.04528).and the [Demo](https://huggingface.co/spaces/March07/PromptBench) site.
 
 
 ## News

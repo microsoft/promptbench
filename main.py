@@ -8,9 +8,9 @@ import logging
 from config import *
 from dataload import create_dataset
 from inference import Inference
-from prompt_attack.attack import create_attack
-from prompt_attack.goal_function import create_goal_function
-from config import MODEL_SET
+# from prompt_attack.attack import create_attack
+# from prompt_attack.goal_function import create_goal_function
+from config import MODEL_SET, DATA_SET, ATTACK_SET
 
 
 def create_logger(log_path):
@@ -35,28 +35,11 @@ def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--model', type=str,
                         default='google/flan-t5-large', choices=MODEL_SET)
-    parser.add_argument('--dataset', type=str, default='bool_logic', choices=["sst2", "cola", "qqp",
-                                                                              "mnli", "mnli_matched", "mnli_mismatched",
-                                                                              "qnli", "wnli", "rte", "mrpc",
-                                                                              "mmlu", "squad_v2", "un_multi", "iwslt", "math",
-                                                                              "bool_logic", "valid_parentheses",
-                                                                              ])
+    parser.add_argument('--dataset', type=str, default='bool_logic', choices=DATA_SET)
 
     parser.add_argument('--query_budget', type=float, default=float("inf"))
-    parser.add_argument('--attack', type=str, default='deepwordbug', choices=[
-        'textfooler',
-        'textbugger',
-        'bertattack',
-        'deepwordbug',
-        'checklist',
-        'stresstest',
-        'semantic',
-        'no', 
-        'noattack',
-        'clean',
-    ])
+    parser.add_argument('--attack', type=str, default='deepwordbug', choices=ATTACK_SET)
     parser.add_argument("--verbose", type=bool, default=True)
-
     parser.add_argument('--output_dir', type=str, default='./')
 
     parser.add_argument('--model_dir', type=str, default="/home/v-kaijiezhu/")
@@ -66,6 +49,11 @@ def get_args():
     parser.add_argument('--generate_len', type=int, default=4)
 
     parser.add_argument('--prompt_selection', action='store_true')
+
+    # maximum samples allowed to predict due to high cost of some models
+    parser.add_argument('--max_sample', type=int, default=1000) 
+
+    parser.add_argument('--clean_attack', type=str, default='clean')
 
     args = parser.parse_args()
     return args
@@ -105,11 +93,13 @@ def attack(args, inference_model, RESULTS_DIR):
                         language, acc*100, prompt))
     elif args.attack in ['no', 'noattack', 'clean']:
         from config import PROMPT_SET_Promptbench_advglue as prompt_raw
-        prompt = prompt_raw['clean'][args.dataset][0]
+        prompt = prompt_raw[args.clean_attack][args.dataset][0]
         acc = inference_model.predict(prompt)
-        args.logger.info(f"Prompt: {prompt}, acc: {acc}%\n")
+        info = "Prompt: {}, acc: {:.2f}%\n".format(prompt, acc*100)
+        args.logger.info(info)
+        print(args, info)
         with open(RESULTS_DIR+args.save_file_name+".txt", "a+") as f:
-            f.write("Prompt: {}, acc: {:.2f}%\n".format(prompt, acc*100))
+            f.write(info)
     else:
         if args.shot == 0:
             from prompts.zero_shot.task_oriented import TASK_ORIENTED_PROMPT_SET
