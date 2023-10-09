@@ -226,22 +226,39 @@ class Inference(object):
         return results
 
     def predict_by_openai_api(self, model, prompt):
-        import openai
-        from config import OPENAI_API
-        gpt_model = "gpt-3.5-turbo-0613" if model == "chatgpt" else "gpt-4-0613"
-        openai.api_key = OPENAI_API
-        response = openai.Completion.create(
-            model=gpt_model,
-            prompt=prompt,
-            max_tokens=20,
-            temperature=0
-        )
-        result = response['choices'][0]['text']
-        return result
+        data_len = len(self.args.data)
+        if data_len > 1000:
+            data_len = 1000
+
+        score = 0
+        check_correctness = 100
+        preds = []
+        gts = []
+
+        for idx in tqdm(range(data_len)):
+
+            raw_data = self.args.data.get_content_by_idx(
+                idx, self.args.dataset)
+            input_text, gt = self.process_input(prompt, raw_data)
+
+            raw_pred = self.call_openai_api(model, input_text)
+            pred = self.process_pred(raw_pred)
+
+            preds.append(pred)
+            gts.append(gt)
+
+            if check_correctness > 0:
+                self.args.logger.info("gt: {}".format(gt))
+                self.args.logger.info("Pred: {}".format(pred))
+                self.args.logger.info("sentence: {}".format(input_text))
+
+                check_correctness -= 1
+
+        score = self.eval(preds, gts)
+        return score
 
 
     def predict_by_local_inference(self, model, prompt):
-
         data_len = len(self.args.data)
         if data_len > 1000:
             data_len = 1000
@@ -272,6 +289,28 @@ class Inference(object):
 
         score = self.eval(preds, gts)
         return score
+
+    def call_openai_api(self, model, prompt):
+        import openai
+        from config import OPENAI_API
+        openai.api_key = OPENAI_API
+        if model in ['chatgpt']:
+            response = openai.Completion.create(
+                model="gpt-3.5-turbo-instruct",
+                prompt=prompt,
+                max_tokens=20,
+                temperature=0
+            )
+            result = response['choices'][0]['text']
+        else:
+            response = openai.ChatCompletion.create(
+            model='gpt-4-0613',
+            messages=[
+                {"role": "user", "content": prompt},
+            ]
+        )
+        result = response['choices'][0]['message']['content']
+        return result
 
     def pred_by_generation(self, input_text, model):
         out = 'error!'

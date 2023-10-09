@@ -51,6 +51,9 @@ def get_args():
         'checklist',
         'stresstest',
         'semantic',
+        'no', 
+        'noattack',
+        'clean',
     ])
     parser.add_argument("--verbose", type=bool, default=True)
 
@@ -100,7 +103,13 @@ def attack(args, inference_model, RESULTS_DIR):
                 with open(RESULTS_DIR+args.save_file_name+".txt", "a+") as f:
                     f.write("Language: {}, acc: {:.2f}%, prompt: {}\n".format(
                         language, acc*100, prompt))
-
+    elif args.attack in ['no', 'noattack', 'clean']:
+        from config import PROMPT_SET_Promptbench_advglue as prompt_raw
+        prompt = prompt_raw['clean'][args.dataset][0]
+        acc = inference_model.predict(prompt)
+        args.logger.info(f"Prompt: {prompt}, acc: {acc}%\n")
+        with open(RESULTS_DIR+args.save_file_name+".txt", "a+") as f:
+            f.write("Prompt: {}, acc: {:.2f}%\n".format(prompt, acc*100))
     else:
         if args.shot == 0:
             from prompts.zero_shot.task_oriented import TASK_ORIENTED_PROMPT_SET
