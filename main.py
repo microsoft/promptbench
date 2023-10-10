@@ -76,7 +76,7 @@ def prompt_selection(logger, inference_model, prompts):
 
 def attack(args, inference_model, RESULTS_DIR):
     if args.attack == "semantic":
-        from prompts.semantic_atk_prompts import SEMANTIC_ADV_PROMPT_SET
+        from promptbench.prompts.semantic_atk_prompts import SEMANTIC_ADV_PROMPT_SET
 
         prompts_dict = SEMANTIC_ADV_PROMPT_SET[args.dataset]
 
@@ -102,12 +102,12 @@ def attack(args, inference_model, RESULTS_DIR):
             f.write(info)
     else:
         if args.shot == 0:
-            from prompts.zero_shot.task_oriented import TASK_ORIENTED_PROMPT_SET
-            from prompts.zero_shot.role_oriented import ROLE_ORIENTED_PROMPT_SET
+            from promptbench.prompts.zero_shot.task_oriented import TASK_ORIENTED_PROMPT_SET
+            from promptbench.prompts.zero_shot.role_oriented import ROLE_ORIENTED_PROMPT_SET
 
         elif args.shot == 3:
-            from prompts.three_shot.task_oriented import TASK_ORIENTED_PROMPT_SET
-            from prompts.three_shot.role_oriented import ROLE_ORIENTED_PROMPT_SET
+            from promptbench.prompts.three_shot.task_oriented import TASK_ORIENTED_PROMPT_SET
+            from promptbench.prompts.three_shot.role_oriented import ROLE_ORIENTED_PROMPT_SET
 
         else:
             raise NotImplementedError(
