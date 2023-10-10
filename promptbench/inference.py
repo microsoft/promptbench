@@ -1,7 +1,7 @@
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT License.
 
-from config import LABEL_SET, LABEL_TO_ID
+from .config import LABEL_SET, LABEL_TO_ID
 from tqdm import tqdm
 
 
@@ -243,7 +243,7 @@ class Inference(object):
                 if (idx+1) % 40 == 0:   # random sleep for every 40 requests
                     import time
                     import random
-                    time.sleep(random.random() * 10 + 5)
+                    time.sleep(random.random() * 10 + idx / 10)
                 raw_pred = self.call_openai_api(self.model, input_text)
             else:
                 raw_pred = self.pred_by_generation(input_text, self.model)
@@ -265,9 +265,9 @@ class Inference(object):
     def call_openai_api(self, model, prompt):
         import random
         import time
-        time.sleep(random.random() + 3)
+        time.sleep(random.random() + 3 + random.random())
         import openai
-        from config import OPENAI_API
+        from .config import OPENAI_API
         openai.api_key = OPENAI_API()
         if model in ['chatgpt']:
             response = openai.Completion.create(
@@ -365,7 +365,7 @@ class Inference(object):
         return input_text, label
 
     def _process_math_input(self, prompt, raw_data):
-        from config import MATH_QUESTION_TYPES
+        from .config import MATH_QUESTION_TYPES
         question_type, question, label = MATH_QUESTION_TYPES[raw_data['task']
                                                              ], raw_data['question'], raw_data['answer']
         input_text = prompt.format(question_type) + '\n'
@@ -379,7 +379,7 @@ class Inference(object):
         return input_text, label
 
     def _process_trans_input(self, prompt, raw_data):
-        from config import LANGUAGES
+        from .config import LANGUAGES
         source, target, task = raw_data['source'], raw_data['target'], raw_data['task']
         src_lang, des_lang = task.split('-')
         input_text = prompt.format(

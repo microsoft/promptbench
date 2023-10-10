@@ -5,12 +5,12 @@ import argparse
 import os
 import logging
 
-from config import *
-from dataload import create_dataset
-from inference import Inference
+from promptbench.config import *
+from promptbench.dataload import create_dataset
+from promptbench.inference import Inference
 # from prompt_attack.attack import create_attack
 # from prompt_attack.goal_function import create_goal_function
-from config import MODEL_SET, DATA_SET, ATTACK_SET
+from promptbench.config import MODEL_SET, DATA_SET, ATTACK_SET
 
 
 def create_logger(log_path):
@@ -92,7 +92,7 @@ def attack(args, inference_model, RESULTS_DIR):
                     f.write("Language: {}, acc: {:.2f}%, prompt: {}\n".format(
                         language, acc*100, prompt))
     elif args.attack in ['no', 'noattack', 'clean']:
-        from config import PROMPT_SET_Promptbench_advglue as prompt_raw
+        from promptbench.config import PROMPT_SET_Promptbench_advglue as prompt_raw
         prompt = prompt_raw[args.clean_attack][args.dataset][0]
         acc = inference_model.predict(prompt)
         info = "Prompt: {}, acc: {:.2f}%\n".format(prompt, acc*100)
@@ -162,7 +162,7 @@ def main(args):
     save_dir = args.dataset
 
     if args.dataset == "iwslt" or args.dataset == "un_multi":
-        from config import SUPPORTED_LANGUAGES
+        from promptbench.config import SUPPORTED_LANGUAGES
         supported_languages = SUPPORTED_LANGUAGES[args.model]
 
     save_dir += "/"
