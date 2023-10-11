@@ -47,25 +47,17 @@ class Inference(object):
                 self.pipe = GPTNeoXForCausalLM.from_pretrained(
                     self.model, device_map="auto", torch_dtype=torch.float16)
 
-            # elif self.model.lower() == 'facebook/opt-66b':
-            #     from transformers import AutoModelForCausalLM, AutoTokenizer
-
-            #     # the fast tokenizer currently does not work correctly
-            #     self.tokenizer = AutoTokenizer.from_pretrained(model, device_map="auto", use_fast=False)
-            #     self.pipe = AutoModelForCausalLM.from_pretrained(model, device_map="auto", torch_dtype=torch.float16)
-
-            elif self.model.lower() in ["llama-13b", "llama2-13b", 'llama2-13b-chat', 'llama2-7b', 'llama2-7b-chat']:
+            elif self.model.lower() in ["llama-7b", "llama-13b", "llama2-13b", 'llama2-13b-chat', 'llama2-7b', 'llama2-7b-chat', 'llama2-70b', 'llama2-70b-chat']:
 
                 from transformers import LlamaForCausalLM, LlamaTokenizer
 
                 model_dir = os.path.join(self.args.model_dir, self.model)
-
                 self.tokenizer = LlamaTokenizer.from_pretrained(
                     model_dir, device_map="auto")
                 self.pipe = LlamaForCausalLM.from_pretrained(
-                    model_dir, device_map="auto", torch_dtype=torch.float16)
+                    model_dir, device_map="auto")
 
-            elif self.model.lower() in ["vicuna-13b", "vicuna-13b-v1.3"]:
+            elif self.model.lower() in ["vicuna-13b", "vicuna-13b-v1.3", "vicuna-7b"]:
 
                 from transformers import AutoModelForCausalLM, AutoTokenizer
 
@@ -74,7 +66,7 @@ class Inference(object):
                 self.tokenizer = AutoTokenizer.from_pretrained(
                     model_dir, device_map="auto", use_fast=False)
                 self.pipe = AutoModelForCausalLM.from_pretrained(
-                    model_dir, device_map="auto", torch_dtype=torch.float16)
+                    model_dir, device_map="auto")
 
             elif self.model == "google/flan-ul2":
 
@@ -312,13 +304,14 @@ class Inference(object):
             outputs = self.pipe.generate(input_ids)
             out = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
 
-        elif model in ["llama-13b", "llama2-13b", 'llama2-13b-chat', "vicuna-13b", "vicuna-13b-v1.3", "llama2-7b", "llama2-7b-chat"]:
-            outputs = self.pipe.generate(input_ids,
-                                         temperature=0,
-                                         max_new_tokens=self.args.generate_len,
-                                         early_stopping=True)
+        elif model in ["llama-13b", "llama2-13b", 'llama2-13b-chat', "vicuna-13b", "vicuna-13b-v1.3", "llama2-7b", "llama2-7b-chat", "llama2-70b", "llama2-70b-chat", "vicuna-7b", "llama-7b"]:
+            generate_ids = self.pipe.generate(input_ids, max_new_tokens=self.args.generate_len)
+            out = self.tokenizer.batch_decode(generate_ids, skip_special_tokens=True, clean_up_tokenization_spaces=False)[0]
+            # print(out)
+            # outputs = self.pipe.generate(input_ids,
+            #                              max_new_tokens=self.args.generate_len)
 
-            out = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
+            # out = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
 
         elif model in ['databricks/dolly-v1-6b', 'cerebras/Cerebras-GPT-13B']:
             outputs = self.pipe.generate(input_ids,
@@ -475,14 +468,24 @@ class Inference(object):
         return pred
 
     def _process_cls_pred(self, raw_pred):
-
         pred = raw_pred.lower()
 
         pred = pred.replace("<pad>", "")
         pred = pred.replace("</s>", "")
 
         pred = pred.strip(",._\"\'-+=!?()&^%$#@:\\|\{\}[]<>/`\n\t\r\v\f ")
-        pred = pred.split(" ")[-1]
+        pred = pred.replace("\n", " ")
+        if self.model is None:
+            pred = pred.split(" ")[-1]
+        elif self.model.__contains__('llama'):
+            pred = pred.split("answer")
+            if len(pred) == 0:
+                pred = pred[0]
+            else:
+                pred = pred[1]
+            pred = pred.strip(",._\"\'-+=!?()&^%$#@:\\|\{\}[]<>/`\n\t\r\v\f ").strip(" ")
+            pred = pred.split(" ")[0]
+        
         pred = pred.strip(",._\"\'-+=!?()&^%$#@:\\|\{\}[]<>/`\n\t\r\v\f ")
 
         if pred in LABEL_SET[self.args.dataset]:

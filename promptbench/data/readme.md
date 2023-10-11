@@ -10,3 +10,5 @@ This folder contains the datasets used for PromptBench. You need to download the
 - Valid_parentheses: `wget https://wjdcloud.blob.core.windows.net/dataset/promptbench/dataset/valid_parentheses.json`
 
 Copyright notice: we store all these datasets only for research purpose.
+
+TODO: automatically download the datasets in the code.

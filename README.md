@@ -101,6 +101,17 @@ The environment can be set up using Conda. Run the following command to create t
 conda env create -f environment.yml
 ```
 
+Or you can install the main packages:
+
+```
+pip install openai
+pip install transformers
+pip install datasets
+pip install pretty_errors
+pip install lru-dict
+pip install sentencepiece
+pip install accelerate
+```
 
 
 ## Prompt Attacks
