@@ -1,7 +1,7 @@
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT License.
 
-from config import *
+from promptbench.config import *
 import json
 from datasets import load_dataset
 
@@ -19,10 +19,18 @@ get_few_shot_examples(): return a string with few-shot examples.
 ====================================================================================================
 """
 
+DATA_SET = [
+    "sst2", "cola", "qqp",
+    "mnli", "mnli_matched", "mnli_mismatched",
+    "qnli", "wnli", "rte", "mrpc",
+    "mmlu", "squad_v2", "un_multi", "iwslt", "math",
+    "bool_logic", "valid_parentheses"
+]
 
 class Dataset(object):
     def __init__(self):
         self.data = None
+        self.data_list = DATA_SET
 
     def __len__(self):
         assert self.data is not None, "self.data is None. Please load data first."
@@ -31,6 +39,10 @@ class Dataset(object):
     def get_content_by_idx(self, idx, *args):
         raise NotImplementedError(
             "get_content_by_idx() must be implemented in the subclass.")
+
+    @staticmethod
+    def data_list(self):
+        return self.data_list
 
     def get_few_shot_examples(self, task):
         raise NotImplementedError(
@@ -66,7 +78,7 @@ class Dataset(object):
 class BoolLogic(Dataset):
     def __init__(self):
         import json
-        with open("data/bool_logic.json", 'r') as f:
+        with open("./data/bool_logic.json", 'r') as f:
             data = json.load(f)
         self.data = [{"question": d["question"],
                       "answer": "true" if d["answer"] else "false"} for d in data]
@@ -84,7 +96,7 @@ class ValidParentheses(Dataset):
     def __init__(self):
         self.data = []
         import json
-        with open("data/valid_parentheses.json", 'r') as f:
+        with open("./data/valid_parentheses.json", 'r') as f:
             data = json.load(f)["examples"][:100]
         for d in data:
             self.data.append(
@@ -101,7 +113,7 @@ class ValidParentheses(Dataset):
 
 class Math(Dataset):
     def __init__(self) -> None:
-        from data.math import math_dataset
+        from promptbench.data.math import math_dataset
         self.data = []
         for task in math_dataset.keys():
             for d in math_dataset[task]:
@@ -176,7 +188,7 @@ class SQUAD_V2(Dataset):
         # random.seed(42)
         # random_indices = random.sample(range(len(data)), 1000)
         # self.data = data.select(random_indices)
-        with open("data/SQUAD_V2.json", "r") as file:
+        with open("./data/SQUAD_V2.json", "r") as file:
             self.data = json.load(file)
 
         import random
@@ -220,7 +232,7 @@ class MMLU(Dataset):
                       'us_foreign_policy', 'high_school_macroeconomics', 'computer_security', 'moral_scenarios', 'moral_disputes',
                       'electrical_engineering', 'astronomy', 'college_biology']
 
-        with open("data/MMLU.json", "r") as file:
+        with open("./data/MMLU.json", "r") as file:
             self.raw_data = json.load(file)
 
         cnt = {}
@@ -235,7 +247,7 @@ class MMLU(Dataset):
                 self.data.append(d)
                 cnt[task] += 1
 
-        with open("data/MMLU_few_shot.json", "r") as file:
+        with open("./data/MMLU_few_shot.json", "r") as file:
             self.few_shot_data = json.load(file)
 
     def get_content_by_idx(self, idx, *args):
