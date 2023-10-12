@@ -1,7 +1,7 @@
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT License.
 
-from .config import *
+from config import *
 import json
 from datasets import load_dataset
 
@@ -35,6 +35,32 @@ class Dataset(object):
     def get_few_shot_examples(self, task):
         raise NotImplementedError(
             "get_few_shot_examples() must be implemented in the subclass.")
+
+    def generate_few_shot(self, k=3, seed=42):
+        assert self.data is not None, "self.data is None. Please load data first."
+        assert k <= len(self.data), "k should be smaller than the size of dataset."
+
+        import numpy as np
+        np.random.seed(seed)
+        idx_fewshot = np.random.choice(np.arange(len(self.data)), k, replace=False)
+        few_shot_examples = []
+        for i in idx_fewshot:
+            few_shot_examples.append(self.get_content_by_idx(i))
+        return few_shot_examples
+
+    def generate_few_shot(self, k=3, task=None, seed=42):
+        assert self.data is not None, "self.data is None. Please load data first."
+        assert k <= len(self.data), "k should be smaller than the size of dataset."
+
+        import numpy as np
+        np.random.seed(seed)
+        idx_fewshot = np.random.choice(np.arange(len(self.data)), k, replace=False)
+        few_shot_examples = []
+        for i in idx_fewshot:
+            i = int(i)
+            few_shot_examples.append(self.get_content_by_idx(i, task))
+        return few_shot_examples
+
 
 
 class BoolLogic(Dataset):
@@ -280,42 +306,9 @@ class GLUE(Dataset):
 
         return {"content": content, "label": label}
 
-class DataAdvGLUE(Dataset):
 
-    def __init__(self, data_path, task):
-        self.task = task
-        self.data = json.load(open(data_path, 'r'))
-
-    def get_data_by_task(self, task):
-        self.data_task = self.data[task]
-        return self.data_task
-
-    def get_content_by_idx(self, idx, task=None):
-        if task is None:
-            task = self.task
-        self.data_task = self.get_data_by_task(task)
-        if task == 'sst2':
-            content = self.data_task[idx]['sentence']
-        elif task == 'qqp':
-            content = self.data_task[idx]['question1'] + \
-                ' ' + self.data_task[idx]['question2']
-        elif task == 'mnli':
-            content = self.data_task[idx]['premise'] + \
-                ' ' + self.data_task[idx]['hypothesis']
-        elif task == 'qnli':
-            content = self.data_task[idx]['question'] + \
-                ' ' + self.data_task[idx]['sentence']
-        elif task == 'rte':
-            content = self.data_task[idx]['sentence1'] + \
-                ' ' + self.data_task[idx]['sentence2']
-        elif task == 'mnli-mm':
-            content = self.data_task[idx]['premise'] + \
-                ' ' + self.data_task[idx]['hypothesis']
-        label = self.data_task[idx]['label']
-        return content, label
-    
 def create_dataset(dataset_name, *args):
-    if dataset_name in ["cola", "sst2", "qqp", "mnli", "mnli_matched", "mnli_mismatched", "qnli", "wnli", "rte", "mrpc", "advglue"]:
+    if dataset_name in ["cola", "sst2", "qqp", "mnli", "mnli_matched", "mnli_mismatched", "qnli", "wnli", "rte", "mrpc"]:
         return GLUE(dataset_name)
     elif dataset_name == 'mmlu':
         return MMLU()
@@ -331,15 +324,14 @@ def create_dataset(dataset_name, *args):
         return BoolLogic()
     elif dataset_name == 'valid_parentheses':
         return ValidParentheses()
-    elif dataset_name == 'advglue':
-        return DataAdvGLUE('/home/jindwang/mine/robustlearn/chatgpt-robust/data/advglue/dev.json', 'qqp')
     else:
         raise NotImplementedError
 
 
 if __name__ == "__main__":
-    # dataset = ValidParentheses()
-    dataset = DataAdvGLUE('/home/jindwang/mine/robustlearn/chatgpt-robust/data/advglue/dev.json', 'qqp')
-    d = dataset.get_content_by_idx(0)
-    print(type(d['answer']))
+    dataset = GLUE("sst2")
+    # dataset = BoolLogic()
+    d = dataset.generate_few_shot(3, 'sst2')
     print(d)
+    # print(type(d['answer']))
+    # print(d)

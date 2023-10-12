@@ -4,12 +4,13 @@
 import argparse
 import os
 import logging
+import pretty_errors
 
 from promptbench.config import *
 from promptbench.dataload import create_dataset
 from promptbench.inference import Inference
-# from prompt_attack.attack import create_attack
-# from prompt_attack.goal_function import create_goal_function
+from promptbench.prompt_attack.attack import create_attack
+from promptbench.prompt_attack.goal_function import create_goal_function
 from promptbench.config import MODEL_SET, DATA_SET, ATTACK_SET
 
 

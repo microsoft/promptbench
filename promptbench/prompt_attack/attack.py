@@ -517,8 +517,8 @@ class AdvPromptAttack:
 
 
 def create_attack(args, goal_function):
-    from config import LABEL_SET
-    from prompt_attack.label_constraint import LabelConstraint
+    from promptbench.config import LABEL_SET
+    from promptbench.prompt_attack.label_constraint import LabelConstraint
     label_constraint = LabelConstraint(LABEL_SET[args.dataset])
     
     if args.attack == "textfooler":
@@ -608,15 +608,15 @@ def create_attack(args, goal_function):
         search_method = GreedyWordSwapWIR(wir_method="unk")
 
     elif args.attack == "checklist":
-        from prompt_attack.transformations import CheckListTransformation
-        from prompt_attack.search import BruteForceSearch
+        from promptbench.prompt_attack.transformations import CheckListTransformation
+        from promptbench.prompt_attack.search import BruteForceSearch
         transformation = CheckListTransformation()
         constraints = []
         search_method = BruteForceSearch()   
 
     elif args.attack == "stresstest":
-        from prompt_attack.transformations import StressTestTransformation
-        from prompt_attack.search import BruteForceSearch
+        from promptbench.prompt_attack.transformations import StressTestTransformation
+        from promptbench.prompt_attack.search import BruteForceSearch
         transformation = StressTestTransformation()
         constraints = []
         search_method = BruteForceSearch() 
