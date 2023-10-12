@@ -153,7 +153,7 @@ class Inference(object):
 
         elif self.args.dataset == "squad_v2":
 
-            from metrics.squad_v2.squad_v2 import SquadV2
+            from promptbench.metrics.squad_v2.squad_v2 import SquadV2
             metric = SquadV2()
 
             model_output = []
@@ -177,7 +177,7 @@ class Inference(object):
 
         elif self.args.dataset in ['iwslt', 'un_multi']:
 
-            from metrics.bleu.bleu import Bleu
+            from promptbench.metrics.bleu.bleu import Bleu
             metric = Bleu()
             results = metric.compute(predictions=preds, references=gts)
 
@@ -221,6 +221,7 @@ class Inference(object):
         data_len = len(self.args.data)
         if self.args.max_sample > 0 and data_len > self.args.max_sample:
             data_len = self.args.max_sample
+
         score = 0
         check_correctness = 100
         preds = []
