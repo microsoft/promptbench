@@ -1,5 +1,6 @@
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT License.
+from abc import ABC, abstractmethod
 
 LLAMA_MODELS = [
     'llama2-7b',
@@ -34,14 +35,15 @@ MODEL_LIST = {
 }
 
 
-class LMMBaseModel(object):
+class LMMBaseModel(ABC):
 
     def __init__(self, **kwargs):
-        self.model = kwargs.get('model', 'google/flan-t5-large')
-        self.gen_len = kwargs.get('gen_len', 5)
+        self.model = kwargs.get('model', None)
+        self.max_new_tokens = kwargs.get('max_new_tokens', 20)
 
+    @abstractmethod
     def predict(self, input_text, **kwargs):
-        raise NotImplementedError("The model is not implemented!")
+        pass
 
     def __call__(self, input_text, **kwargs):
         return self.predict(input_text, **kwargs)
@@ -59,7 +61,7 @@ class LLMModel(object):
         elif self.model in LLAMA_MODELS:
             return LlamaModel(**kwargs)
         elif self.model in GPT_MODELS:
-            return OpenaiModel(**kwargs)
+            return OpenAIModel(**kwargs)
         elif self.model in VICUNA_MODELS:
             return VicunaModel(**kwargs)
         elif self.model in UL2_MODELS:
@@ -71,8 +73,8 @@ class LLMModel(object):
     def model_list():
         return MODEL_LIST
 
-    def __call__(self, **kwargs):
-        return self.infer_model
+    def __call__(self, input_text, **kwargs):
+        return self.infer_model.predict(input_text, **kwargs)
 
 
 class T5Model(LMMBaseModel):
@@ -90,7 +92,7 @@ class T5Model(LMMBaseModel):
         input_ids = self.tokenizer(
             input_text, return_tensors="pt").input_ids.to("cuda")
         outputs = self.pipe.generate(
-            input_ids, max_new_tokens=self.gen_len)
+            input_ids, max_new_tokens=self.max_new_tokens)
         out = self.tokenizer.decode(outputs[0])
         return out
 
@@ -110,7 +112,7 @@ class UL2Model(LMMBaseModel):
         input_ids = self.tokenizer(
             input_text, return_tensors="pt").input_ids.to("cuda")
         outputs = self.pipe.generate(
-            input_ids, max_new_tokens=self.gen_len)
+            input_ids, max_new_tokens=self.max_new_tokens)
         out = self.tokenizer.decode(outputs[0])
         return out
 
@@ -134,7 +136,7 @@ class LlamaModel(LMMBaseModel):
         input_ids = self.tokenizer(
             input_text, return_tensors="pt").input_ids.to("cuda")
         generate_ids = self.pipe.generate(
-            input_ids, max_new_tokens=self.gen_len)
+            input_ids, max_new_tokens=self.max_new_tokens)
         out = self.tokenizer.batch_decode(
             generate_ids, skip_special_tokens=True, clean_up_tokenization_spaces=False)[0]
         return out
@@ -159,54 +161,62 @@ class VicunaModel(LMMBaseModel):
         input_ids = self.tokenizer(
             input_text, return_tensors="pt").input_ids.to("cuda")
         outputs = self.pipe.generate(
-            input_ids, max_new_tokens=self.gen_len)
+            input_ids, max_new_tokens=self.max_new_tokens)
         out = self.tokenizer.decode(outputs[0])
         return out
 
 
-class OpenaiModel(LMMBaseModel):
+class OpenAIModel(LMMBaseModel):
 
     def __init__(self, **kwargs):
-        super(OpenaiModel, self).__init__(**kwargs)
+        super(OpenAIModel, self).__init__(**kwargs)
         self.openai_key = kwargs.get('openai_key', None)
         self.temperature = kwargs.get('temperature', 0.0)
+        self.sleep_time = kwargs.get('sleep_time', 3)
         if not self.openai_key:
             raise ValueError("openai_key is required for openai model!")
+
+        if self.temperature > 0:
+            raise Warning("Temperature is not 0, so that the results may not be reproducable!")
+
+        if self.sleep_time > 0:
+            raise Warning("We suggest to set sleep time > 0 (i.e., 5).")
 
     def sleep(self, seconds):
         import random
         import time
         time.sleep(seconds + random.random())
 
-    def predict(self, input_text, sleep=3):
-        self.sleep(sleep if sleep > 0 else 0)
+    def predict(self, input_text):
+        
         import openai
         openai.api_key = self.openai_key
         try:
-            response = openai.ChatCompletion.create(
-                model=self.model,
-                messages=[
-                    {"role": "user", "content": input_text},
-                ],
-                temperature=self.temperature,
-            )
-            result = response['choices'][0]['message']['content']
+            while True:
+                response = openai.ChatCompletion.create(
+                    model=self.model,
+                    messages=[
+                        {"role": "user", "content": input_text},
+                    ],
+                    temperature=self.temperature,
+                )
+                result = response['choices'][0]['message']['content']
+                return result
+            
         except Exception as e:
             print(e)
-            result = 'error!'
-        return result
-
-    def __call__(self, input_text, sleep=3, **kwargs):
-        return self.predict(input_text, sleep, **kwargs)
+            print("Retrying...")
+            self.sleep(self.sleep_time)
 
 
 if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument('--model', type=str, default='vicuna-7b')
-    parser.add_argument('--model_dir', type=str,
-                        default='/home/jindwang/mine/vicuna-7b')
+    parser.add_argument('--model', type=str, default='llama2-13b-chat')
+    parser.add_argument('--max_new_tokens', type=int, default=20)
+    parser.add_argument('--model_dir', type=str, default='/media/Auriga/llms/llama2-13b-chat')
     args = parser.parse_args()
-    model = LLMModel(model=args.model,
-                     model_dir=args.model_dir)()
+    # print(LLMModel.model_list())
+    model = LLMModel(model=args.model, max_new_tokens=args.max_new_tokens, model_dir=args.model_dir)
+
     print(model('The quick brown fox jumps over the lazy dog'))
