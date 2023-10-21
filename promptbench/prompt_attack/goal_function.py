@@ -239,12 +239,10 @@ class AdvPromptGoalFunction(GoalFunction):
     """A goal function defined on a model that outputs a probability for some
     number of classes."""
 
-    def __init__(self, inference, query_budget, verbose=True, logger=None, *args, target_max_acc=0, **kwargs):
+    def __init__(self, inference, query_budget, *args, target_max_acc=0, **kwargs):
         self.inference = inference
         self.query_budget = query_budget
         self.target_max_acc = target_max_acc
-        self.logger = logger
-        self.verbose = verbose
         super().__init__(*args, **kwargs)
 
     def _process_model_outputs(self, inputs, outputs):
@@ -278,11 +276,7 @@ class AdvPromptGoalFunction(GoalFunction):
         acc_list = []
         for attacked_prompt in attacked_text_list:
             prompt = attacked_prompt.text
-            if self.verbose:
-                self.logger.info("Current adv prompt is: {}".format(prompt))
             acc = self.inference.predict(prompt)
-            if self.verbose:
-                self.logger.info("Current acc: {:.2f}".format(acc*100))
             acc_list.append(acc)
         return acc_list
 
@@ -290,71 +284,124 @@ class AdvPromptGoalFunction(GoalFunction):
         return super()._get_goal_status(model_output, attacked_text, check_skip)
 
 
-def create_goal_function(args, inference_model):
-    goal_function = AdvPromptGoalFunction(inference=inference_model, query_budget=args.query_budget, 
-                                          logger=args.logger, model_wrapper=None, verbose=args.verbose)
-    return goal_function
 
 
-class PromptGoalFunction(GoalFunction):
 
-    """A goal function defined on a model that outputs a probability for some
-    number of classes."""
 
-    def __init__(self, inference, query_budget, verbose=True, logger=None, *args, target_max_acc=0, **kwargs):
-        self.inference = inference
-        self.query_budget = query_budget
-        self.target_max_acc = target_max_acc
-        self.logger = logger
-        self.verbose = verbose
-        super().__init__(*args, **kwargs)
+# class AdvPromptGoalFunction(GoalFunction):
 
-    def _process_model_outputs(self, inputs, outputs):
-        return outputs
+#     """A goal function defined on a model that outputs a probability for some
+#     number of classes."""
 
-    def _is_goal_complete(self, acc, _):
+#     def __init__(self, inference, query_budget, verbose=True, logger=None, *args, target_max_acc=0, **kwargs):
+#         self.inference = inference
+#         self.query_budget = query_budget
+#         self.target_max_acc = target_max_acc
+#         self.logger = logger
+#         self.verbose = verbose
+#         super().__init__(*args, **kwargs)
+
+#     def _process_model_outputs(self, inputs, outputs):
+#         return outputs
+
+#     def _is_goal_complete(self, acc, _):
+#         return acc < self.target_max_acc
         
-        return acc < self.target_max_acc
-        
-    def _get_score(self, model_output, _):
-        # Evaluate how much does the adv prompt decrease the accuracy.
-        score = self.ground_truth_output - model_output
-        return score
+#     def _get_score(self, model_output, _):
+#         # Evaluate how much does the adv prompt decrease the accuracy.
+#         # return self.ground_truth_output - model_output
+#         score = self.ground_truth_output - model_output
 
-    def _goal_function_result_type(self):
-        """Returns the class of this goal function's results."""
-        return ClassificationGoalFunctionResult
+#         return score
 
-    def extra_repr_keys(self):
-        return []
+#     def _goal_function_result_type(self):
+#         """Returns the class of this goal function's results."""
+#         return ClassificationGoalFunctionResult
 
-    def _get_displayed_output(self, raw_output):
-        return raw_output
+#     def extra_repr_keys(self):
+#         return []
+
+#     def _get_displayed_output(self, raw_output):
+#         return raw_output
 
 
-    # def _should_skip(self, *_):
-    #     return False
+#     # def _should_skip(self, *_):
+#     #     return False
     
-    def _call_model(self, text_list):
-        acc_list = []
-        for prompt in text_list:
-            prompt = prompt.text
-            if self.verbose:
-                self.logger.info("Current prompt is: {}".format(prompt))
-            acc = self.inference.predict(prompt)
-            if self.verbose:
-                self.logger.info("Current acc: {:.2f}".format(acc*100))
-            acc_list.append(acc)
-        return acc_list
+#     def _call_model(self, attacked_text_list):
+#         acc_list = []
+#         for attacked_prompt in attacked_text_list:
+#             prompt = attacked_prompt.text
+#             if self.verbose:
+#                 self.logger.info("Current adv prompt is: {}".format(prompt))
+#             acc = self.inference.predict(prompt)
+#             if self.verbose:
+#                 self.logger.info("Current acc: {:.2f}".format(acc*100))
+#             acc_list.append(acc)
+#         return acc_list
 
-    def _get_goal_status(self, model_output, text, check_skip=False):
-        return super()._get_goal_status(model_output, text, check_skip)
+#     def _get_goal_status(self, model_output, attacked_text, check_skip=False):
+#         return super()._get_goal_status(model_output, attacked_text, check_skip)
 
 
-def create_goal_function(args, inference_model):
-    goal_function = PromptGoalFunction(inference=inference_model, 
-                                       query_budget=args.query_budget,
-                                       logger=args.logger, 
-                                       model_wrapper=None, 
-                                       verbose=args.verbose)
-    return goal_function
+# def create_goal_function(args, inference_model):
+#     goal_function = AdvPromptGoalFunction(inference=inference_model, query_budget=args.query_budget, 
+#                                           logger=args.logger, model_wrapper=None, verbose=args.verbose)
+#     return goal_function
+
+
+# class PromptGoalFunction(GoalFunction):
+
+#     """A goal function defined on a model that outputs a probability for some
+#     number of classes."""
+
+#     def __init__(self, inference, query_budget, verbose=True, logger=None, *args, target_max_acc=0, **kwargs):
+#         self.inference = inference
+#         self.query_budget = query_budget
+#         self.target_max_acc = target_max_acc
+#         self.logger = logger
+#         self.verbose = verbose
+#         super().__init__(*args, **kwargs)
+
+#     def _process_model_outputs(self, inputs, outputs):
+#         return outputs
+
+#     def _is_goal_complete(self, acc, _):
+        
+#         return acc < self.target_max_acc
+        
+#     def _get_score(self, model_output, _):
+#         # Evaluate how much does the adv prompt decrease the accuracy.
+#         score = self.ground_truth_output - model_output
+#         return score
+
+#     def _goal_function_result_type(self):
+#         """Returns the class of this goal function's results."""
+#         return ClassificationGoalFunctionResult
+
+#     def extra_repr_keys(self):
+#         return []
+
+#     def _get_displayed_output(self, raw_output):
+#         return raw_output
+
+
+#     # def _should_skip(self, *_):
+#     #     return False
+    
+#     def _call_model(self, text_list):
+#         acc_list = []
+#         for prompt in text_list:
+#             prompt = prompt.text
+#             if self.verbose:
+#                 self.logger.info("Current prompt is: {}".format(prompt))
+#             acc = self.inference.predict(prompt)
+#             if self.verbose:
+#                 self.logger.info("Current acc: {:.2f}".format(acc*100))
+#             acc_list.append(acc)
+#         return acc_list
+
+#     def _get_goal_status(self, model_output, text, check_skip=False):
+#         return super()._get_goal_status(model_output, text, check_skip)
+
+

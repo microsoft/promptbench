@@ -28,7 +28,8 @@ DATA_SET = [
 ]
 
 class Dataset(object):
-    def __init__(self):
+    def __init__(self, dataset_name):
+        self.dataset_name = dataset_name
         self.data = None
         self.data_list = DATA_SET
 
@@ -43,36 +44,6 @@ class Dataset(object):
     @staticmethod
     def data_list(self):
         return self.data_list
-
-    def get_few_shot_examples(self, task):
-        raise NotImplementedError(
-            "get_few_shot_examples() must be implemented in the subclass.")
-
-    def generate_few_shot(self, k=3, seed=42):
-        assert self.data is not None, "self.data is None. Please load data first."
-        assert k <= len(self.data), "k should be smaller than the size of dataset."
-
-        import numpy as np
-        np.random.seed(seed)
-        idx_fewshot = np.random.choice(np.arange(len(self.data)), k, replace=False)
-        few_shot_examples = []
-        for i in idx_fewshot:
-            few_shot_examples.append(self.get_content_by_idx(i))
-        return few_shot_examples
-
-    def generate_few_shot(self, k=3, task=None, seed=42):
-        assert self.data is not None, "self.data is None. Please load data first."
-        assert k <= len(self.data), "k should be smaller than the size of dataset."
-
-        import numpy as np
-        np.random.seed(seed)
-        idx_fewshot = np.random.choice(np.arange(len(self.data)), k, replace=False)
-        few_shot_examples = []
-        for i in idx_fewshot:
-            i = int(i)
-            few_shot_examples.append(self.get_content_by_idx(i, task))
-        return few_shot_examples
-
 
 
 class BoolLogic(Dataset):
