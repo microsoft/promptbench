@@ -1,5 +1,6 @@
 import numpy as np
 import re
+import os
 
 
 def split_markdown_by_title(markdown_file):
@@ -11,8 +12,6 @@ def split_markdown_by_title(markdown_file):
     datasets = ["# cola", "# mnli", "# mrpc", "# qnli", "# qqp", "# rte", "# sst2", "# wnli",
                 "# mmlu", "# squad_v2", "# iwslt", "# un_multi", "# math"]
     
-    # re_str = "# cola|# mnli|# mrpc|# qnli|# qqp|# rte|# sst2|# wnli"
-    # datasets = ["# cola", "# mnli", "# mrpc", "# qnli", "# qqp", "# rte", "# sst2", "# wnli"]
     primary_sections = re.split(re_str, content)[1:]
     assert len(primary_sections) == len(datasets)
 
@@ -34,32 +33,8 @@ def split_markdown_by_title(markdown_file):
         all_sections_dict[dataset] = secondary_sections_dict
 
     return all_sections_dict
-# def prompts_understanding(sections_dict):
-#     for dataset in sections_dict.keys():
-#         # print(dataset)
-#         for title in sections_dict[dataset].keys():
-#             if title == "10 prompts":
-#                 prompts = sections_dict[dataset][title].split("\n")
-#                 num = 0
-#                 task_prompts_acc = []
-#                 role_prompts_acc = []
-#                 for prompt in prompts:
-#                     if "Acc: " not in prompt:
-#                         continue
-#                     else:
-#                         import re
-#                         num += 1
-#                         match = re.search(r'Acc: (\d+\.\d+)%', prompt)
-#                         if match:
-#                             number = float(match.group(1))
-#                         if num <= 10:
-#                             task_prompts_acc.append(number)
-#                         else:
-#                             role_prompts_acc.append(number)
 
-#                 print(task_prompts_acc)
-#                 print(role_prompts_acc)
-import os
+
 def list_files(directory):
     files = [os.path.join(directory, d) for d in os.listdir(directory) if not os.path.isdir(os.path.join(directory, d))]
     return files

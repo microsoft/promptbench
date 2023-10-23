@@ -1,23 +1,13 @@
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT License.
 
-from promptbench.config import *
+import os
+import subprocess
 import json
+
+from promptbench.config import *
 from datasets import load_dataset
 
-
-"""
-====================================================================================================
-3 functions need to be implemented.
-
-__init__(): load data from file or other sources.
-
-get_content_by_idx(): return a dict with relevant informations.
-
-get_few_shot_examples(): return a string with few-shot examples.
-
-====================================================================================================
-"""
 
 DATA_SET = [
     "sst2", "cola", "qqp",
@@ -30,16 +20,16 @@ DATA_SET = [
 class Dataset(object):
     def __init__(self, dataset_name):
         self.dataset_name = dataset_name
-        self.data = None
+        self.data = []
         self.data_list = DATA_SET
 
     def __len__(self):
-        assert self.data is not None, "self.data is None. Please load data first."
+        assert len(self.data) > 0, "Empty dataset. Please load data first."
         return len(self.data)
 
-    def get_content_by_idx(self, idx, *args):
-        raise NotImplementedError(
-            "get_content_by_idx() must be implemented in the subclass.")
+    def __getitem__(self, idx):
+        assert len(self.data) > 0, "Empty dataset. Please load data first."
+        return self.data[idx]
 
     @staticmethod
     def data_list(self):
@@ -48,69 +38,64 @@ class Dataset(object):
 
 class BoolLogic(Dataset):
     def __init__(self):
-        import json
-        with open("promptbench/data/bool_logic.json", 'r') as f:
+        filepath = "promptbench/data/bool_logic.json"
+        if not os.path.exists(filepath):
+            url = 'https://wjdcloud.blob.core.windows.net/dataset/promptbench/dataset/bool_logic.json'
+            print("Downloading bool_logic dataset...")
+            command = ["wget", url]
+            subprocess.run(command)
+
+        with open(filepath, 'r') as f:
             data = json.load(f)
-        self.data = [{"question": d["question"],
-                      "answer": "true" if d["answer"] else "false"} for d in data]
-
-    def get_content_by_idx(self, idx, *args):
-        return self.data[idx]
-
-    def get_few_shot_examples(self):
-        from prompts.three_shot.few_shot_examples import examples
-        few_shot_examples = examples["bool_logic"]
-        return few_shot_examples
+        
+        self.data = [{"question": d["question"], "answer": "true" if d["answer"] else "false"} for d in data]
 
 
 class ValidParentheses(Dataset):
     def __init__(self):
-        self.data = []
-        import json
-        with open("promptbench/data/valid_parentheses.json", 'r') as f:
+        filepath = "promptbench/data/valid_parentheses.json"
+        if not os.path.exists(filepath):
+            url = 'https://wjdcloud.blob.core.windows.net/dataset/promptbench/dataset/valid_parentheses.json'
+            print("Downloading valid_parentheses dataset...")
+            command = ["wget", url]
+            subprocess.run(command)
+
+        with open(filepath, 'r') as f:
             data = json.load(f)["examples"][:100]
         for d in data:
             self.data.append(
                 {"question": d["input"], "answer": "valid" if d["target_scores"]["Valid"] == 1 else "invalid"})
 
-    def get_content_by_idx(self, idx, *args):
-        return self.data[idx]
-
-    def get_few_shot_examples(self):
-        from prompts.three_shot.few_shot_examples import examples
-        few_shot_examples = examples["valid_parentheses"]
-        return few_shot_examples
-
 
 class Math(Dataset):
     def __init__(self) -> None:
-        from promptbench.data.math import math_dataset
-        self.data = []
-        for task in math_dataset.keys():
-            for d in math_dataset[task]:
+        filepath = "promptbench/data/math.json"
+        if not os.path.exists(filepath):
+            url = 'https://wjdcloud.blob.core.windows.net/dataset/promptbench/dataset/math.json'
+            print("Downloading math dataset...")
+            command = ["wget", url]
+            subprocess.run(command)
+        with open(filepath, 'r') as f:
+            data = json.load(f)
+
+        for task in data.keys():
+            for d in data[task]:
                 d["task"] = task
                 self.data.append(d)
-
-    def get_content_by_idx(self, idx, *args):
-        return self.data[idx]
-
-    def get_few_shot_examples(self, task):
-        from prompts.three_shot.few_shot_examples import examples
-
-        few_shot_data = examples["math"][task]
-        few_shot_examples = "Here are three examples. \n"
-        for d in few_shot_data:
-            few_shot_examples += "Question: " + d["question"] + "\n"
-            few_shot_examples += "Answer: " + str(d["answer"]) + "\n"
-
-        return few_shot_examples
 
 
 class UnMulti(Dataset):
 
-    def __init__(self, data_path, supported_languages):
+    def __init__(self, supported_languages):
         import json
-        with open(data_path, 'r') as f:
+        filepath = "promptbench/data/un_multi.json"
+        if not os.path.exists(filepath):
+            url = 'https://wjdcloud.blob.core.windows.net/dataset/promptbench/dataset/un_multi.json'
+            print("Downloading un_multi dataset...")
+            command = ["wget", url]
+            subprocess.run(command)
+
+        with open(filepath, 'r') as f:
             data = json.load(f)
         self.data = dict()
 
@@ -134,45 +119,65 @@ class UnMulti(Dataset):
                 }
                 idx += 1
 
-    def get_content_by_idx(self, idx, task=None):
-        return self.data[idx]
 
-    def get_few_shot_examples(self, task):
-        from prompts.three_shot.few_shot_examples import examples
+class IWSLT(Dataset):
+    def __init__(self, supported_languages):
+        import json
+        filepath = "promptbench/data/iwslt.json"
+        if not os.path.exists(filepath):
+            url = 'https://wjdcloud.blob.core.windows.net/dataset/promptbench/dataset/iwslt.json'
+            print("Downloading IWSLT dataset...")
+            command = ["wget", url]
+            subprocess.run(command)
 
-        few_shot_examples = examples["un_multi"][task]
-        return few_shot_examples
+        with open(filepath, 'r') as f:
+            data = json.load(f)
+        self.data = dict()
 
+        idx = 0
+        supported_tasks = []
+        for task_i in data.keys():
+            source, target = task_i.split('-')
+            if source in supported_languages and target in supported_languages:
+                supported_tasks.append(task_i)
 
-class IWSLT(UnMulti):
-    def get_few_shot_examples(self, task):
-        from prompts.three_shot.few_shot_examples import examples
+        num_tasks = len(supported_tasks)
+        num_samples = 100
 
-        few_shot_examples = examples["iwslt"][task]
-        return few_shot_examples
+        for task_i in supported_tasks:
+            source, target = task_i.split('-')
+            for d in data[task_i][:int(num_samples//num_tasks)]:
+                self.data[idx] = {
+                    'source': d[source],
+                    'target': d[target],
+                    'task': task_i
+                }
+                idx += 1
 
 
 class SQUAD_V2(Dataset):
     def __init__(self, dataset_type="validation"):
-        # self.data = []
-        # data = load_dataset("squad_v2")[dataset_type]
-        # random.seed(42)
-        # random_indices = random.sample(range(len(data)), 1000)
-        # self.data = data.select(random_indices)
-        with open("promptbench/data/SQUAD_V2.json", "r") as file:
-            self.data = json.load(file)
+        filepath = "promptbench/data/SQUAD_V2.json"
+        if not os.path.exists(filepath):
+            url = 'https://wjdcloud.blob.core.windows.net/dataset/promptbench/dataset/SQUAD_V2.json'
+            print("Downloading SQUAD_V2 dataset...")
+            command = ["wget", url]
+            subprocess.run(command)
+
+        with open(filepath, "r") as file:
+            data = json.load(file)
+        
+        for d in data:
+            self.data.append({"id": d["id"], "content": "Context: " + d["context"] + "\n" + "Question: " + d["question"] + "\n", "answers": d["answers"]})
 
         import random
         random.seed(42)
         random.shuffle(self.data)
         self.data = self.data[:200]
 
-    def get_content_by_idx(self, idx, *args):
-        content = "Context: " + self.data[idx]["context"] + "\n" \
-                  "Question: " + self.data[idx]["question"] + "\n"
-
-        return {"id": self.data[idx]["id"], "content": content}
-
+    """
+    TODO: remove get_reference into eval function.
+    """
     def get_reference(self):
         references = []
         # for i in range(1):
@@ -181,15 +186,9 @@ class SQUAD_V2(Dataset):
             references.append({"answers": data["answers"], "id": data["id"]})
         return references
 
-    def get_few_shot_examples(self, task):
-        from prompts.three_shot.few_shot_examples import examples
-
-        few_shot_examples = examples[task]
-        return few_shot_examples
-
 
 class MMLU(Dataset):
-    def __init__(self, dataset_type="validation"):
+    def __init__(self):
         self.tasks = ['high_school_european_history', 'business_ethics', 'clinical_knowledge', 'medical_genetics',
                       'high_school_us_history', 'high_school_physics', 'high_school_world_history', 'virology',
                       'high_school_microeconomics', 'econometrics', 'college_computer_science', 'high_school_biology',
@@ -203,7 +202,14 @@ class MMLU(Dataset):
                       'us_foreign_policy', 'high_school_macroeconomics', 'computer_security', 'moral_scenarios', 'moral_disputes',
                       'electrical_engineering', 'astronomy', 'college_biology']
 
-        with open("promptbench/data/MMLU.json", "r") as file:
+        filepath = "promptbench/data/MMLU.json"
+        if not os.path.exists(filepath):
+            url = 'https://wjdcloud.blob.core.windows.net/dataset/promptbench/dataset/MMLU.json'
+            print("Downloading MMLU dataset...")
+            command = ["wget", url]
+            subprocess.run(command)
+        
+        with open(filepath, "r") as file:
             self.raw_data = json.load(file)
 
         cnt = {}
@@ -217,26 +223,6 @@ class MMLU(Dataset):
             if cnt[task] < 10:
                 self.data.append(d)
                 cnt[task] += 1
-
-        with open("promptbench/data/MMLU_few_shot.json", "r") as file:
-            self.few_shot_data = json.load(file)
-
-    def get_content_by_idx(self, idx, *args):
-        return self.data[idx]
-
-    def get_few_shot_examples(self, task):
-        content = "Here are three examples.\n"
-        data = self.few_shot_data[task]
-        for idx in range(min(len(data), 3)):
-            content += ("Input: " + data[idx]["input"] + "\n"
-                        + "A : " + data[idx]["A"] + "\n"
-                        + "B : " + data[idx]["B"] + "\n"
-                        + "C : " + data[idx]["C"] + "\n"
-                        + "D : " + data[idx]["D"] + "\n\n"
-                        + "Answer : " + data[idx]["target"] + "\n"
-                        )
-
-        return content
 
 
 class GLUE(Dataset):
@@ -253,44 +239,36 @@ class GLUE(Dataset):
             from datasets import concatenate_datasets
             matched = load_dataset('glue', 'mnli')["validation_matched"]
             mismatched = load_dataset("glue", "mnli")["validation_mismatched"]
-            self.data = concatenate_datasets([matched, mismatched])
+            data = concatenate_datasets([matched, mismatched])
         else:
-            self.data = load_dataset("glue", task)[dataset_type]
+            data = load_dataset("glue", task)[dataset_type]
+        
+        for d in data:
+            if task == "sst2" or task == "cola":
+                content = d['sentence']
+            elif task == 'qqp':
+                content = 'Question 1: ' + \
+                    d['question1'] + ' Question 2: ' + \
+                    d['question2']
+            elif task == 'mnli' or task == 'mnli_matched' or task == 'mnli_mismatched':
+                content = 'Premise: ' + \
+                    d['premise'] + ' Hypothesis: ' + \
+                    d['hypothesis']
+            elif task == 'qnli':
+                content = 'Question: ' + \
+                    d['question'] + ' Context: ' + \
+                    d['sentence']
+            elif task == 'rte' or task == 'mrpc' or task == "wnli":
+                content = 'Sentence 1: ' + \
+                    d['sentence1'] + ' Sentence 2: ' + \
+                    d['sentence2']
+            else:
+                raise NotImplementedError
 
-    def get_few_shot_examples(self, task):
-        from prompts.three_shot.few_shot_examples import examples
-
-        few_shot_examples = examples[task]
-        return few_shot_examples
-
-    def get_content_by_idx(self, idx, task, *args):
-        if task == "sst2" or task == "cola":
-            content = self.data[idx]['sentence']
-        elif task == 'qqp':
-            content = 'Question 1: ' + \
-                self.data[idx]['question1'] + ' Question 2: ' + \
-                self.data[idx]['question2']
-        elif task == 'mnli' or task == 'mnli_matched' or task == 'mnli_mismatched':
-            content = 'Premise: ' + \
-                self.data[idx]['premise'] + ' Hypothesis: ' + \
-                self.data[idx]['hypothesis']
-        elif task == 'qnli':
-            content = 'Question: ' + \
-                self.data[idx]['question'] + ' Context: ' + \
-                self.data[idx]['sentence']
-        elif task == 'rte' or task == 'mrpc' or task == "wnli":
-            content = 'Sentence 1: ' + \
-                self.data[idx]['sentence1'] + ' Sentence 2: ' + \
-                self.data[idx]['sentence2']
-        else:
-            raise NotImplementedError
-
-        label = self.data[idx]['label']
-
-        return {"content": content, "label": label}
+            self.data.append({"content": content, "label": d['label']})            
 
 
-def create_dataset(dataset_name, *args):
+def load_dataset(dataset_name, *args):
     if dataset_name in ["cola", "sst2", "qqp", "mnli", "mnli_matched", "mnli_mismatched", "qnli", "wnli", "rte", "mrpc"]:
         return GLUE(dataset_name)
     elif dataset_name == 'mmlu':
@@ -298,9 +276,9 @@ def create_dataset(dataset_name, *args):
     elif dataset_name == "squad_v2":
         return SQUAD_V2()
     elif dataset_name == 'un_multi':
-        return UnMulti("promptbench/data/un_multi.json", args[0])
+        return UnMulti(args[0])
     elif dataset_name == 'iwslt':
-        return IWSLT("promptbench/data/iwslt.json", args[0])
+        return IWSLT(args[0])
     elif dataset_name == 'math':
         return Math()
     elif dataset_name == 'bool_logic':
@@ -310,11 +288,3 @@ def create_dataset(dataset_name, *args):
     else:
         raise NotImplementedError
 
-
-if __name__ == "__main__":
-    dataset = GLUE("sst2")
-    # dataset = BoolLogic()
-    d = dataset.generate_few_shot(3, 'sst2')
-    print(d)
-    # print(type(d['answer']))
-    # print(d)

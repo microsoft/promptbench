@@ -1,6 +1,6 @@
 This folder contains the datasets used for PromptBench. You need to download the datasets you want and put them in this folder.
 
-- Bool_logic: `wget https://wjdcloud.blob.core.windows.net/dataset/promptbench/dataset/MMLU.json`
+- Bool_logic: `wget https://wjdcloud.blob.core.windows.net/dataset/promptbench/dataset/bool_logic.json`
 - IWSLT: `wget https://wjdcloud.blob.core.windows.net/dataset/promptbench/dataset/iswst.json`
 - Math: `wget https://wjdcloud.blob.core.windows.net/dataset/promptbench/dataset/math.py`
 - MMLU: `wget https://wjdcloud.blob.core.windows.net/dataset/promptbench/dataset/MMLU.json`
@@ -10,5 +10,3 @@ This folder contains the datasets used for PromptBench. You need to download the
 - Valid_parentheses: `wget https://wjdcloud.blob.core.windows.net/dataset/promptbench/dataset/valid_parentheses.json`
 
 Copyright notice: we store all these datasets only for research purpose.
-
-TODO: automatically download the datasets in the code.

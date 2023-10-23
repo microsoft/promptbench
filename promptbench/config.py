@@ -1,34 +1,6 @@
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT License.
 
-MNLI_LABEL = ['entailment', 'neutral', 'contradiction',
-              'entailment\'', 'neutral\'', 'contradiction\'']
-EQ_LABEL = ['equivalent', 'not_equivalent', 'equivalent\'', 'not_equivalent\'']
-ENTAIL_LABEL = ['entailment', 'not_entailment', 'entailment\'',
-                'not_entailment\'', '0', '1', '0\'', '1\'', 0, 1]
-
-LABEL_SET = {
-    # 'positive\'', 'negative\'' is used for label constraint due to a bug of TextAttack repo.
-    'sst2': ['positive', 'negative', 'positive\'', 'negative\'', '0', '1', '0\'', '1\'', 0, 1],
-    'mnli': MNLI_LABEL,
-    'mnli_mismatched': MNLI_LABEL,
-    'mnli_matched': MNLI_LABEL,
-    'qqp': EQ_LABEL,
-    'qnli': ENTAIL_LABEL,
-    'rte': ENTAIL_LABEL,
-    'cola': ['unacceptable', 'acceptable', 'unacceptable\'', 'acceptable\''],
-    'mrpc': EQ_LABEL,
-    'wnli': ENTAIL_LABEL,
-    'mmlu': ['A', 'B', 'C', 'D', 'A\'', 'B\'', 'C\'', 'D\'', 'a', 'b', 'c', 'd', 'a\'', 'b\'', 'c\'', 'd\''],
-    # do not change the word 'nothing' in prompts.
-    'squad_v2': ['unanswerable', 'unanswerable\''],
-    'iwslt': ['translate', 'translate\''],
-    'un_multi': ['translate', 'translate\''],
-    'math': ['math', 'math\''],
-    'bool_logic': ['True', 'False', 'True\'', 'False\'', "bool", "boolean", "bool\'", "boolean\'"],
-    'valid_parentheses': ['Valid', 'Invalid', 'Valid\'', 'Invalid\'', 'matched', 'matched\'', 'valid', 'invalid', 'valid\'', 'invalid\''],
-}
-
 GENERATE_LEN = {
     'sst2': {'google/flan-t5-large': 20, 'vicuna-13b': 5, 'google/flan-ul2': 20, "chatgpt": 2, 'llama2-13b': 2, 'llama2-13b-chat': 2, 'llama2-7b-chat': 2, 'llama2-7b-chat': 2},
     'mnli': {'google/flan-t5-large': 20, 'vicuna-13b': 5, 'google/flan-ul2': 20, "chatgpt": 3, 'llama2-13b': 3, 'llama2-13b-chat': 3, 'llama2-7b-chat': 3, 'llama2-7b-chat': 3},
@@ -46,45 +18,6 @@ GENERATE_LEN = {
     'bool_logic': {'google/flan-t5-large': 4, },
 }
 
-MODEL_SET = [
-    'google/flan-t5-large',
-    'EleutherAI/gpt-neox-20b',
-    'tiiuae/falcon-40b-instruct',
-    # 'facebook/opt-66b',
-    'llama-13b',
-    'llama2-13b',
-    'llama2-13b-chat',
-    'llama2-7b',
-    'llama2-7b-chat',
-    'vicuna-13b',
-    'vicuna-13b-v1.3',
-    'google/flan-ul2',
-    'cerebras/Cerebras-GPT-13B',
-    'databricks/dolly-v1-6b',
-    'chatgpt',
-    'gpt4'
-]
-
-DATA_SET = [
-    "sst2", "cola", "qqp",
-    "mnli", "mnli_matched", "mnli_mismatched",
-    "qnli", "wnli", "rte", "mrpc",
-    "mmlu", "squad_v2", "un_multi", "iwslt", "math",
-    "bool_logic", "valid_parentheses"
-]
-
-ATTACK_SET = [
-    'textfooler',
-    'textbugger',
-    'bertattack',
-    'deepwordbug',
-    'checklist',
-    'stresstest',
-    'semantic',
-    'no',
-    'noattack',
-    'clean',
-]
 
 LABEL_TO_ID = {
     'mmlu': {'A': 'A', 'B': 'B', 'C': 'C', 'D': 'D'},

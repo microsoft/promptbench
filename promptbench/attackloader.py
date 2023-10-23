@@ -1,14 +1,34 @@
-import argparse
-import os
-import logging
-import pretty_errors
-
 from promptbench.config import *
-from promptbench.dataload import create_dataset
-from promptbench.inference import Inference
 from promptbench.prompt_attack.attack import *
 from promptbench.prompt_attack.goal_function import AdvPromptGoalFunction
-from promptbench.config import MODEL_SET, DATA_SET, ATTACK_SET
+
+MNLI_LABEL = ['entailment', 'neutral', 'contradiction',
+              'entailment\'', 'neutral\'', 'contradiction\'']
+EQ_LABEL = ['equivalent', 'not_equivalent', 'equivalent\'', 'not_equivalent\'']
+ENTAIL_LABEL = ['entailment', 'not_entailment', 'entailment\'',
+                'not_entailment\'', '0', '1', '0\'', '1\'']
+
+LABEL_SET = {
+    # 'positive\'', 'negative\'' is used for label constraint due to a bug of TextAttack repo.
+    'sst2': ['positive', 'negative', 'positive\'', 'negative\'', '0', '1', '0\'', '1\''],
+    'mnli': MNLI_LABEL,
+    'mnli_mismatched': MNLI_LABEL,
+    'mnli_matched': MNLI_LABEL,
+    'qqp': EQ_LABEL,
+    'qnli': ENTAIL_LABEL,
+    'rte': ENTAIL_LABEL,
+    'cola': ['unacceptable', 'acceptable', 'unacceptable\'', 'acceptable\''],
+    'mrpc': EQ_LABEL,
+    'wnli': ENTAIL_LABEL,
+    'mmlu': ['A', 'B', 'C', 'D', 'A\'', 'B\'', 'C\'', 'D\'', 'a', 'b', 'c', 'd', 'a\'', 'b\'', 'c\'', 'd\''],
+    # do not change the word 'nothing' in prompts.
+    'squad_v2': ['unanswerable', 'unanswerable\''],
+    'iwslt': ['translate', 'translate\''],
+    'un_multi': ['translate', 'translate\''],
+    'math': ['math', 'math\''],
+    'bool_logic': ['True', 'False', 'True\'', 'False\'', "bool", "boolean", "bool\'", "boolean\'"],
+    'valid_parentheses': ['Valid', 'Invalid', 'Valid\'', 'Invalid\'', 'matched', 'matched\'', 'valid', 'invalid', 'valid\'', 'invalid\''],
+}
 
 attack_config = {
     "goal_function": {
@@ -57,7 +77,7 @@ class Attack(object):
         self.attack = self._create_attack(attack_name, unmodifiable_words)
 
     @staticmethod
-    def attack_name_list():
+    def attack_list():
         return ["textbugger", "deepwordbug", "textfooler", "bertattack", "checklist", "stresstest", "semantic"]
 
     def _create_goal_function(self):
@@ -67,7 +87,6 @@ class Attack(object):
         if attack == "semantic":
             return None
         
-        from promptbench.config import LABEL_SET
         from promptbench.prompt_attack.label_constraint import LabelConstraint
         label_constraint = LabelConstraint(unmodifiable_words)
         
