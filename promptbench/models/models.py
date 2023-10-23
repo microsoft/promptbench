@@ -53,7 +53,7 @@ class LMMBaseModel(ABC):
     
     def predict_dataset(self, prompt):
         assert self.raw_dataset is not None
-        from utils import process_input, process_pred, eval
+        from promptbench.eval import process_input, process_pred, eval
         input_texts, labels = process_input(prompt, self.raw_dataset)
         
         import tqdm
