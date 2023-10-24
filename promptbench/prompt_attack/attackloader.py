@@ -68,20 +68,20 @@ attack_config = {
 
 
 class Attack(object):
-    def __init__(self, model, attack_name, unmodifiable_words, dataset, prompt):
+    def __init__(self, model, attack_name, dataset, prompt):
         self.model = model
         self.attack_name = attack_name
         self.dataset = dataset
         self.prompt = prompt
-        self.goal_function = self._create_goal_function()
-        self.attack = self._create_attack(attack_name, unmodifiable_words)
+        self.goal_function = AdvPromptGoalFunction(self.model, self.dataset, query_budget=attack_config["goal_function"]["query_budget"], model_wrapper=None)
+        self.unmodifiable_words = LABEL_SET[dataset]
+        
+        print(f"These words (if they appear in the prompt) are not allowed to be attacked:\n{self.unmodifiable_words}")
+        self.attack = self._create_attack(attack_name, self.unmodifiable_words)
 
     @staticmethod
     def attack_list():
         return ["textbugger", "deepwordbug", "textfooler", "bertattack", "checklist", "stresstest", "semantic"]
-
-    def _create_goal_function(self):
-        return AdvPromptGoalFunction(inference=self.model, query_budget=attack_config["goal_function"]["query_budget"], model_wrapper=None)
 
     def _create_attack(self, attack, unmodifiable_words):
         if attack == "semantic":
@@ -198,6 +198,18 @@ class Attack(object):
    
     def attack(self):
         if self.attack_name == "semantic":
-            pass
+            from ..prompts.semantic_atk_prompts import SEMANTIC_ADV_PROMPT_SET
+            prompts_dict = SEMANTIC_ADV_PROMPT_SET[self.dataset.dataset_name]
+            results = {}
+            for language in prompts_dict.keys():
+                prompts = prompts_dict[language]
+                for prompt in prompts:
+                    from ..utils import inference_total_dataset
+                    acc = inference_total_dataset(prompt, self.model, self.dataset)
+                    results[prompt] = acc
+            
+            return results
+                  
         else:
             return self.attack.attack(self.prompt)
+

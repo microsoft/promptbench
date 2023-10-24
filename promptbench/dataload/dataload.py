@@ -2,7 +2,7 @@
 # Licensed under the MIT License.
 
 import os
-import subprocess
+import requests
 import json
 
 from promptbench.config import *
@@ -23,6 +23,27 @@ class Dataset(object):
         self.data = []
         self.data_list = DATA_SET
 
+        # Get the parent directory
+        cur_dir = os.path.dirname(os.path.abspath(__file__))
+        parent_dir = os.path.dirname(cur_dir)
+
+        # Construct the path to the data directory in A
+        self.data_dir = os.path.join(parent_dir, 'data')
+
+        # check if the data path exists
+        if not os.path.exists(self.data_dir):
+            os.mkdir(self.data_dir)
+        
+        # check if the dataset exists, if not, download it
+        self.filepath = os.path.join(self.data_dir, f"{dataset_name}.json")
+        if not os.path.exists(self.filepath):
+            url = f'https://wjdcloud.blob.core.windows.net/dataset/promptbench/dataset/{dataset_name}.json'
+            print(f"Downloading {dataset_name} dataset...")
+            response = requests.get(url)
+            with open(self.filepath, 'wb') as f:
+                f.write(response.content)
+
+
     def __len__(self):
         assert len(self.data) > 0, "Empty dataset. Please load data first."
         return len(self.data)
@@ -38,14 +59,8 @@ class Dataset(object):
 
 class BoolLogic(Dataset):
     def __init__(self):
-        filepath = "promptbench/data/bool_logic.json"
-        if not os.path.exists(filepath):
-            url = 'https://wjdcloud.blob.core.windows.net/dataset/promptbench/dataset/bool_logic.json'
-            print("Downloading bool_logic dataset...")
-            command = ["wget", url]
-            subprocess.run(command)
-
-        with open(filepath, 'r') as f:
+        super().__init__("bool_logic")
+        with open(self.filepath, 'r') as f:
             data = json.load(f)
         
         self.data = [{"question": d["question"], "answer": "true" if d["answer"] else "false"} for d in data]
@@ -53,14 +68,9 @@ class BoolLogic(Dataset):
 
 class ValidParentheses(Dataset):
     def __init__(self):
-        filepath = "promptbench/data/valid_parentheses.json"
-        if not os.path.exists(filepath):
-            url = 'https://wjdcloud.blob.core.windows.net/dataset/promptbench/dataset/valid_parentheses.json'
-            print("Downloading valid_parentheses dataset...")
-            command = ["wget", url]
-            subprocess.run(command)
+        super().__init__("valid_parentheses")
 
-        with open(filepath, 'r') as f:
+        with open(self.filepath, 'r') as f:
             data = json.load(f)["examples"][:100]
         for d in data:
             self.data.append(
@@ -69,13 +79,9 @@ class ValidParentheses(Dataset):
 
 class Math(Dataset):
     def __init__(self) -> None:
-        filepath = "promptbench/data/math.json"
-        if not os.path.exists(filepath):
-            url = 'https://wjdcloud.blob.core.windows.net/dataset/promptbench/dataset/math.json'
-            print("Downloading math dataset...")
-            command = ["wget", url]
-            subprocess.run(command)
-        with open(filepath, 'r') as f:
+        super().__init__("math")
+        
+        with open(self.filepath, 'r') as f:
             data = json.load(f)
 
         for task in data.keys():
@@ -87,15 +93,9 @@ class Math(Dataset):
 class UnMulti(Dataset):
 
     def __init__(self, supported_languages):
-        import json
-        filepath = "promptbench/data/un_multi.json"
-        if not os.path.exists(filepath):
-            url = 'https://wjdcloud.blob.core.windows.net/dataset/promptbench/dataset/un_multi.json'
-            print("Downloading un_multi dataset...")
-            command = ["wget", url]
-            subprocess.run(command)
+        super().__init__("un_multi")
 
-        with open(filepath, 'r') as f:
+        with open(self.filepath, 'r') as f:
             data = json.load(f)
         self.data = dict()
 
@@ -122,15 +122,9 @@ class UnMulti(Dataset):
 
 class IWSLT(Dataset):
     def __init__(self, supported_languages):
-        import json
-        filepath = "promptbench/data/iwslt.json"
-        if not os.path.exists(filepath):
-            url = 'https://wjdcloud.blob.core.windows.net/dataset/promptbench/dataset/iwslt.json'
-            print("Downloading IWSLT dataset...")
-            command = ["wget", url]
-            subprocess.run(command)
+        super().__init__("iwslt")
 
-        with open(filepath, 'r') as f:
+        with open(self.filepath, 'r') as f:
             data = json.load(f)
         self.data = dict()
 
@@ -156,15 +150,9 @@ class IWSLT(Dataset):
 
 
 class SQUAD_V2(Dataset):
-    def __init__(self, dataset_type="validation"):
-        filepath = "promptbench/data/SQUAD_V2.json"
-        if not os.path.exists(filepath):
-            url = 'https://wjdcloud.blob.core.windows.net/dataset/promptbench/dataset/SQUAD_V2.json'
-            print("Downloading SQUAD_V2 dataset...")
-            command = ["wget", url]
-            subprocess.run(command)
-
-        with open(filepath, "r") as file:
+    def __init__(self):
+        super.__init__("squad_v2")
+        with open(self.filepath, "r") as file:
             data = json.load(file)
         
         for d in data:
@@ -174,17 +162,6 @@ class SQUAD_V2(Dataset):
         random.seed(42)
         random.shuffle(self.data)
         self.data = self.data[:200]
-
-    """
-    TODO: remove get_reference into eval function.
-    """
-    def get_reference(self):
-        references = []
-        # for i in range(1):
-        #     data = self.data[i]
-        for data in self.data:
-            references.append({"answers": data["answers"], "id": data["id"]})
-        return references
 
 
 class MMLU(Dataset):
@@ -268,23 +245,4 @@ class GLUE(Dataset):
             self.data.append({"content": content, "label": d['label']})            
 
 
-def load_dataset(dataset_name, *args):
-    if dataset_name in ["cola", "sst2", "qqp", "mnli", "mnli_matched", "mnli_mismatched", "qnli", "wnli", "rte", "mrpc"]:
-        return GLUE(dataset_name)
-    elif dataset_name == 'mmlu':
-        return MMLU()
-    elif dataset_name == "squad_v2":
-        return SQUAD_V2()
-    elif dataset_name == 'un_multi':
-        return UnMulti(args[0])
-    elif dataset_name == 'iwslt':
-        return IWSLT(args[0])
-    elif dataset_name == 'math':
-        return Math()
-    elif dataset_name == 'bool_logic':
-        return BoolLogic()
-    elif dataset_name == 'valid_parentheses':
-        return ValidParentheses()
-    else:
-        raise NotImplementedError
 

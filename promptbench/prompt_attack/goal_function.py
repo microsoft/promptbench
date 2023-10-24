@@ -239,9 +239,10 @@ class AdvPromptGoalFunction(GoalFunction):
     """A goal function defined on a model that outputs a probability for some
     number of classes."""
 
-    def __init__(self, inference, query_budget, *args, target_max_acc=0, **kwargs):
-        self.inference = inference
+    def __init__(self, model, dataset, query_budget, *args, target_max_acc=0, **kwargs):
+        self.model = model
         self.query_budget = query_budget
+        self.dataset = dataset
         self.target_max_acc = target_max_acc
         super().__init__(*args, **kwargs)
 
@@ -276,7 +277,19 @@ class AdvPromptGoalFunction(GoalFunction):
         acc_list = []
         for attacked_prompt in attacked_text_list:
             prompt = attacked_prompt.text
-            acc = self.inference.predict(prompt)
+            from ..process import process_input, process_pred
+            from ..metrics import eval
+
+            input_texts, labels = process_input(prompt, self.raw_dataset)
+            
+            import tqdm
+            raw_preds = []
+            for input_text in tqdm.tqdm(input_texts):
+                raw_preds.append(self.model[input_text])
+            
+            preds = process_pred(self.raw_dataset.dataset_name, raw_preds)
+            acc = eval(self.raw_dataset, preds, labels)
+
             acc_list.append(acc)
         return acc_list
 

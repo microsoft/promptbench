@@ -48,23 +48,6 @@ class LMMBaseModel(ABC):
     def __call__(self, input_text, **kwargs):
         return self.predict(input_text, **kwargs)
 
-    def set_raw_dataset(self, raw_dataset):
-        self.raw_dataset = raw_dataset
-    
-    def predict_dataset(self, prompt):
-        assert self.raw_dataset is not None
-        from promptbench.eval import process_input, process_pred, eval
-        input_texts, labels = process_input(prompt, self.raw_dataset)
-        
-        import tqdm
-        raw_preds = []
-        for input_text in tqdm.tqdm(input_texts):
-            raw_preds.append(self.predict(input_text))
-        
-        preds = process_pred(self.raw_dataset.dataset_name, raw_preds)
-        score = eval(self.raw_dataset, preds, labels)
-        return score
-
 
 class LLMModel(object):
 
