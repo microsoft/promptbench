@@ -19,7 +19,6 @@ DATA_SET = [
 
 class Dataset(object):
     def __init__(self, dataset_name):
-        self.dataset_name = dataset_name
         self.data = []
         self.data_list = DATA_SET
 
@@ -151,9 +150,10 @@ class UnMulti(Dataset):
             source, target = task_i.split('-')
             for d in data[task_i][:int(num_samples//num_tasks)]:
                 self.data[idx] = {
-                    'source': LANGUAGES[d[source]],
-                    'target': LANGUAGES[d[target]],
-                    'task': task_i
+                    'source': d[source],
+                    'target': d[target],
+                    'soruce_lang': LANGUAGES[source],
+                    'target_lang': LANGUAGES[target],
                 }
                 idx += 1
 
@@ -195,16 +195,17 @@ class IWSLT(Dataset):
             source, target = task_i.split('-')
             for d in data[task_i][:int(num_samples//num_tasks)]:
                 self.data[idx] = {
-                    'source': LANGUAGES[d[source]],
-                    'target': LANGUAGES[d[target]],
-                    'task': task_i
+                    'source': d[source],
+                    'target': d[target],
+                    'soruce_lang': LANGUAGES[source],
+                    'target_lang': LANGUAGES[target],
                 }
                 idx += 1
 
 
 class SQUAD_V2(Dataset):
     def __init__(self):
-        super.__init__("squad_v2")
+        super().__init__("squad_v2")
         with open(self.filepath, "r") as file:
             data = json.load(file)
         
@@ -219,6 +220,7 @@ class SQUAD_V2(Dataset):
 
 class MMLU(Dataset):
     def __init__(self):
+        super().__init__("mmlu")
         self.tasks = ['high_school_european_history', 'business_ethics', 'clinical_knowledge', 'medical_genetics',
                       'high_school_us_history', 'high_school_physics', 'high_school_world_history', 'virology',
                       'high_school_microeconomics', 'econometrics', 'college_computer_science', 'high_school_biology',
@@ -231,15 +233,8 @@ class MMLU(Dataset):
                       'marketing', 'professional_law', 'management', 'college_physics', 'jurisprudence', 'world_religions', 'sociology',
                       'us_foreign_policy', 'high_school_macroeconomics', 'computer_security', 'moral_scenarios', 'moral_disputes',
                       'electrical_engineering', 'astronomy', 'college_biology']
-
-        filepath = "promptbench/data/MMLU.json"
-        if not os.path.exists(filepath):
-            url = 'https://wjdcloud.blob.core.windows.net/dataset/promptbench/dataset/MMLU.json'
-            print("Downloading MMLU dataset...")
-            command = ["wget", url]
-            subprocess.run(command)
         
-        with open(filepath, "r") as file:
+        with open(self.filepath, "r") as file:
             self.raw_data = json.load(file)
 
         cnt = {}
@@ -257,7 +252,7 @@ class MMLU(Dataset):
 
 class GLUE(Dataset):
     def __init__(self, task, dataset_type="validation"):
-
+        self.data = []
         self.supported_tasks = ["sst2", "cola", "qqp", "mnli",
                                 "mnli_matched", "mnli_mismatched", "qnli", "wnli", "rte", "mrpc"]
         assert task in self.supported_tasks
