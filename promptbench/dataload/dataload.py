@@ -83,10 +83,33 @@ class Math(Dataset):
         
         with open(self.filepath, 'r') as f:
             data = json.load(f)
-
+        
+        MATH_QUESTION_TYPES = {
+            'algebra_linear_1d': ' linear algebra ',
+            'algebra_linear_2d': ' linear algebra ',
+            'algebra_sequence_next_term': ' given a sequence predict the next term ',
+            'arithmetic_addition_sub_multiple': ' arithmetic addition and subtraction ',
+            'arithmetic_mul_div_multiple': ' arithmetic multiplication and division ',
+            'arithmetic_mixed': ' arithmetic addition, subtraction, multiplication and division ',
+            'arithmetic_nearest_integer_root': ' arithmetic nearest integer root ',
+            'comparison_closest': ' compare which one of given numbers is closest to target number ',
+            'comparison_kth_biggest': ' compare which one of given numbers is kth biggest or smallest ',
+            'comparison_pair': ' comparison which one of given numbers is bigger or smaller ',
+            'measurement_conversion': ' measurement conversion ',
+            'numbers_base_conversion': ' numbers base conversion ',
+            'numbers_div_remainder': ' numbers division and remainder ',
+            'numbers_gcd': ' numbers greatest common divisor ',
+            'numbers_is_factor': ' if one number is a factor of antoher number ',
+            'number_is_prime': ' if a number is prime ',
+            'numbers_lcm': ' least common multiple ',
+            'numbers_place_value': ' place value ',
+            'numbers_round_number': ' round number ',
+            'polynomials_evaluate': ' polynomials evaluate ',
+        }
+        
         for task in data.keys():
             for d in data[task]:
-                d["task"] = task
+                d["task"] = MATH_QUESTION_TYPES[task]
                 self.data.append(d)
 
 
@@ -109,12 +132,27 @@ class UnMulti(Dataset):
         num_tasks = len(supported_tasks)
         num_samples = 100
 
+        LANGUAGES = {
+            'ar': 'Arabic',
+            'de': 'German',
+            'en': 'English',
+            'es': 'Spanish',
+            'fr': 'French',
+            'ru': 'Russian',
+            'zh': 'Chinese',
+            'it': 'Italian',
+            'nl': 'Dutch',
+            'ro': 'Romanian',
+            'ja': 'Japanese',
+            'ko': 'Korean',
+        }
+
         for task_i in supported_tasks:
             source, target = task_i.split('-')
             for d in data[task_i][:int(num_samples//num_tasks)]:
                 self.data[idx] = {
-                    'source': d[source],
-                    'target': d[target],
+                    'source': LANGUAGES[d[source]],
+                    'target': LANGUAGES[d[target]],
                     'task': task_i
                 }
                 idx += 1
@@ -138,12 +176,27 @@ class IWSLT(Dataset):
         num_tasks = len(supported_tasks)
         num_samples = 100
 
+        LANGUAGES = {
+            'ar': 'Arabic',
+            'de': 'German',
+            'en': 'English',
+            'es': 'Spanish',
+            'fr': 'French',
+            'ru': 'Russian',
+            'zh': 'Chinese',
+            'it': 'Italian',
+            'nl': 'Dutch',
+            'ro': 'Romanian',
+            'ja': 'Japanese',
+            'ko': 'Korean',
+        }
+
         for task_i in supported_tasks:
             source, target = task_i.split('-')
             for d in data[task_i][:int(num_samples//num_tasks)]:
                 self.data[idx] = {
-                    'source': d[source],
-                    'target': d[target],
+                    'source': LANGUAGES[d[source]],
+                    'target': LANGUAGES[d[target]],
                     'task': task_i
                 }
                 idx += 1

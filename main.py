@@ -7,7 +7,7 @@ import logging
 import pretty_errors
 
 from promptbench.config import *
-from promptbench.dataload import create_dataset
+from promptbench.dataload.dataload import create_dataset
 from promptbench.inference import Inference
 from promptbench.prompt_attack.attack import create_attack
 from promptbench.prompt_attack.goal_function import create_goal_function

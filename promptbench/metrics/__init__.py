@@ -17,16 +17,7 @@ def eval(dataset, preds, gts):
         from .squad_v2.squad_v2 import SquadV2
         metric = SquadV2()
 
-        model_output = []
-        """
-        TODO: remove get_reference into eval function.
-        """
-        def get_reference(self):
-            references = []
-
-            for data in self.data:
-                references.append({"answers": data["answers"], "id": data["id"]})
-            return references
+        model_output = []    
 
         for id, pred in zip(gts, preds):
 
@@ -36,10 +27,12 @@ def eval(dataset, preds, gts):
             else:
                 no_ans_prob = 0
 
-            model_output.append(
-                {"id": id, "prediction_text": pred, "no_answer_probability": no_ans_prob})
+            model_output.append({"id": id, "prediction_text": pred, "no_answer_probability": no_ans_prob})
 
-        references = dataset.get_reference()
+        references = []
+        for data in dataset:
+            references.append({"answers": data["answers"], "id": data["id"]})
+
         score = metric.compute(
             predictions=model_output, references=references)
 

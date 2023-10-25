@@ -54,14 +54,14 @@ def _process_cls_pred(raw_pred):
     pred = pred.split(" ")[-1]
     pred = pred.strip(",._\"\'-+=!?()&^%$#@:\\|\{\}[]<>/`\n\t\r\v\f ")
 
-    if pred in LABEL_SET[self.args.dataset]:
-        pred = LABEL_TO_ID[self.args.dataset][pred]
-    else:
-        self.args.logger.warn(
-            "The original label : '{}'.".format(raw_pred))
-        self.args.logger.warn(
-            "The predicted label: '{}' is not in label set.".format(pred))
-        pred = -1
+    # if pred in LABEL_SET[self.args.dataset]:
+    #     pred = LABEL_TO_ID[self.args.dataset][pred]
+    # else:
+    #     self.args.logger.warn(
+    #         "The original label : '{}'.".format(raw_pred))
+    #     self.args.logger.warn(
+    #         "The predicted label: '{}' is not in label set.".format(pred))
+    #     pred = -1
 
     return pred
 
@@ -75,11 +75,11 @@ def _process_qa_pred(raw_pred):
     pred = pred.split(" ")[-1]
     pred = pred.strip(",._\"\'-+=!?()&^%$#@:\\|\{\}[]<>/`\n\t\r\v\f ")
 
-    if pred not in LABEL_SET[self.args.dataset]:
-        self.args.logger.warn(
-            "The original label : '{}'.".format(raw_pred))
-        self.args.logger.warn(
-            "The predicted label: '{}' is not in label set.".format(pred))
-        pred = 'no_answer'
+    # if pred not in LABEL_SET[self.args.dataset]:
+    #     self.args.logger.warn(
+    #         "The original label : '{}'.".format(raw_pred))
+    #     self.args.logger.warn(
+    #         "The predicted label: '{}' is not in label set.".format(pred))
+    #     pred = 'no_answer'
 
     return pred

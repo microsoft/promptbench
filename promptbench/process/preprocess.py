@@ -11,8 +11,7 @@ def _process_bool_logic_input(prompt, raw_data):
     return input_text, label
 
 def _process_math_input(prompt, raw_data):
-    from config import MATH_QUESTION_TYPES
-    question_type, question, label = MATH_QUESTION_TYPES[raw_data['task']], raw_data['question'], raw_data['answer']
+    question_type, question, label = raw_data['task'], raw_data['question'], raw_data['answer']
     input_text = prompt.format(question_type) + '\n'
 
     input_text += ("Question: " + question + '\nAnswer: ')
@@ -20,10 +19,9 @@ def _process_math_input(prompt, raw_data):
     return input_text, label
 
 def _process_trans_input(prompt, raw_data):
-    from config import LANGUAGES
     source, target, task = raw_data['source'], raw_data['target'], raw_data['task']
     src_lang, des_lang = task.split('-')
-    input_text = prompt.format(LANGUAGES[src_lang], LANGUAGES[des_lang]) + '\n'
+    input_text = prompt.format(src_lang, des_lang) + '\n'
     input_text += (source + '\nAnswer: ')
     return input_text, target
 

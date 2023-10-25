@@ -1,6 +1,5 @@
-from promptbench.config import *
-from promptbench.prompt_attack.attack import *
-from promptbench.prompt_attack.goal_function import AdvPromptGoalFunction
+from .attack import *
+from .goal_function import AdvPromptGoalFunction
 
 MNLI_LABEL = ['entailment', 'neutral', 'contradiction',
               'entailment\'', 'neutral\'', 'contradiction\'']
