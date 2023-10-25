@@ -19,9 +19,8 @@ def _process_math_input(prompt, raw_data):
     return input_text, label
 
 def _process_trans_input(prompt, raw_data):
-    source, target, task = raw_data['source'], raw_data['target'], raw_data['task']
-    src_lang, des_lang = task.split('-')
-    input_text = prompt.format(src_lang, des_lang) + '\n'
+    source, target, source_lang, target_lang = raw_data['source'], raw_data['target'], raw_data['source_lang'], raw_data['target_lang']
+    input_text = prompt.format(source_lang, target_lang) + '\n'
     input_text += (source + '\nAnswer: ')
     return input_text, target
 

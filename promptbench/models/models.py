@@ -2,38 +2,6 @@
 # Licensed under the MIT License.
 from abc import ABC, abstractmethod
 
-LLAMA_MODELS = [
-    'llama2-7b',
-    'llama2-7b-chat',
-    'llama2-13b',
-    'llama2-13b-chat',
-    'llama2-70b',
-    'llama2-70b-chat',
-]
-
-GPT_MODELS = [
-    'gpt-3.5-turbo',
-    'gpt-4',
-]
-
-VICUNA_MODELS = [
-    'vicuna-7b',
-    'vicuna-13b',
-    'vicuna-13b-v1.3',
-]
-
-UL2_MODELS = [
-    'google/flan-ul2',
-]
-
-MODEL_LIST = {
-    't5': ['google/flan-t5-large'],
-    'llama': LLAMA_MODELS,
-    'gpt': GPT_MODELS,
-    'vicuna': VICUNA_MODELS,
-    'ul2': UL2_MODELS,
-}
-
 
 class LMMBaseModel(ABC):
     def __init__(self, **kwargs):
@@ -47,34 +15,6 @@ class LMMBaseModel(ABC):
 
     def __call__(self, input_text, **kwargs):
         return self.predict(input_text, **kwargs)
-
-
-class LLMModel(object):
-
-    def __init__(self, **kwargs):
-        self.model = kwargs.get('model', None)
-        self.infer_model = self.create_model(**kwargs)
-
-    def create_model(self, **kwargs):
-        if self.model == 'google/flan-t5-large':
-            return T5Model(**kwargs)
-        elif self.model in LLAMA_MODELS:
-            return LlamaModel(**kwargs)
-        elif self.model in GPT_MODELS:
-            return OpenAIModel(**kwargs)
-        elif self.model in VICUNA_MODELS:
-            return VicunaModel(**kwargs)
-        elif self.model in UL2_MODELS:
-            return UL2Model(**kwargs)
-        else:
-            raise ValueError("The model is not supported!")
-
-    @staticmethod
-    def model_list():
-        return MODEL_LIST
-
-    def __call__(self, input_text, **kwargs):
-        return self.infer_model.predict(input_text, **kwargs)
 
 
 class T5Model(LMMBaseModel):
