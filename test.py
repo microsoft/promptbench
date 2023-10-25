@@ -3,6 +3,13 @@
 # # dataset = load_dataset('iwslt', ['en', 'de'])
 # print(dataset[0])
 
-from promptbench.metrics import Eval
-eval = Eval()
-print(eval)
+# from promptbench.metrics import Eval
+# eval = Eval()
+# print(eval)
+
+from promptbench.models import LLMModel
+
+# Create a T5 model
+model_t5 = LLMModel(model='google/flan-t5-large')
+output_t5 = model_t5("Translate English to German: 'Hello World'")
+print(output_t5)

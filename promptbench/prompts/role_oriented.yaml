@@ -5,7 +5,7 @@
 This file contains the prompt sets for the zeroshot role-oriented prompts.
 """
 
-ROLE_ORIENTED_PROMPT_SET = {
+{
     'valid_parentheses': [
         "As a syntax validator, assess the given sequence of brackets and determine whether it conforms to proper bracket rules. Respond Valid if the brakets are matched, Invalid otherwise.",
         "In your role as an expression evaluator, analyze the provided arrangement of parentheses and ascertain its validity. Respond Valid if the brakets are matched, Invalid otherwise.",

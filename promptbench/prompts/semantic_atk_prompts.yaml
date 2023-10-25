@@ -6,7 +6,7 @@ This file contains the semantic attack prompts of each dataset.
 6 languages: chinese, french, arabic, russian, spanish, english.
 """
 
-SEMANTIC_ADV_PROMPT_SET = {
+{
     'math': {
         'chinese': [
             # Chinese_English

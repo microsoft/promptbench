@@ -149,123 +149,143 @@ examples = {
 
     'math': {
         "algebra_linear_1d": [
-            {"question": "Solve 24 = 1601*c - 1605*c for c.", "answer":-6},
-            {"question": "Solve 657 = -220*t + 1086*t + 22307 for t.", "answer": -25},
-            {"question": "Let n(m) = m**3 - 7*m**2 + 13*m - 2. Let j be n(4). Solve 0 = 3*x + j*x + 10 for x.", "answer": -2},
+            "Here are three examples. \n" +
+            "Question: Solve 24 = 1601*c - 1605*c for c. Answer: -6. \n" +
+            "Question: Solve 657 = -220*t + 1086*t + 22307 for t. Answer: -25. \n" +
+            "Question: Let n(m) = m**3 - 7*m**2 + 13*m - 2. Let j be n(4). Solve 0 = 3*x + j*x + 10 for x. Answer: -2. \n"
         ],
 
         "algebra_linear_2d": [
-            {"question": "Solve 273*o + 19 = 272*o - 2*t, -2*o + 5*t + 34 = 0 for o.", "answer": -3},
-            {"question": "Solve -21 = -5*r - 782*n + 785*n, 4*r - 5*n = 22 for r.", "answer": 3},
-            {"question": "Suppose -4*s - 124*v + 125*v = -9, -4 = -s + 2*v. Solve 3*q - s*n = -q, -n = 4*q + 12 for q.", "answer": -2},
+            "Here are three examples. \n" +
+            "Question: Solve 273*o + 19 = 272*o - 2*t, -2*o + 5*t + 34 = 0 for o. Answer: -3. \n" +
+            "Question: Solve -21 = -5*r - 782*n + 785*n, 4*r - 5*n = 22 for r. Answer: 3. \n" +
+            "Question: Suppose -4*s - 124*v + 125*v = -9, -4 = -s + 2*v. Solve 3*q - s*n = -q, -n = 4*q + 12 for q. Answer: -2. \n"
         ],
 
         "algebra_sequence_next_term": [
-            {"question": "What is next in -6525, -6520, -6515, -6510?", "answer": -6505},
-            {"question": "What is the next term in 144, 519, 1132, 1989, 3096, 4459, 6084, 7977?", "answer": 10144},
-            {"question": "What comes next: -7219, -14438, -21643, -28828, -35987, -43114?", "answer": -50203},
+            "Here are three examples. \n" +
+            "Question: What is next in -6525, -6520, -6515, -6510? Answer: -6505. \n" +
+            "Question: What is the next term in 144, 519, 1132, 1989, 3096, 4459, 6084, 7977? Answer: 10144. \n" +
+            "Question: What comes next: -7219, -14438, -21643, -28828, -35987, -43114? Answer: -50203. \n"
         ],
 
         "arithmetic_addition_sub_multiple": [
-            {"question": "Total of 0.06 and -1977321735.", "answer": -1977321734.94},
-            {"question": "Add together 2 and 436273715.", "answer": 436273717},
-            {"question": "What is 12 + -24 + (-11 - -2)?.", "answer": -21},
+            "Here are three examples. \n" +
+            "Question: Total of 0.06 and -1977321735. Answer: -1977321734.94. \n" +
+            "Question: Add together 2 and 436273715. Answer: 436273717. \n" +
+            "Question: What is 12 + -24 + (-11 - -2)?. Answer: -21. \n"
         ],
 
         "arithmetic_mixed": [
-            {"question": "Calculate (4/14)/(954/96831).?", "answer": 29},
-            {"question": "What is the value of (9/6)/((-2247)/1712)?", "answer": -8/7},
-            {"question": "Evaluate 2054/9243 + 22/36.", "answer": 5/6},
+            "Here are three examples. \n" +
+            "Question: Calculate (4/14)/(954/96831.? Answer: 29. \n" +
+            "Question: What is the value of (9/6)/((-2247)/1712)? Answer: -8/7. \n" +
+            "Question: Evaluate 2054/9243 + 22/36. Answer: 5/6. \n"
         ],
 
         "arithmetic_mul_div_multiple": [
-            {"question": "What is the value of ((-26)/65)/(7/(-280))?", "answer": 16},
-            {"question": "What is the value of (-1603)/229*(-10)/7?", "answer": 10},
-            {"question": "Calculate 21/(-48)*10524/30695.", "answer": -3/20},
+            "Here are three examples. \n" +
+            "Question: What is the value of ((-26)/65)/(7/(-280))? Answer: 16. \n" +
+            "Question: What is the value of (-1603)/229*(-10)/7? Answer: 10. \n" +
+            "Question: Calculate 21/(-48)*10524/30695. Answer: -3/20. \n"
         ],
 
         "arithmetic_nearest_integer_root": [
-            {"question": "What is 922996 to the power of 1/4, to the nearest integer?", "answer": 31},
-            {"question": "What is 1453426 to the power of 1/7, to the nearest integer?", "answer": 8},
-            {"question": "What is the cube root of 13146210 to the nearest integer?", "answer": 286},
+            "Here are three examples. \n" +
+            "Question: What is 922996 to the power of 1/4, to the nearest integer? Answer: 31. \n" +
+            "Question: What is 1453426 to the power of 1/7, to the nearest integer? Answer: 8. \n" +
+            "Question: What is the cube root of 13146210 to the nearest integer? Answer: 286. \n"
         ],
 
         "comparison_closest": [
-            {"question": "What is the nearest to 5/13 in 0.47, 1, 3/2, 2?", "answer": 0.47},
-            {"question": "What is the closest to 0.1 in 2, 0.8, 1, -0.48?", "answer": -0.48},
-            {"question": "Let d = -27 - -26.5. Let p be (-3 + 1 + 1)*-1. What is the closest to p in 0.1, -0.3, d?", "answer": 0.1},
+            "Here are three examples. \n" +
+            "Question: What is the nearest to 5/13 in 0.47, 1, 3/2, 2? Answer: 0.47. \n" +
+            "Question: What is the closest to 0.1 in 2, 0.8, 1, -0.48? Answer: -0.48. \n" +
+            "Question: Let d = -27 - -26.5. Let p be (-3 + 1 + 1)*-1. What is the closest to p in 0.1, -0.3, d? Answer: 0.1. \n"
         ],
 
         "comparison_kth_biggest": [
-            {"question": "What is the second smallest value in 0.1, 4, 71/44?", "answer": 71/44},
-            {"question": "What is the third smallest value in 5, 3, -2/3, -1/4, -44.34?", "answer": -1/4},
-            {"question": "What is the second biggest value in -13, -2, 106, -4, 0.4?", "answer": 0.4},
+            "Here are three examples. \n" +
+            "Question: What is the second smallest value in 0.1, 4, 71/44? Answer: 71/44. \n" +
+            "Question: What is the third smallest value in 5, 3, -2/3, -1/4, -44.34? Answer: -1/4. \n" +
+            "Question: What is the second biggest value in -13, -2, 106, -4, 0.4? Answer: 0.4. \n"
         ],
 
         "comparison_pair": [
-            {"question": "Do 7452/79 and 93 have different values?", "answer": True},
-            {"question": "Which is bigger: 309/251 or 0?", "answer": 309/251},
-            {"question": "Suppose 4*a + x + 6 = 0, 0 = 4*a - 3*x + 7*x. Let i be a/(-10) - 28/(-35). Let s = i - 3. Is s bigger than -2?", "answer": False},
+            "Here are three examples. \n" +
+            "Question: Do 7452/79 and 93 have different values? Answer: True" +
+            "Question: Which is bigger: 309/251 or 0? Answer: 309/251. \n" +
+            "Question: Suppose 4*a + x + 6 = 0, 0 = 4*a - 3*x + 7*x. Let i be a/(-10) - 28/(-35). Let s = i - 3. Is s bigger than -2? Answer: False. \n"
         ],
 
         "measurement_conversion": [
-            {"question": "ow many months are there in one fifth of a millennium?", "answer": 2400},
-            {"question": "What is 23/3 of a day in hours?", "answer": 184},
-            {"question": "How many milligrams are there in 50.05692kg?", "answer": 50056920},
+            "Here are three examples. \n" +
+            "Question: how many months are there in one fifth of a millennium? Answer: 2400. \n" +
+            "Question: What is 23/3 of a day in hours? Answer: 184. \n" +
+            "Question: How many milligrams are there in 50.05692kg? Answer: 50056920. \n"
         ],
 
         "numbers_base_conversion": [
-            {"question": "What is 62a3 (base 14) in base 7?", "answer": "100363"},
-            {"question": "-34862 (base 10) to base 4.", "answer": "-20200232"},
-            {"question": "What is 64e (base 16) in base 4?", "answer": "121032"},
+            "Here are three examples. \n" +
+            "Question: What is 62a3 (base 14) in base 7? Answer: 100363. \n" +
+            "Question: -34862 (base 10) to base 4. Answer: -20200232. \n" +
+            "Question: What is 64e (base 16) in base 4? Answer: 121032. \n"
         ],
 
         "numbers_div_remainder": [
-            {"question": "Calculate the remainder when 25736 is divided by 144.", "answer": 104},
-            {"question": "What is the remainder when 4290 is divided by 1410?", "answer": 60},
-            {"question": "Suppose 0 = 2*s - 2 + 20. Let y be 267/9 - 3/s. Suppose 5*w + o = y, -w + 2*o + 2*o = -27. Calculate the remainder when 13 is divided by w.", "answer": 6},
+            "Here are three examples. \n" +
+            "Question: Calculate the remainder when 25736 is divided by 144. Answer: 104. \n" +
+            "Question: What is the remainder when 4290 is divided by 1410? Answer: 60. \n" +
+            "Question: Suppose 0 = 2*s - 2 + 20. Let y be 267/9 - 3/s. Suppose 5*w + o = y, -w + 2*o + 2*o = -27. Calculate the remainder when 13 is divided by w. Answer: 6. \n"
         ],
 
         "numbers_gcd": [
-            {"question": "What is the greatest common factor of 56 and 38094?", "answer": 14},
-            {"question": "Calculate the highest common divisor of 2838 and 8184.", "answer": 66},
-            {"question": "Calculate the greatest common divisor of 19886 and 5978.", "answer": 122},
+            "Here are three examples. \n" +
+            "Question: What is the greatest common factor of 56 and 38094? Answer: 14. \n" +
+            "Question: Calculate the highest common divisor of 2838 and 8184. Answer: 66. \n" +
+            "Question: Calculate the greatest common divisor of 19886 and 5978. Answer: 122. \n"
         ],
 
         "numbers_is_factor": [
-            {"question": "Is 72567 a multiple of 9?", "answer": True},
-            {"question": "Is 91 a factor of 1012773?", "answer": False},
-            {"question": "Let d = -588 + 1274. Is 14 a factor of d?", "answer": True},
+            "Here are three examples. \n" +
+            "Question: Is 72567 a multiple of 9? Answer: True\n" +
+            "Question: Is 91 a factor of 1012773? Answer: False. \n" +
+            "Question: Let d = -588 + 1274. Is 14 a factor of d? Answer: True. \n"
         ],
 
         "number_is_prime":  [
-            {"question": "Is 256975613 composite?Is 9609827 prime?", "answer": True},
-            {"question": "Is 11280553 a composite number?", "answer": True},
-            {"question": "Let u = -15 - -16. Suppose -2 = -d + u. Suppose -w = -d*p + 705 + 530, 4*p + 2*w - 1660 = 0. Is p composite?", "answer": True},
+            "Here are three examples. \n" +
+            "Question: Is 2 a prime number? Answer: True.\n" +
+            "Question: Is 11280553 a composite number? Answer: True.\n" +
+            "Question: Let u = -15 - -16. Suppose -2 = -d + u. Suppose -w = -d*p + 705 + 530, 4*p + 2*w - 1660 = 0. Is p composite? Answer: True.\n"
         ],
 
         "numbers_lcm": [
-            {"question": "What is the smallest common multiple of 19360 and 880?", "answer": 19360},
-            {"question": "What is the smallest common multiple of 2178 and 44?", "answer": 4356},
-            {"question": "Let n(m) = -m**2 - 6*m - 6. Let i be n(-4). Suppose -7 + 1 = -3*z. Suppose 3*h - 12 = -z*s + h, 2 = i*h. Calculate the smallest common multiple of 4 and s.", "answer": 20},
+            "Here are three examples. \n" +
+            "Question: What is the smallest common multiple of 19360 and 880? Answer: 19360. \n" +
+            "Question: What is the smallest common multiple of 2178 and 44? Answer: 4356. \n" +
+            "Question: Let n(m) = -m**2 - 6*m - 6. Let i be n(-4). Suppose -7 + 1 = -3*z. Suppose 3*h - 12 = -z*s + h, 2 = i*h. Calculate the smallest common multiple of 4 and s. Answer: 20. \n"
         ],
 
         "numbers_place_value": [
-            {"question": "What is the units digit of 80577?", "answer": 7},
-            {"question": "What is the hundred thousands digit of 393392?", "answer": 3},
-            {"question": "Let s be -2 + (-2)/(-1 - -2). Let g(b) = 3*b**2 - b + 5. What is the units digit of g(s)?", "answer": 7},
+            "Here are three examples. \n" +
+            "Question: What is the units digit of 80577? Answer: 7. \n" +
+            "Question: What is the hundred thousands digit of 393392? Answer: 3. \n" +
+            "Question: Let s be -2 + (-2)/(-1 - -2). Let g(b) = 3*b**2 - b + 5. What is the units digit of g(s)? Answer: 7. \n"
         ],
 
         "numbers_round_number":[
-            {"question": "Round 1.72315 to two decimal places.", "answer": 1.72},
-            {"question": "Round 49.26661 to the nearest ten.", "answer": 50},
-            {"question": "Let x = 114 - 80. Let h = x + 34. Let b = h - 68.0058. What is b rounded to 3 decimal places?", "answer": -0.006},
+            "Here are three examples. \n" +
+            "Question: Round 1.72315 to two decimal places. Answer: 1.72. \n" +
+            "Question: Round 49.26661 to the nearest ten. Answer: 50. \n" +
+            "Question: Let x = 114 - 80. Let h = x + 34. Let b = h - 68.0058. What is b rounded to 3 decimal places? Answer: -0.006. \n"
         ],
 
         "polynomials_evaluate": [
-            {"question": "Let z(p) = -18*p - 920. Give z(-35).", "answer": -290},
-            {"question": "Let l(h) = -h**3 - 33*h**2 - 42*h + 99. Determine l(-31).", "answer": -521},
-            {"question": "Let l(g) be the third derivative of g**8/20160 + g**7/2520 + g**5/30 + 23*g**2. Let m(f) be the third derivative of l(f). What is m(-3)?", "answer": 3},
+            "Here are three examples. \n" +
+            "Question: Let z(p) = -18*p - 920. Give z(-35). Answer: -290. \n" +
+            "Question: Let l(h) = -h**3 - 33*h**2 - 42*h + 99. Determine l(-31). Answer: -521. \n" +
+            "Question: Let l(g) be the third derivative of g**8/20160 + g**7/2520 + g**5/30 + 23*g**2. Let m(f) be the third derivative of l(f). What is m(-3)? Answer: 3. \n"
         ],
     }
 }
