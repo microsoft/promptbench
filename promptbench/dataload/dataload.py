@@ -62,7 +62,7 @@ class BoolLogic(Dataset):
         with open(self.filepath, 'r') as f:
             data = json.load(f)
         
-        self.data = [{"question": d["question"], "answer": "true" if d["answer"] else "false"} for d in data]
+        self.data = [{"content": d["question"], "label": "true" if d["answer"] else "false"} for d in data]
 
 
 class ValidParentheses(Dataset):
@@ -73,7 +73,7 @@ class ValidParentheses(Dataset):
             data = json.load(f)["examples"][:100]
         for d in data:
             self.data.append(
-                {"question": d["input"], "answer": "valid" if d["target_scores"]["Valid"] == 1 else "invalid"})
+                {"content": d["input"], "label": "valid" if d["target_scores"]["Valid"] == 1 else "invalid"})
 
 
 class Math(Dataset):

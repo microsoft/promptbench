@@ -147,16 +147,3 @@ class OpenAIModel(LMMBaseModel):
             print(e)
             print("Retrying...")
             self.sleep(self.sleep_time)
-
-
-if __name__ == '__main__':
-    import argparse
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--model', type=str, default='llama2-13b-chat')
-    parser.add_argument('--max_new_tokens', type=int, default=20)
-    parser.add_argument('--model_dir', type=str, default='/media/Auriga/llms/llama2-13b-chat')
-    args = parser.parse_args()
-    # print(LLMModel.model_list())
-    model = LLMModel(model=args.model, max_new_tokens=args.max_new_tokens, model_dir=args.model_dir)
-
-    print(model('The quick brown fox jumps over the lazy dog'))
