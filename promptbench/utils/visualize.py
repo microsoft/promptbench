@@ -1,128 +1,131 @@
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT License.
 
-def vis_by_grad(model, tokenizer, input_sentence, label):
-    model.eval()
+class Visualizer:
 
-    def map_subwords_to_words(sentence, tokenizer):
-        tokens = tokenizer.tokenize(sentence)
-        mapping = []
-        i = 0
-        for token in tokens:
-            if token[0] == "▁":
-                mapping.append(i)
-                i += 1
-            else:
-                mapping.append(i - 1)
+    def __init__(self) -> None:
+        self.model = model
 
-        return mapping, tokens
+    def vis_by_grad(self, tokenizer, input_sentence, label):
+        self.model.eval()
 
-    # input_len = len(input_sentence.split())
+        def map_subwords_to_words(sentence, tokenizer):
+            tokens = tokenizer.tokenize(sentence)
+            mapping = []
+            i = 0
+            for token in tokens:
+                if token[0] == "▁":
+                    mapping.append(i)
+                    i += 1
+                else:
+                    mapping.append(i - 1)
 
-    mapping, tokens = map_subwords_to_words(input_sentence, tokenizer)
-    words = "".join(tokens).replace("▁", " ").split()
+            return mapping, tokens
 
-    input_len = len(words)
+        # input_len = len(input_sentence.split())
 
-    inputs = tokenizer(input_sentence, return_tensors="pt")
+        mapping, tokens = map_subwords_to_words(input_sentence, tokenizer)
+        words = "".join(tokens).replace("▁", " ").split()
 
-    embeddings = model.get_input_embeddings()(inputs['input_ids'])
-    embeddings.requires_grad_()
-    embeddings.retain_grad()
+        input_len = len(words)
 
-    labels = tokenizer(label, return_tensors="pt")["input_ids"]
+        inputs = tokenizer(input_sentence, return_tensors="pt")
 
-    outputs = model(inputs_embeds=embeddings,
-                    attention_mask=inputs['attention_mask'], labels=labels)
+        embeddings = self.model.get_input_embeddings()(inputs['input_ids'])
+        embeddings.requires_grad_()
+        embeddings.retain_grad()
 
-    outputs.loss.backward()
-    # print(outputs.loss.item())
+        labels = tokenizer(label, return_tensors="pt")["input_ids"]
 
-    grads = embeddings.grad
-    # print(grads.shape)
-    import torch
-    word_grads = [torch.zeros_like(grads[0][0])
-                  for _ in range(input_len)]  # 初始化每个单词的梯度向量
+        outputs = self.model(inputs_embeds=embeddings,
+                             attention_mask=inputs['attention_mask'], labels=labels)
 
-    # ignore the [EOS] token
-    for idx, grad in enumerate(grads[0][:len(mapping)]):
-        word_grads[mapping[idx]] += grad
+        outputs.loss.backward()
+        # print(outputs.loss.item())
 
-    words_importance = [grad.norm().item() for grad in word_grads]
+        grads = embeddings.grad
+        # print(grads.shape)
+        import torch
+        word_grads = [torch.zeros_like(grads[0][0])
+                      for _ in range(input_len)]  # 初始化每个单词的梯度向量
 
-    import numpy as np
+        # ignore the [EOS] token
+        for idx, grad in enumerate(grads[0][:len(mapping)]):
+            word_grads[mapping[idx]] += grad
 
-    """ normalize importance by min-max"""
-    min_importance = np.min(words_importance)
-    max_importance = np.max(words_importance)
-    words_importance = (words_importance - min_importance) / \
-        (max_importance - min_importance)
+        words_importance = [grad.norm().item() for grad in word_grads]
 
-    # word_importance_dict = {}
-    # for word, importance in zip(words, word_importance):
-    #     print(f"The gradient for '{word}' is {grad}")
-    #     word_importance_dict[word] = importance
+        import numpy as np
 
-    return words, words_importance
+        """ normalize importance by min-max"""
+        min_importance = np.min(words_importance)
+        max_importance = np.max(words_importance)
+        words_importance = (words_importance - min_importance) / \
+            (max_importance - min_importance)
 
+        # word_importance_dict = {}
+        # for word, importance in zip(words, word_importance):
+        #     print(f"The gradient for '{word}' is {grad}")
+        #     word_importance_dict[word] = importance
 
-def vis_by_delete(model, tokenizer, input_sentence, label):
-    import copy
+        return words, words_importance
 
-    words = input_sentence.split()
+    def vis_by_delete(self, tokenizer, input_sentence, label):
+        import copy
 
-    encoded_label = tokenizer(label, return_tensors="pt")["input_ids"]
+        words = input_sentence.split()
 
-    inputs = tokenizer(input_sentence, return_tensors="pt")
-    outputs = model(**inputs, labels=encoded_label)
-    original_loss = outputs.loss.item()
+        encoded_label = tokenizer(label, return_tensors="pt")["input_ids"]
 
-    word_importance = []
+        inputs = tokenizer(input_sentence, return_tensors="pt")
+        outputs = self.model(**inputs, labels=encoded_label)
+        original_loss = outputs.loss.item()
 
-    for i in range(len(words)):
-        new_words = copy.deepcopy(words)
-        del new_words[i]
-        new_sentence = ' '.join(new_words)
-        inputs = tokenizer(new_sentence, return_tensors="pt")
-        outputs = model(**inputs, labels=encoded_label)
-        new_loss = outputs.loss.item()
+        word_importance = []
 
-        importance = abs(new_loss - original_loss)
-        word_importance.append(importance)
+        for i in range(len(words)):
+            new_words = copy.deepcopy(words)
+            del new_words[i]
+            new_sentence = ' '.join(new_words)
+            inputs = tokenizer(new_sentence, return_tensors="pt")
+            outputs = self.model(**inputs, labels=encoded_label)
+            new_loss = outputs.loss.item()
 
-    import numpy as np
+            importance = abs(new_loss - original_loss)
+            word_importance.append(importance)
 
-    """ normalize importance by min-max"""
-    min_importance = np.min(word_importance)
-    max_importance = np.max(word_importance)
-    word_importance = (word_importance - min_importance) / \
-        (max_importance - min_importance)
+        import numpy as np
 
-    word_importance_dict = {}
-    for word, importance in zip(words, word_importance):
-        word_importance_dict[word] = importance
+        """ normalize importance by min-max"""
+        min_importance = np.min(word_importance)
+        max_importance = np.max(word_importance)
+        word_importance = (word_importance - min_importance) / \
+            (max_importance - min_importance)
 
-    return word_importance_dict
+        word_importance_dict = {}
+        for word, importance in zip(words, word_importance):
+            word_importance_dict[word] = importance
 
+        return word_importance_dict
 
-def save_importance(words, importance):
-    from html import escape
-    import matplotlib.pyplot as plt
-    import matplotlib.colors as colors
-    import numpy as np
+    def save_importance(self, words, importance):
+        from html import escape
+        import matplotlib.pyplot as plt
+        import matplotlib.colors as colors
+        import numpy as np
 
-    cmap = plt.colormaps['Reds']
-    latex_output = ''
+        cmap = plt.colormaps['Reds']
+        latex_output = ''
 
-    for i, word in enumerate(words):
-        rgba = cmap(importance[i])
+        for i, word in enumerate(words):
+            rgba = cmap(importance[i])
 
-        rgb = ','.join(str(int(rgba[j]*255)) for j in range(3))
+            rgb = ','.join(str(int(rgba[j]*255)) for j in range(3))
 
-        # latex_output += '\\colorbox[RGB]{' + rgb + '}{' + word + '\\vphantom{fg}}\\hspace*{0pt}'
-        latex_output += word + ' '
+            # latex_output += '\\colorbox[RGB]{' + rgb + '}{' + word + '\\vphantom{fg}}\\hspace*{0pt}'
+            latex_output += word + ' '
 
-    return latex_output
+        return latex_output
 
 
 if __name__ == "__main__":
