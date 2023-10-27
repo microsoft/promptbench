@@ -3,8 +3,7 @@ import re
 import os
 
 """
-TODO: write a function to add few-shot examples to the prompt
-TODO: support custom prompt
+TODO: refine few-shot examples
 """
 
 class Prompt:
@@ -19,7 +18,13 @@ class Prompt:
         else:
             raise ValueError("Either provide prompt_content or specify dataset_name, task_type, and shot_type.")
     
-    def _load_default_prompt(self, dataset_name, task_type, shot=0):
+    def __len__(self):
+        return len(self.prompts)
+
+    def __getitem__(self, index):
+        return self.prompts[index]
+    
+    def _load_default_prompt(self, dataset_name):
         import json
         # Get the parent directory
         cur_dir = os.path.dirname(os.path.abspath(__file__))
