@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
+
 class DataProcessor:
     def __init__(self):
         self.INPUT_PROCESS_MAP = {

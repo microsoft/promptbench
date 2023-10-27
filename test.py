@@ -18,6 +18,12 @@ model_t5 = LLMModel(model='google/flan-t5-large')
 output_t5 = model_t5("Translate English to German: 'Hello World'")
 print(output_t5)
 
+# test visualization, not tested yet
 from promptbench.utils import Visualizer
 x = Visualizer('google/flan-t5-large')
 print(x)
+
+# test defense of prompt input using spell correct
+from promptbench.utils import Defense
+x = Defense('spellcorrect')
+print(x('I am a student at the Univrsity of California, Berkeey.'))

@@ -3,7 +3,7 @@
 
 class Visualizer:
 
-    def __init__(self) -> None:
+    def __init__(self, model) -> None:
         self.model = model
 
     def vis_by_grad(self, tokenizer, input_sentence, label):
