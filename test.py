@@ -1,29 +1,94 @@
-from promptbench.dataload import load_dataset, Dataset
-print(Dataset.data_list())
-dataset = load_dataset('sst2')
-# dataset = load_dataset('iwslt', ['en', 'de'])
-print(dataset[0])
+# # from promptbench.dataload import load_dataset, Dataset
+# # print(Dataset.data_list())
+# # dataset = load_dataset('sst2')
+# # # dataset = load_dataset('iwslt', ['en', 'de'])
+# # print(dataset[0])
 
-# from promptbench.metrics import Eval
-# eval = Eval()
-# print(eval)
+# # # from promptbench.metrics import Eval
+# # # eval = Eval()
+# # # print(eval)
 
+# from promptbench.models import LLMModel
+
+# # # print all supported models
+# # print(LLMModel.model_list())
+
+# # Create a T5 model
+# model_t5 = LLMModel(model='google/flan-t5-large')
+
+# input_sentence = "As an instrument for entailment evaluation, consider the two sentences and determine if their relationship is 'entailment' or 'not_entailment'. Respond with 'entailment' or 'not_entailment'  and true is true :"
+# label = 'not_entailment'
+
+# from promptbench.utils import Visualizer
+# visualizer = Visualizer(model_t5)
+# word_importance_dict = visualizer.vis_by_grad(input_sentence, label)
+# for word, importance in word_importance_dict.items():
+#     print("{:10}: {:.4f}".format(word, importance))
+
+# word_importance_dict = visualizer.vis_by_delete(input_sentence, label)
+# for word, importance in word_importance_dict.items():
+#     print("{:10}: {:.4f}".format(word, importance))
+
+
+# output_t5 = model_t5("Translate English to German: 'Hello World'")
+
+
+# # # test defense of prompt input using spell correct
+# # from promptbench.utils import Defense
+# # x = Defense('spellcorrect')
+# # print(x('I am a student at the Univrsity of California, Berkeey.'))
+
+
+
+# """
+# Processing input and output
+# """
+# from promptbench.utils import InputProcess, OutputProcess
+
+# # For a prompt with task information:
+# prompt_template2 = "Translate the following sentence from {source_lang} into {target_lang}: {content}"
+# input_data_dict2 = {"content": "Bonjour", "source_lang": "French", "target_lang": "English"}
+# print(InputProcess.basic_format(prompt_template2, input_data_dict2))
+
+# def test_OutputProcess():
+#     processor = OutputProcess()
+
+#     # Testing general
+#     assert processor.general("HeLlo, WOrld! </s> <pad>") == "hello, world"
+
+#     # Testing cls
+#     assert processor.cls("This is an example string. classify") == "classify"
+#     assert processor.cls("Another example for classification. result") == "result"
+
+#     # Testing pattern_split
+#     assert processor.pattern_split("This is a pattern_split example. split_here result", "split_here") == "result"
+#     assert processor.pattern_split("Another pattern_split test. delimiter outcome", "delimiter") == "outcome"
+
+#     # Testing pattern_re
+#     assert processor.pattern_re("This is a regular expression <<<test>>>.", '<<<(.*?)>>>') == "test"
+#     assert processor.pattern_re("No matching pattern here.", '<<<(.*?)>>>') == "no matching pattern here"
+
+#     print("All tests passed!")
+
+# test_OutputProcess()
+
+
+from promptbench.prompts import Prompt
+from promptbench.utils import InputProcess, OutputProcess
 from promptbench.models import LLMModel
 
-# print all supported models
-print(LLMModel.model_list())
+# prompts = Prompt(dataset_name='sst2')
+prompts = Prompt("Classify the sentence as positive or negative: {content}")
+data = {"content": "I am happy today.", "label": "positive"}
+print(prompts[:2])
 
-# Create a T5 model
-model_t5 = LLMModel(model='google/flan-t5-large')
-output_t5 = model_t5("Translate English to German: 'Hello World'")
-print(output_t5)
 
-# test visualization, not tested yet
-from promptbench.utils import Visualizer
-x = Visualizer('google/flan-t5-large')
-print(x)
+input_text = InputProcess.basic_format(prompts[0], data)
+print(input_text)
 
-# test defense of prompt input using spell correct
-from promptbench.utils import Defense
-x = Defense('spellcorrect')
-print(x('I am a student at the Univrsity of California, Berkeey.'))
+model_t5 = LLMModel(model='google/flan-t5-large', max_new_tokens=10)
+
+raw_pred = model_t5(input_text)
+pred = OutputProcess.cls(raw_pred)
+print(raw_pred)
+print(pred)
