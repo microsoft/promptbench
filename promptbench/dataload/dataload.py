@@ -52,8 +52,8 @@ class Dataset(object):
         return self.data[idx]
 
     @staticmethod
-    def data_list(self):
-        return self.data_list
+    def data_list():
+        return DATA_SET
 
 
 class BoolLogic(Dataset):
