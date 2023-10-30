@@ -1,11 +1,16 @@
 import re
 import os
+from typing import Union, List
 
 
 class Prompt:
-    def __init__(self, prompt_content=None, dataset_name=None):
+    def __init__(self, prompt_content: Union[List[str], str, None] = None, dataset_name: str = None):
+        
         if prompt_content:
-            self.prompts = [prompt_content]
+            if isinstance(prompt_content, list):
+                self.prompts = prompt_content
+            else:
+                self.prompts = [prompt_content]
         elif dataset_name:
             self.prompts = self._load_default_prompt(dataset_name)
             self.dataset_name = dataset_name

@@ -36,7 +36,7 @@ class OutputProcess:
         return pred
 
     @staticmethod
-    def general(raw_pred):
+    def general(raw_pred, proj_func=None):
         """
         General processing for predictions using the base prediction process.
 
@@ -46,10 +46,13 @@ class OutputProcess:
         Returns:
         - str: The processed prediction text.
         """
-        return OutputProcess._base_pred_process(raw_pred)
+        pred = OutputProcess._base_pred_process(raw_pred)
+        if proj_func:
+            pred = proj_func(pred)
+        return pred
 
     @staticmethod
-    def cls(raw_pred):
+    def cls(raw_pred, proj_func=None):
         """
         Processes the prediction by taking the last word after basic processing.
 
@@ -59,11 +62,13 @@ class OutputProcess:
         Returns:
         - str: The last word from the processed prediction text.
         """
-        pred = OutputProcess._base_pred_process(raw_pred)
-        return pred.split(" ")[-1]
+        pred = OutputProcess._base_pred_process(raw_pred).split(" ")[-1]
+        if proj_func:
+            pred = proj_func(pred)
+        return pred
 
     @staticmethod
-    def pattern_split(raw_pred, pattern):
+    def pattern_split(raw_pred, pattern, proj_func=None):
         """
         Processes the prediction by splitting it based on a provided pattern
         and taking the last part.
@@ -75,10 +80,14 @@ class OutputProcess:
         Returns:
         - str: The last part of the prediction text after splitting.
         """
-        return OutputProcess._base_pred_process(raw_pred.split(pattern)[-1])
+        pred = OutputProcess._base_pred_process(raw_pred.split(pattern)[-1])
+        if proj_func:
+            pred = proj_func(pred)
 
+        return pred   
+    
     @staticmethod
-    def pattern_re(raw_pred, pattern):
+    def pattern_re(raw_pred, pattern, proj_func=None):
         """
         Processes the prediction using regular expressions to extract a specific pattern.
 
@@ -91,4 +100,11 @@ class OutputProcess:
         """
         import re
         match = re.search(pattern, raw_pred)
-        return OutputProcess._base_pred_process(match.group(1) if match else raw_pred)
+        if match:
+            pred = OutputProcess._base_pred_process(match.group(1))
+            if proj_func:
+                pred = proj_func(pred)
+        else:
+            pred = raw_pred
+        
+        return pred

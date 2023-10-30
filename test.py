@@ -83,12 +83,63 @@ data = {"content": "I am happy today.", "label": "positive"}
 print(prompts[:2])
 
 
-input_text = InputProcess.basic_format(prompts[0], data)
-print(input_text)
+# input_text = InputProcess.basic_format(prompts[0], data)
+# print(input_text)
 
-model_t5 = LLMModel(model='google/flan-t5-large', max_new_tokens=10)
+# model_t5 = LLMModel(model='google/flan-t5-large', max_new_tokens=10)
 
-raw_pred = model_t5(input_text)
-pred = OutputProcess.cls(raw_pred)
-print(raw_pred)
-print(pred)
+# raw_pred = model_t5(input_text)
+# pred = OutputProcess.cls(raw_pred)
+# print(raw_pred)
+# print(pred)
+
+
+# from promptbench.dataload import DatasetLoader
+# print(DatasetLoader.SUPPORTED_DATASETS)
+# dataset = DatasetLoader.load_dataset('sst2')
+
+import promptbench as pb
+print(pb.LLMModel.model_list())
+model = pb.LLMModel(model='google/flan-t5-large', max_new_tokens=10)
+
+print(pb.DatasetLoader.dataset_list())
+dataset = pb.DatasetLoader.load_dataset("sst2")
+print(dataset[:5])
+
+
+prompts = pb.Prompt(["Classify the sentence as positive or negative: {content}",
+                     "Determine the emotion of the following sentence as positive or negative: {content}"
+                     ])
+
+"""
+You may need to define the projection function for the model output.
+Since the output format defined in your prompts may be different from the model output.
+For example, for sst2 dataset, the label are '0' and '1' to represent 'negative' and 'positive'.
+But the model output is 'negative' and 'positive'.
+So we need to define a projection function to map the model output to the label.
+"""
+def proj_func(pred):
+    mapping = {
+        "positive": 1,
+        "negative": 0
+    }
+    return mapping.get(pred, -1)
+
+
+from tqdm import tqdm
+for prompt in prompts:
+    preds = []
+    labels = []
+    for data in tqdm(dataset):
+        input_text = pb.InputProcess.basic_format(prompt, data)
+        label = data['label']
+        raw_pred = model(input_text)
+        pred = pb.OutputProcess.cls(raw_pred, proj_func)
+        preds.append(pred)
+        labels.append(label)
+    
+    score = pb.Eval.compute_cls_accuracy(preds, labels)
+    print(f"{score:.3f}, {prompt}")
+
+
+
