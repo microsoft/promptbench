@@ -304,12 +304,12 @@ class Inference(object):
             result = response['choices'][0]['text']
         else:
             response = openai.ChatCompletion.create(
-            model='gpt-4-0613',
-            messages=[
-                {"role": "user", "content": prompt},
-            ]
-        )
-        result = response['choices'][0]['message']['content']
+                model='gpt-4-0613',
+                messages=[
+                    {"role": "user", "content": prompt},
+                ]
+            )
+            result = response['choices'][0]['message']['content']
         return result
 
     def pred_by_generation(self, input_text, model):
