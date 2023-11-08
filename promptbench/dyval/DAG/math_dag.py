@@ -4,9 +4,9 @@ import numpy as np
 
 from .dag import Node, TreeDAG
 from .describer import TreeDAGDescriber
-    
+from ..utils import round_value
 
-class ArithematicDAG(TreeDAG):
+class ArithmeticDAG(TreeDAG):
     def __init__(self, ops, uni_ops, depth, num_children_per_node=2, extra_links_per_node=1, add_cycles=0):
         self.ops = ops
         self.uni_ops = uni_ops
@@ -154,16 +154,20 @@ class ArithematicDAG(TreeDAG):
                     except OverflowError:
                         valid_dag = False
                         break
-        return valid_dag
-    
+        
+        if self.root.value < 1e-4:
+            valid_dag = False
 
-class ArithematicDAGDescriber(TreeDAGDescriber):
+        return valid_dag
+
+    
+class ArithmeticDAGDescriber(TreeDAGDescriber):
     def __init__(self, dag_obj, ops, uni_ops, add_rand_desc=0, delete_desc=0):
         self.ops = ops
         self.uni_ops = uni_ops
         super().__init__(dag_obj, add_rand_desc, delete_desc)
 
-    def describe_node(self, node):
+    def describe_question_node(self, node):
 
         op_descriptions = {
             '+': 'adding together',
@@ -195,6 +199,23 @@ class ArithematicDAGDescriber(TreeDAGDescriber):
             
         return description
 
+    def describe_inference_node(self, node):
+
+        if node.op is None:
+            description = f"{node.name} is {round_value(node.value)}"
+        else:
+            description = f"{node.name} ="
+            if node.op in self.uni_ops:
+                if node.op == "**":
+                    description += f" {node.children[0].name}^2 = ({round_value(node.children[0].value)})^2 = {round_value(node.value)}"
+                else:
+                    description += f" {node.op} {node.children[0].name} = {node.op}({round_value(node.children[0].value)}) = {round_value(node.value)}"
+
+            else:
+                description += f" {node.children[0].name} {node.op} {f' {node.op} '.join(child.name for child in node.children[1:])} = {round_value(node.children[0].value)} {node.op} {f' {node.op} '.join(map(round_value, (child.value for child in node.children[1:])))} = {round_value(node.value)}"
+
+        return description
+
 
 class LinearEq:
     def __init__(self, ops, uni_ops, depth=3, num_dags=1, num_children_per_node=2, extra_links_per_node=1, add_rand_desc=0):
@@ -205,10 +226,13 @@ class LinearEq:
         self.num_children_per_node = num_children_per_node
         self.extra_links_per_node = extra_links_per_node
         self.add_rand_desc = add_rand_desc
+        self.coeff = []
+        self.coeff_inference_steps = []
 
-    def describe(self):
+    def describe_question(self):
         while True:
             coeff = []
+            coeff_inference_steps = []
             coeff_descriptions = []
             
             for _ in range(6 - self.num_dags):
@@ -216,16 +240,21 @@ class LinearEq:
                 coeff.append((value, value))  # Format: (name, value)
 
             for idx in range(self.num_dags):
-                dag = ArithematicDAG(self.ops, self.uni_ops, self.depth, self.num_children_per_node, self.extra_links_per_node)
+                dag = ArithmeticDAG(self.ops, self.uni_ops, self.depth, self.num_children_per_node, self.extra_links_per_node)
                 for node in dag.nodes:
                     node.name += str(idx)
-                describer = ArithematicDAGDescriber(dag, self.ops, self.uni_ops, self.add_rand_desc)
-                coeff_descriptions.append(describer.describe())
+                describer = ArithmeticDAGDescriber(dag, self.ops, self.uni_ops, self.add_rand_desc)
+                coeff_descriptions.append({"descriptions": describer.describe_question(), "vars": dag.root.name})
                 coeff.append((dag.root.name, dag.root.value))
+                inference_desc = describer.describe_inference_steps()
+                inference_desc += f"\nThus, {dag.root.name} = {round_value(dag.root.value)}"
+                coeff_inference_steps.append(inference_desc)
 
             random.shuffle(coeff)
 
             if self._has_unique_solution(coeff):
+                self.coeff = coeff
+                self.coeff_inference_steps = coeff_inference_steps
                 break
         
         linear_eq_desc = f"\n{coeff[0][0]} x + {coeff[1][0]} y = {coeff[4][0]}\n{coeff[2][0]} x + {coeff[3][0]} y = {coeff[5][0]}\n"
@@ -236,20 +265,67 @@ class LinearEq:
                 if order not in problem_desc:
                     problem_desc[order] = linear_eq_desc
                 problem_desc[order] += f"\nThe calculation of {coeff_desc['vars']} is defined as:\n{desc}\n"
-        
-        answers = self._solve_linear_eq(coeff)
-        return {"descriptions": problem_desc, "answers": answers}
+       
+        return problem_desc
 
-    def _solve_linear_eq(self, coeff):
+    def describe_inference_steps(self):
+        coeff = self.coeff
+        desc = "Let's first solve the coefficients of the linear equation."
+        for steps in self.coeff_inference_steps:
+            desc += f"\n{steps}"
+        
+        desc += "\n\nNext, solve the linear equation:\n"
+        desc += f"\n{round_value(coeff[0][1])} x + {round_value(coeff[1][1])} y = {round_value(coeff[4][1])}\n{round_value(coeff[2][1])} x + {round_value(coeff[3][1])} y = {round_value(coeff[5][1])}\n"
+        desc += self._describe_linear_eq_solution()
+        return desc
+
+
+    def describe_answer(self):
+        return self._solve_linear_eq()
+
+    def _solve_linear_eq(self):
+        coeff = self.coeff
 
         A = [[coeff[0][1], coeff[1][1]],
             [coeff[2][1], coeff[3][1]]]
         b = [coeff[4][1], coeff[5][1]]
 
         solutions = np.linalg.solve(A, b)
-        return solutions
+        return solutions.tolist()
 
     def _has_unique_solution(self, coeff):
         a, b, c, d = [c[1] for c in coeff[:4]]
         return (a * d - b * c) != 0
+
+    def _describe_linear_eq_solution(self):
+        coeff = self.coeff
+        # Extracting coefficients for clarity
+        a, b, c, d, e, f = coeff[0][1], coeff[1][1], coeff[4][1], coeff[2][1], coeff[3][1], coeff[5][1]
+
+        description = ""
+
+        # Subtract to eliminate y
+        new_a = a * e - d * b
+        new_c = c * e - f * b
+
+        description += (f"To eliminate 'y', multiply the first equation by {e} and the second equation by {b}. "
+                        f"This makes the coefficients of 'y' equal. "
+                        f"Subtracting the second equation from the first then gives: {round_value(new_a)}x = {round_value(new_c)}.\n")
+
+        description += f"From the equation {round_value(new_a)}x = {round_value(new_c)}, we can solve for x.\n"
+
+        # Solve for x (theoretically, without actually computing)
+        x_value = new_c / new_a
+        description += f"Solving for x, we get x = {round_value(x_value)}.\n"
+
+        # Substitute x into the first original equation to solve for y
+        if b != 0:
+            y_value = (c - a * x_value) / b
+        else:
+            y_value = (f - d * x_value) / e
+            
+        description += (f"Substituting x = {round_value(x_value)} into the first original equation, we get: "
+                        f"{round_value(b)}y = {round_value(c - a * x_value)}, which gives y = {round_value(y_value)}.\n")
+
+        return description
 

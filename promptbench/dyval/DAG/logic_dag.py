@@ -74,8 +74,8 @@ class BoolDAGDescriber(TreeDAGDescriber):
         self.uni_ops = uni_ops
         super().__init__(dag_obj, add_rand_desc, delete_desc)
     
-    def describe_node(self, node):
-        if node.op is None:
+    def describe_question_node(self, node):
+        if node.op == None:
             description = f"{node.name} is {'True' if node.value else 'False'}."
         else:
             if node.op == 'not':
@@ -87,6 +87,28 @@ class BoolDAGDescriber(TreeDAGDescriber):
                 child_descriptions = ' OR '.join(child.name for child in node.children)
                 description = f"The value of {node.name} equals to ({child_descriptions})."
         
+        return description
+
+    def describe_inference_node(self, node):
+
+        def bool_to_str(val):
+            return 'True' if val == True else 'False'
+
+        if node.op == None:
+            description = f"{node.name} is {bool_to_str(node.value)}."
+        else:
+            ops_description = {
+                'not': 'NOT',
+                'and': 'AND',
+                'or': 'OR'
+            }
+            if node.op == 'not':
+                description = f"{node.name} = ({ops_description[node.op]} {node.children[0].name}) = ({ops_description[node.op]} {bool_to_str(node.children[0].value)}) = {bool_to_str(node.value)}."
+            else:
+                children_names = f" {ops_description[node.op]} ".join(child.name for child in node.children)
+                children_values = f" {ops_description[node.op]} ".join(map(bool_to_str, (child.value for child in node.children)))
+                description = f"{node.name} = ({children_names}) = ({children_values}) = {bool_to_str(node.value)}."
+
         return description
 
 
@@ -112,19 +134,23 @@ class DeductionDAG(TreeDAG):
 
             if op in self.uni_ops:
                 children = [self.generate_tree(depth-1)]
-                value = not children[0].value if children[0].value != "N/A" else "N/A"
+                value = True if children[0].value == False else "N/A"
 
             else:
                 num_of_children = self.num_children_per_node
                 children = [self.generate_tree(depth - 1) for _ in range(num_of_children)]
                 child_values = [child.value for child in children]
                 
-                if "N/A" in child_values:
-                    value = "N/A"
-                elif op == 'and':
-                    value = True if all(child_values) else "N/A"
+                if op == 'and':
+                    if "N/A" in child_values:
+                        value = "N/A"
+                    else:
+                        value = True if all(child_values) else "N/A"
                 elif op == 'or':
-                    value = True if any(child_values) else "N/A"
+                    if True in child_values:
+                        value = True
+                    else:
+                        value = "N/A"
 
             return Node(value, op, next(self.name_generator), children)
     
@@ -142,8 +168,8 @@ class DeductionDAGDescriber(TreeDAGDescriber):
         self.uni_ops = uni_ops
         super().__init__(dag_obj, add_rand_desc, delete_desc=0)
     
-    def describe_node(self, node):
-        if node.op is None:
+    def describe_question_node(self, node):
+        if node.op == None:
             description = f"{node.name} is {'True' if node.value else 'False'}."
 
         else:
@@ -157,6 +183,55 @@ class DeductionDAGDescriber(TreeDAGDescriber):
                 description = f"({child_descriptions}) -> {node.name}."
         
         return description
+
+    def describe_inference_node(self, node):
+        
+        def bool_to_str(val):
+            if val == "N/A":
+                return "N/A"
+            return 'True' if val else 'False'
+        
+        if node.op == None:
+            description = f"{node.name} is {bool_to_str(node.value)}."
+        else:
+            if node.op == 'not':
+                description = f"(NOT {node.children[0].name}) = (NOT {bool_to_str(node.children[0].value)}) -> {node.name}.\n"
+                if node.children[0].value == True:
+                    description += f"The value of the premise (NOT {bool_to_str(node.children[0].value)}) is {'False' if node.children[0].value else 'True'}. "
+                    description += f"Thus, the value of {node.name} cannot be deduced, and is set to N/A."
+                elif node.children[0].value == "N/A":
+                    description += f"The value of {node.name} cannot be deduced, and is set to N/A."
+                else:
+                    description += f"The premise (NOT {bool_to_str(node.children[0].value)}) is True, thus, the value of {node.name} is {bool_to_str(node.value)}."
+            
+            elif node.op == 'and':
+                description = ""
+                premise_name = "(" + " AND ".join(child.name for child in node.children) + ")"
+                premise_value = "(" + " AND ".join(bool_to_str(child.value) for child in node.children) + ")"
+
+                description +=  premise_name + " = " + premise_value + " -> " + node.name + "."
+                if "N/A" in [child.value for child in node.children]:
+                    description += f"\nGiven at least one of the children's value is N/A, the value of {node.name} cannot be deduced and is set to N/A."
+                elif all([child.value for child in node.children]):
+                    description += f"\nThe premise {premise_value} is True, thus, the value of {node.name} is True."
+                else:
+                    description += f"\nThe premise {premise_value} is False, thus, the value of {node.name} can not be deduced and is set to N/A."
+            
+            elif node.op == 'or':
+                description = ""
+                premise_name = "(" + " OR ".join(child.name for child in node.children) + ")"
+                premise_value = "(" + " OR ".join(bool_to_str(child.value) for child in node.children) + ")"
+                description += premise_name + " = " + premise_value + " -> " + node.name + "."
+                
+                if True in [child.value for child in node.children]:
+                    description += f"\nThe premise {premise_value} is True, thus, the value of {node.name} is True."
+                elif "N/A" in [child.value for child in node.children]:
+                    description += f"\nGiven none of the children are True and at least one is N/A, thus, the value of premise is N/A. Thus, the value of {node.name} cannot be deduced and is set to N/A."
+                else:
+                    description += f"\nThe premise {premise_value} is False, thus, the value of {node.name} cannot be deduced and is set to N/A."
+
+        return description
+
 
 
 class AbductionDAG(TreeDAG):
@@ -184,35 +259,76 @@ class AbductionDAG(TreeDAG):
                 children = [self.generate_tree(depth-1) for _ in range(self.num_children_per_node)]
             
             return Node(None, op, next(self.name_generator), children)
-    
-    def abduct_node_value(self, start, end):
-        if start == end:
-            return start.value
 
+    def _find_path(self, start, end):
+        """Helper function to find the path from start to end node."""
         visited = set()
-        queue = [(start, start.value)]  # Each element in the queue is a tuple (node, current_value)
-        
-        while queue:
-            node, value = queue.pop(0)
+        stack = [(start, [start])]
 
-            # If we reach the end node, return the value
-            if node == end:
-                return value
+        while stack:
+            (vertex, path) = stack.pop()
+            if vertex not in visited:
+                if vertex == end:
+                    return path
+                visited.add(vertex)
+                for child in vertex.children:
+                    stack.append((child, path + [child]))
+        return []
 
-            if node not in visited:
-                visited.add(node)
-                if value == "N/A" or node.op == 'or':
-                    child_value = "N/A"
-                elif node.op == 'not':
-                    child_value = not value
-                elif node.op == 'and':
-                    child_value = value
+    def abduct_node_value(self, start, end):
 
-                for child in node.children:
-                    queue.append((child, child_value))
+        def bool_to_str(val):
+            if val == "N/A":
+                return "N/A"
+            return 'True' if val == True else 'False'
 
-        # If end node is not reached
-        return "N/A"
+        path = self._find_path(start, end)
+        if not path:
+            return "N/A", "Since we cannot find a path from start to end, thus the answer is N/A."
+
+        # The description will be a list that captures the abductive process.
+        descriptions = []
+
+        for index in range(len(path) - 1):
+            current_node = path[index]
+            next_node = path[index + 1]
+            
+            if current_node.op == 'not':
+                premise_name = f"(NOT {next_node.name})"
+                
+            elif current_node.op == 'and':
+                premise_name = "(" + " AND ".join(child.name for child in current_node.children) + ")"
+
+            elif current_node.op == 'or':
+                premise_name = "(" + " OR ".join(child.name for child in current_node.children) + ")"
+            
+            description = f"{premise_name} -> {current_node.name} = {bool_to_str(current_node.value)}.\n"
+            description += f"Given {current_node.name} is {bool_to_str(current_node.value)}, "
+
+            if current_node.value == "N/A" or current_node.value == True:
+                description += f"the value of {next_node.name} can not be abduced and is set to be N/A."
+                next_node.value = "N/A"
+            else:
+                description += f"the value of premise {premise_name} is False,"
+                if current_node.op == "not":
+                    description += f" thus, the value of {next_node.name} is abduced as True."
+                    next_node.value = True
+                elif current_node.op == "and":
+                    description += f" however, because the operation is 'AND', the value of {next_node.name} can not be abduced and is set to N/A."
+                    next_node.value = "N/A"
+                else:
+                    description += f" thus, the value of {next_node.name} is abduced as False."
+                    next_node.value = False
+
+
+            descriptions.append(description)
+        # The final value of the end node after the abductive process.
+        value = path[-1].value
+
+        # Combine all descriptions into a single string.
+        combined_description = "\n".join(descriptions)
+
+        return value, combined_description
 
     def check_link_constraint(self, father_node, child_node):
         "Adding links are not allowed in abduction DAGs"
@@ -228,8 +344,8 @@ class AbductionDAGDescriber(TreeDAGDescriber):
         self.uni_ops = uni_ops
         super().__init__(dag_obj, add_rand_desc, delete_desc=0)
     
-    def describe_node(self, node):
-        if node.op is None:
+    def describe_question_node(self, node):
+        if node.op == None:
             description = ""
 
         else:
@@ -246,7 +362,7 @@ class AbductionDAGDescriber(TreeDAGDescriber):
     
     def describe_abduction(self):
         start = self.dag_obj.root
-        start.value = np.random.choice([True, False], p=[0.1, 0.9])
+        start.value = np.random.choice([True, False], p=[0.07, 0.93])
 
         leaf_nodes = []
         for node in self.dag_obj.nodes:
@@ -255,17 +371,22 @@ class AbductionDAGDescriber(TreeDAGDescriber):
         
         end = np.random.choice(leaf_nodes)
         
-        if start.value:
-            answer = "N/A"
-        else:
-            answer = self.dag_obj.abduct_node_value(start, end)
+        answer, answer_desc = self.dag_obj.abduct_node_value(start, end)
         
-        return f"Given {start.name} is {'True' if start.value else 'False'}, what is the value of {end.name}?", answer
+        return f"Given {start.name} is {'True' if start.value else 'False'}, what is the value of {end.name}?", answer, answer_desc
 
-    def describe(self):
-        descriptions = self._describe()
-        abduction_desc, answer = self.describe_abduction()
+    def describe_inference_steps(self):
+        return self.answer_desc
+
+    def describe_answer(self):
+        return self.answer
+    
+    def describe_question(self):
+        descriptions = self._describe_question()
+        abduction_desc, answer, answer_desc = self.describe_abduction()
+        self.answer = answer
+        self.answer_desc = answer_desc
         for order, desc in descriptions.items():
             descriptions[order] = re.sub('\n+', '\n', desc) + "\n" + abduction_desc
         
-        return {'descriptions': descriptions, 'answers': answer}        
+        return descriptions
