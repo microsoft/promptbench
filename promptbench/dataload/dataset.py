@@ -2,6 +2,8 @@
 # Licensed under the MIT License.
 
 import os
+import re
+import random
 import requests
 import json
 
@@ -14,13 +16,26 @@ DATA_SET = [
     "mnli", "mnli_matched", "mnli_mismatched",
     "qnli", "wnli", "rte", "mrpc",
     "mmlu", "squad_v2", "un_multi", "iwslt", "math",
-    "bool_logic", "valid_parentheses"
+    "bool_logic", "valid_parentheses",
+    "gsm8k", "commonsenseQA", "bigbench_date", "bigbench_object_tracking"
 ]
+
+def shuffleDict(d):
+    keys = list(d.keys())
+    random.shuffle(keys)
+    [(key, d[key]) for key in keys]
+    random.shuffle(keys)
+    [(key, d[key]) for key in keys]
+    random.shuffle(keys)
+    keys = [(key, d[key]) for key in keys]
+    #keys = d(keys)
+    return dict(keys)
 
 class Dataset(object):
     def __init__(self, dataset_name):
         self.data = []
         self.data_list = DATA_SET
+        self.dataset_name = dataset_name
 
         # Get the parent directory
         cur_dir = os.path.dirname(os.path.abspath(__file__))
@@ -35,12 +50,16 @@ class Dataset(object):
         
         # check if the dataset exists, if not, download it
         self.filepath = os.path.join(self.data_dir, f"{dataset_name}.json")
+        self.filepath2 = os.path.join(self.data_dir, f"{dataset_name}.jsonl")
         if not os.path.exists(self.filepath):
-            url = f'https://wjdcloud.blob.core.windows.net/dataset/promptbench/dataset/{dataset_name}.json'
-            print(f"Downloading {dataset_name} dataset...")
-            response = requests.get(url)
-            with open(self.filepath, 'wb') as f:
-                f.write(response.content)
+            if os.path.exists(self.filepath2):
+                self.filepath = self.filepath2
+            else:
+                url = f'https://wjdcloud.blob.core.windows.net/dataset/promptbench/dataset/{dataset_name}.json'
+                print(f"Downloading {dataset_name} dataset...")
+                response = requests.get(url)
+                with open(self.filepath, 'wb') as f:
+                    f.write(response.content)
 
     def __len__(self):
         assert len(self.data) > 0, "Empty dataset. Please load data first."
@@ -288,4 +307,69 @@ class GLUE(Dataset):
             self.data.append({"content": content, "label": d['label']})            
 
 
+""" Dataset for prompt engineering """
 
+class GSM8K(Dataset):
+    def __init__(self):
+        super().__init__("gsm8k")
+        
+        self.data = []
+        decoder = json.JSONDecoder()
+        with open(self.filepath, 'r') as f:
+            lines = f.readlines()
+            for l in lines:
+                d = decoder.raw_decode(l)[0]
+                content = d["question"].strip()
+                label = d["answer"].split("#### ")[-1]
+                self.data.append({"content": content, "label": label})
+
+class BigBench(Dataset):
+    def __init__(self, dataset_name):
+        super().__init__(dataset_name)
+        
+        self.data = []
+        with open(self.filepath, 'r') as f:
+            json_data = json.load(f)
+            json_data = json_data["examples"]
+            if self.dataset_name == "bigbench_date":
+                choice_index = ['A','B','C','D','E','F']
+            elif self.dataset_name == "bigbench_object_tracking":
+                choice_index = ['A','B','C']
+            else:
+                raise ValueError("dataset is not properly defined ...")
+            for line in json_data:
+                q = line["input"].strip()
+                if self.dataset_name == "bigbench_date":
+                    choice = "Answer Choices:"
+                    # Randomly shuffle the answer choice dictionary because the original answer is always A ...
+                    choice_dic = shuffleDict(line["target_scores"])
+                elif self.dataset_name == "object_tracking":
+                    choice = "\nWhich choice is true ? Answer Choices:"
+                    choice_dic = line["target_scores"]
+                else:
+                    raise ValueError("dataset is not properly defined ...")
+                for i, key_value in enumerate(choice_dic.items()):
+                    key, value = key_value
+                    choice += " ("
+                    choice += choice_index[i]
+                    choice += ") "
+                    choice += key
+                    if value == 1:
+                        a = choice_index[i]
+                        #a = key
+                q = q + " " + choice
+                self.data.append({"content": q, "label": a})
+    
+    def extract_answer(self, output): 
+        if self.dataset_name == "bigbench_date":
+            answer = re.findall(r'A|B|C|D|E|F', output)
+        elif self.dataset_name == "bigbench_object_tracking":
+            answer = re.findall(r'A|B|C', output)
+        
+        answer = answer[0] if len(answer) > 0 else ""
+        
+        # print(answer)
+        return answer
+                
+class CSQA(Dataset):
+    pass
