@@ -5,7 +5,9 @@ class DatasetLoader:
     SUPPORTED_DATASETS = [
         "cola", "sst2", "qqp", "mnli", "mnli_matched", "mnli_mismatched", 
         "qnli", "wnli", "rte", "mrpc", "mmlu", "squad_v2", "un_multi", 
-        "iwslt", "math", "bool_logic", "valid_parentheses"
+        "iwslt", "math", "bool_logic", "valid_parentheses", 
+        'gsm8k', "csqa", "bigbench_date", "bigbench_object_tracking"
+        # todo gsm8k
     ]
 
     @staticmethod
@@ -60,6 +62,12 @@ class DatasetLoader:
             return BoolLogic()
         elif dataset_name == 'valid_parentheses':
             return ValidParentheses()
+        elif dataset_name == 'gsm8k':
+            return GSM8K()
+        elif dataset_name == 'csqa':
+            return CSQA()
+        elif 'bigbench' in dataset_name:
+            return BigBench(dataset_name)
         else:
             # If the dataset name doesn't match any known datasets, raise an error
             raise NotImplementedError(f"Dataset '{dataset_name}' is not supported.")
