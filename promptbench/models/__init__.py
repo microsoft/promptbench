@@ -28,7 +28,7 @@ Note: Ensure the required models and dependencies are installed and available in
 LLAMA_MODELS = [
     'llama2-7b', 'llama2-7b-chat', 'llama2-13b', 'llama2-13b-chat', 'llama2-70b', 'llama2-70b-chat',
 ]
-GPT_MODELS = ['gpt-3.5-turbo', 'gpt-4']
+GPT_MODELS = ['gpt-3.5-turbo', 'gpt-4', 'gpt-4-1106-preview', 'gpt-3.5-turbo-1106']
 VICUNA_MODELS = ['vicuna-7b', 'vicuna-13b', 'vicuna-13b-v1.3']
 UL2_MODELS = ['google/flan-ul2']
 

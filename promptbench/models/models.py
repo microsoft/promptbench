@@ -127,11 +127,11 @@ class OpenAIModel(LMMBaseModel):
         import time
         time.sleep(seconds + random.random())
 
-    # TODO: openai new version support
     def predict(self, input_text):
         
-        import openai
-        openai.api_key = self.openai_key
+        from openai import OpenAI
+        client = OpenAI(api_key=self.openai_key)
+        # openai.api_key = self.openai_key
         
         if isinstance(input_text, list):
             messages = input_text
@@ -143,12 +143,12 @@ class OpenAIModel(LMMBaseModel):
         retry_count = 0
         while retry_count < 3:
             try:
-                response = openai.ChatCompletion.create(
+                response = client.chat.completions.create(
                     model=self.model,
                     messages=messages,
                     temperature=self.temperature,
                 )
-                result = response['choices'][0]['message']['content']
+                result = response.choices[0].message.content
                 return result
                 
             except Exception as e:

@@ -1,0 +1,90 @@
+# For field details: https://amulet-docs.azurewebsites.net/config_file.html
+description: PELib
+
+target:
+  service: aml
+  name: canadav100cl
+
+# Reference for target:
+## When your service is "aml", you can choose the following cluster (name):
+
+# SERVICE    NAME             NODES        INSTANCE_NAME          SKU      LOCATION        PRIORITY
+# ┄┄┄┄┄┄┄┄┄  ┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄  ┄┄┄┄┄┄┄┄┄┄┄  ┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄  ┄┄┄┄┄┄┄  ┄┄┄┄┄┄┄┄┄┄┄┄┄┄  ┄┄┄┄┄┄┄┄┄┄┄
+#                             free / busy
+# aml        ust4              150 /    0  STANDARD_NC16AS_T4_V3  C1       southcentralus  LowPriority
+# aml        usp100           2024 /    0  STANDARD_NC6S_V2       C1       southcentralus  LowPriority
+# aml        a100                0 /   50  STANDARD_ND96ASR_V4    C1       southcentralus  LowPriority
+# aml        ussc40rscl         19 /   81  STANDARD_ND40rs_V2     G8-V100  southcentralus  LowPriority
+# aml        korea1GPUcl        16 /    4  STANDARD_NC6S_V3       G1-V100  koreacentral    LowPriority
+# aml        koreav100cl        25 /    0  STANDARD_NC24RS_V3     G4-V100  koreacentral    LowPriority
+# aml        japanv100cl        25 /    0  STANDARD_NC24RS_V3     G4-V100  japaneast       LowPriority
+# aml        canada1GPUcl      299 /    1  STANDARD_NC6S_V3       G1-V100  canadacentral   LowPriority
+# aml        canada24            5 /    0  STANDARD_NC24S_V3      G4-V100  canadacentral   LowPriority
+# aml        canadav100cl       25 /    0  STANDARD_NC24RS_V3     G4-V100  canadacentral   LowPriority
+# aml        australia1GPUcl   364 /    1  STANDARD_NC6S_V3       G1-V100  australiaeast   LowPriority
+# aml        australia24scl      2 /    0  STANDARD_NC24S_V3      G4-V100  australiaeast   LowPriority
+# aml        australiav100cl    25 /    0  STANDARD_NC24RS_V3     G4-V100  australiaeast   LowPriority
+# aml        usscv100cl          0 /    0  STANDARD_ND40s_V2      G8-V100  southcentralus  Dedicated
+
+## When your service is "sing":
+# service: sing
+# name: msrresrchvc or msroctovc
+
+## When your service is "amlk8s":
+# service: amlk8s
+# name: itplabrr1cl1
+
+ # - pip install -r requirements.txt
+environment:
+  image: amlt-sing/pytorch-1.9.0-cuda11.3-cudnn8-devel
+  setup:
+    - pip install openai rich pillow accelerate torch==1.10 transformers==4.32.1 datasets autocorrect
+
+# environment:
+#   image: amlt-sing/pytorch-1.11.0-cuda11.6
+#   setup:
+#     - pip install openai rich pillow accelerate transformers sentencepiece
+
+# Experiment source code. This section is optional.
+# $CONFIG_DIR is expanded to the directory of this config file.
+code:
+  local_dir: /home/v-qinlinzhao/promptbench
+  # ignore:
+  #   - datasets/anli_r[1-3]/
+
+storage:
+  data:
+    storage_account_name: ussclowpriv100data
+    container_name: v-kaijiezhu
+    mount_dir: /mnt/mydata   # you can use this path in you code
+  my_output:
+    storage_account_name: ussclowpriv100data
+    container_name: v-qinlinzhao
+
+
+# SKU usage: G1 (single GPU), G4 (quad GPU), G4-V100 (1 machine, 4 V100 gpus), etc...
+jobs:
+  # - name: ot_zscot_llama7
+  #   sku: G4
+  #   command:
+  #     - python test_pe.py --method_name ZSCoT --dataset_name bigbench_object_tracking --model_name llama2-7b-chat
+  # - name: date_zscot_llama7
+  #   sku: G4
+  #   command:
+  #     - python test_pe.py --method_name ZSCoT --dataset_name bigbench_date --model_name llama2-7b-chat
+  - name: gsm8k_zscot_llama7
+    sku: G4
+    command:
+      - python test_pe.py --method_name ZSCoT --dataset_name gsm8k --model_name llama2-7b-chat
+  - name: csqa_zscot_llama7
+    sku: G4
+    command:
+      - python test_pe.py --method_name ZSCoT --dataset_name csqa --model_name llama2-7b-chat
+
+
+
+  
+
+  
+    
+      

@@ -23,12 +23,14 @@ class Base:
             self.direct_answer_trigger = "Therefore, the answer (arabic numerals) is"
         elif self.dataset_name == "bigbench_date":
             self.direct_answer_trigger = "Therefore, among A through F, the answer is"
-        elif self.dataset_name == "object_tracking":
+        elif self.dataset_name == "bigbench_object_tracking":
             self.direct_answer_trigger = "Therefore, among A through C, the answer is"
         elif self.dataset_name == "coin_flip":
             self.direct_answer_trigger = "Therefore, the answer (Yes or No) is"
         elif self.dataset_name == "last_letters":
             self.direct_answer_trigger = "Therefore, the answer is"
+        elif self.dataset_name == "csqa":
+            self.direct_answer_trigger = "Therefore, among A through E, the answer is"
     
     @abstractmethod
     def query(self, input_text, model):

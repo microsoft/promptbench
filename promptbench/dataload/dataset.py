@@ -68,6 +68,9 @@ class Dataset(object):
     def __getitem__(self, idx):
         assert len(self.data) > 0, "Empty dataset. Please load data first."
         return self.data[idx]
+    
+    def extract_answer(self, output): 
+        return output
 
 
 class BoolLogic(Dataset):
@@ -322,7 +325,13 @@ class GSM8K(Dataset):
                 content = d["question"].strip()
                 label = d["answer"].split("#### ")[-1]
                 self.data.append({"content": content, "label": label})
-
+    
+    def extract_answer(self, output):
+        answer = output.replace(",", "")
+        answer = [s for s in re.findall(r'-?\d+\.?\d*', answer)]
+        answer = answer[0] if len(answer) > 0 else ""
+        return answer
+        
 class BigBench(Dataset):
     def __init__(self, dataset_name):
         super().__init__(dataset_name)
@@ -343,7 +352,7 @@ class BigBench(Dataset):
                     choice = "Answer Choices:"
                     # Randomly shuffle the answer choice dictionary because the original answer is always A ...
                     choice_dic = shuffleDict(line["target_scores"])
-                elif self.dataset_name == "object_tracking":
+                elif self.dataset_name == "bigbench_object_tracking":
                     choice = "\nWhich choice is true ? Answer Choices:"
                     choice_dic = line["target_scores"]
                 else:
@@ -372,4 +381,31 @@ class BigBench(Dataset):
         return answer
                 
 class CSQA(Dataset):
-    pass
+    def __init__(self):
+        super().__init__("csqa")
+        
+        self.data = []
+        with open(self.filepath, 'r') as f:
+            json_data = json.load(f)
+            choice_index = ['A','B','C','D','E']
+            for line in json_data:
+                answer = line["answer"]
+                q = line["query"].strip()
+                choice = "\nAnswer Choices:"
+                choice_list = line["cands"]
+                for i, c in enumerate(choice_list):
+                    choice += " ("
+                    choice += choice_index[i]
+                    choice += ") "
+                    choice += c
+                    if c == answer:
+                        a = choice_index[i]
+                q = q + " " + choice
+                self.data.append({"content": q, "label": a})
+                
+    def extract_answer(self, output): 
+        answer = re.findall(r'A|B|C|D|E', output)
+        answer = answer[0] if len(answer) > 0 else ""
+        
+        # print(answer)
+        return answer

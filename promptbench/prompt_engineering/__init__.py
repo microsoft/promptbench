@@ -64,6 +64,7 @@ class PEMethod(object):
             input_text = data['content']
             pred = self.infer_method.query(input_text, model)
             pred = dataset.extract_answer(pred)  #FIXME 执行取片操作后丢失类
+            # print(pred)
             preds.append(pred)
             
         score = Eval.compute_cls_accuracy(preds, labels)
