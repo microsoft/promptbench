@@ -28,7 +28,7 @@ Note: Ensure the required models and dependencies are installed and available in
 LLAMA_MODELS = [
     'llama2-7b', 'llama2-7b-chat', 'llama2-13b', 'llama2-13b-chat', 'llama2-70b', 'llama2-70b-chat',
 ]
-GPT_MODELS = ['gpt-3.5-turbo', 'gpt-4']
+GPT_MODELS = ['gpt-3.5-turbo', 'gpt-4', 'gpt-4-1106-preview', 'gpt-3.5-turbo-1106']
 VICUNA_MODELS = ['vicuna-7b', 'vicuna-13b', 'vicuna-13b-v1.3']
 UL2_MODELS = ['google/flan-ul2']
 
@@ -74,7 +74,71 @@ class LLMModel(object):
     def model_list():
         """Returns a dictionary of supported models."""
         return MODEL_LIST
+    
+    def convert_text_to_prompt(self, text, role):
+        """Constructs multi_turn conversation for complex methods in prompt engineering."""
+        if self.model == ['gpt4', 'gpt-3.5-turbo-16k', 'gpt-3.5-turbo-0301', 'gpt-3.5-turbo']:
+            return {'role': role, 'content': text} 
+        else:
+            return str(role) + ': ' + str(text) + '\n'
 
+    def concat_prompts(self, prompt_list):
+        """Concatenates the prompts into a single prompt."""
+        if self.model == ['gpt4', 'gpt-3.5-turbo-16k', 'gpt-3.5-turbo-0301', 'gpt-3.5-turbo']:
+            return self._gpt_concat_prompts(prompt_list)
+        else:
+            return self._other_concat_prompts(prompt_list)
+        
+    def _gpt_concat_prompts(self, prompt_list):
+        """
+        Concatenate prompts from various inputs into a single list of dictionaries.
+
+        The function accepts any number of keyword arguments, each of which can be either
+        a dictionary or a list of dictionaries. It concatenates all inputs into a single list.
+
+        Returns:
+            A list of dictionaries containing all the prompts from the input arguments.
+        """
+        # Initialize an empty list to hold all dictionaries
+        all_prompts = []
+
+        # Iterate over each keyword argument
+        for arg in prompt_list:
+            # Check if the argument is a dictionary, and if so, add it to the list
+            if isinstance(arg, dict):
+                all_prompts.append(arg)
+            # Check if the argument is a list of dictionaries
+            elif isinstance(arg, list) and all(isinstance(item, dict) for item in arg):
+                # Extend the list with the dictionaries from the current argument
+                all_prompts.extend(arg)
+            else:
+                raise ValueError("All arguments must be dictionaries or lists of dictionaries.")
+
+        return all_prompts
+
+    def _other_concat_prompts(self, prompt_list):
+        """
+        Concatenate prompts from various inputs into a single strings.
+
+        The function accepts any number of keyword arguments, each of which must be
+        a string. It concatenates all inputs into a single string.
+
+        Returns:
+            A string containing all the prompts from the input arguments.
+        """
+        # Initialize an empty string to hold all prompts
+        all_prompts = ""
+
+        # Iterate over each keyword argument
+        for arg in prompt_list:
+            # Check if the argument is a string, and if so, add it to the list
+            if isinstance(arg, str):
+                all_prompts = all_prompts + '\n' + arg
+            else:
+                raise ValueError("All arguments must be strings.")
+
+        return all_prompts
+    
     def __call__(self, input_text, **kwargs):
         """Predicts the output based on the given input text using the loaded model."""
         return self.infer_model.predict(input_text, **kwargs)

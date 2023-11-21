@@ -112,7 +112,7 @@ class OpenAIModel(LMMBaseModel):
         super(OpenAIModel, self).__init__(**kwargs)
         self.openai_key = kwargs.get('openai_key', None)
         self.temperature = kwargs.get('temperature', 0.0)
-        self.sleep_time = kwargs.get('sleep_time', 3)
+        self.sleep_time = kwargs.get('sleep_time', 0)
         if not self.openai_key:
             raise ValueError("openai_key is required for openai model!")
 
@@ -129,21 +129,30 @@ class OpenAIModel(LMMBaseModel):
 
     def predict(self, input_text):
         
-        import openai
-        openai.api_key = self.openai_key
-        try:
-            while True:
-                response = openai.ChatCompletion.create(
+        from openai import OpenAI
+        client = OpenAI(api_key=self.openai_key)
+        # openai.api_key = self.openai_key
+        
+        if isinstance(input_text, list):
+            messages = input_text
+        elif isinstance(input_text, dict):
+            messages = [input_text]
+        else:
+            messages = [{"role": "user", "content": input_text}]
+        
+        retry_count = 0
+        while retry_count < 3:
+            try:
+                response = client.chat.completions.create(
                     model=self.model,
-                    messages=[
-                        {"role": "user", "content": input_text},
-                    ],
+                    messages=messages,
                     temperature=self.temperature,
                 )
-                result = response['choices'][0]['message']['content']
+                result = response.choices[0].message.content
                 return result
-            
-        except Exception as e:
-            print(e)
-            print("Retrying...")
-            self.sleep(self.sleep_time)
+                
+            except Exception as e:
+                print(e)
+                print("Retrying...")
+                self.sleep(self.sleep_time)
+                retry_count += 1

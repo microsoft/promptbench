@@ -86,6 +86,7 @@ def list_files(directory):
     files = [os.path.join(directory, d) for d in os.listdir(directory) if not os.path.isdir(os.path.join(directory, d))]
     return files
 
+
 def convert_model_name(attack):
     attack_name = {
         "google/flan-t5-large": "t5",

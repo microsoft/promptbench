@@ -165,7 +165,7 @@ dependencies:
       - nvidia-cusparse-cu11==11.7.4.91
       - nvidia-nccl-cu11==2.14.3
       - nvidia-nvtx-cu11==11.7.91
-      - openai==0.27.2
+      - openai==1.0.0
       - openhownet==2.0
       - overrides==3.1.0
       - pandas==1.5.3
@@ -199,7 +199,7 @@ dependencies:
       - tokenizers==0.13.2
       - torch==2.0.0
       - tqdm==4.65.0
-      - transformers==4.31.1
+      - transformers==4.32.1
       - triton==2.0.0
       - typing-extensions==4.5.0
       - wcwidth==0.2.6
