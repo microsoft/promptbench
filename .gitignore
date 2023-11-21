@@ -2,6 +2,7 @@ results*/
 logs*/
 *.sh
 promptbench/data/
+llama*.yaml
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
