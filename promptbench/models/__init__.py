@@ -25,6 +25,7 @@ Note: Ensure the required models and dependencies are installed and available in
 """
 
 # Lists of supported model names for different architectures
+T5_MODELS = ['google/flan-t5-large']
 LLAMA_MODELS = [
     'llama2-7b', 'llama2-7b-chat', 'llama2-13b', 'llama2-13b-chat', 'llama2-70b', 'llama2-70b-chat',
 ]
@@ -47,16 +48,16 @@ class LLMModel(object):
     It supports model creation, and inference based on model name.
     """
 
-    def __init__(self, **kwargs):
-        self.model = kwargs.get('model')
-        self.infer_model = self.create_model(**kwargs)
+    def __init__(self, model, max_new_tokens=20, temperature=0, model_dir=None, openai_key=None, sleep_time=3):
+        self.model = model
+        self.infer_model = self.create_model(max_new_tokens=20, temperature=0, model_dir=None, openai_key=None, sleep_time=3)
 
-    def create_model(self, **kwargs):
+    def create_model(self, max_new_tokens=20, temperature=0, model_dir=None, openai_key=None, sleep_time=3):
         """Creates and returns the appropriate model based on the model name."""
 
         # Dictionary mapping of model names to their respective classes
         model_mapping = {
-            'google/flan-t5-large': T5Model,
+            **{model: T5Model for model in T5_MODELS},
             **{model: LlamaModel for model in LLAMA_MODELS},
             **{model: OpenAIModel for model in GPT_MODELS},
             **{model: VicunaModel for model in VICUNA_MODELS},
@@ -66,7 +67,12 @@ class LLMModel(object):
         # Get the model class based on the model name and instantiate it
         model_class = model_mapping.get(self.model)
         if model_class:
-            return model_class(**kwargs)
+            if self.model in LLAMA_MODELS or self.model in VICUNA_MODELS:
+                return model_class(self.model, max_new_tokens, model_dir)
+            elif self.model in GPT_MODELS:
+                return model_class(self.model, max_new_tokens, openai_key, temperature, sleep_time)
+            else:
+                return model_class(self.model, max_new_tokens)
         else:
             raise ValueError("The model is not supported!")
 
