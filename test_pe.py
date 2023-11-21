@@ -26,7 +26,7 @@ if __name__ == '__main__':
 
     # load a model.
     model = pb.LLMModel(model=model_name, 
-                        openai_key = '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',
+                        openai_key = 'sk-xxx',
                         model_dir = f'/mnt/mydata/llms/{model_name}',
                         max_new_tokens=30)
 

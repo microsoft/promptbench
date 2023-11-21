@@ -32,7 +32,7 @@ def shuffleDict(d):
     return dict(keys)
 
 class Dataset(object):
-    def __init__(self, dataset_name=''):
+    def __init__(self, dataset_name):
         self.data = []
         self.data_list = DATA_SET
         self.dataset_name = dataset_name
