@@ -1,25 +1,7 @@
-import logging
 import re
 
 def round_value(val):
     return str(round(float(val), 8))
-
-def create_logger(log_path):
-
-    logging.getLogger().handlers = []
-
-    logger = logging.getLogger(__name__)
-    logger.setLevel(logging.INFO)
-
-    formatter = logging.Formatter(
-        '%(asctime)s - %(levelname)s - %(message)s')
-
-    file_handler = logging.FileHandler(log_path)
-    file_handler.setFormatter(formatter)
-    file_handler.setLevel(logging.INFO)
-    logger.addHandler(file_handler)
-
-    return logger
 
 
 def evaluate(dataset_type, preds, gts):
@@ -85,7 +67,7 @@ def evaluate(dataset_type, preds, gts):
 Processing inputs, training eaxmples, and predictions of LLMs usually depends on the prompt,
 so that's why we have separate functions for it.
 """
-def process_inputs(prompt, dataset):
+def process_dyval_inputs(prompt, dataset):
     descriptions = {}
     dataset_type = dataset.dataset_type
 
@@ -101,9 +83,9 @@ def process_inputs(prompt, dataset):
     
     return descriptions
 
-def process_training_sample(sample, dataset_type):
+def process_dyval_training_sample(sample, dataset_type):
 
-    prompt = PROMPTS[dataset_type][0]
+    prompt = DYVAL_PROMPTS[dataset_type][0]
     for order, input_text in sample["descriptions"].items():
         if dataset_type in ["arithmetic", "bool_logic", "deductive_logic"]:
             var = sample["vars"]
@@ -140,85 +122,47 @@ def process_training_sample(sample, dataset_type):
     
     return sample
 
-def process_preds(raw_preds):
-    preds = []
-    for raw_pred in raw_preds:
-        # convert large number (e.g., 1,234,567) to (e.g., 1234567)
-        raw_pred = raw_pred.replace(',', '')
-        pred = ""
-        match = re.search('<<<(.*?)>>>', raw_pred)
-        if match:
-            pred = match.group(1).strip()
-        preds.append(pred)
-    return preds
+def process_dyval_preds(raw_pred):
+
+    raw_pred = raw_pred.replace(',', '')
+    pred = ""
+    match = re.search('<<<(.*?)>>>', raw_pred)
+    if match:
+        pred = match.group(1).strip()
+
+    return pred
 
 
-PROMPTS = {
+DYVAL_PROMPTS = {
     "arithmetic": [
-        "Here is a description of an arithmetic problem:\n{}\nCompute the result of {}. If the solution cannot be calculated, answer 'N/A'. Ensure your result is within a relative precision of 0.0001 (or 0.01%) compared to the ground truth value. Ensure your final result begins with '<<<' and ends with '>>>', for example, if the answer is 1, your final result should be <<<1>>>."
+        "Here is a description of an arithmetic problem:\n{descriptions}\nCompute the result of {vars}. If the solution cannot be calculated, answer 'N/A'. Ensure your result is within a relative precision of 0.0001 (or 0.01%) compared to the ground truth value. Ensure your final result begins with '<<<' and ends with '>>>', for example, if the answer is 1, your final result should be <<<1>>>."
     ],
     
     "linear_equation": [
-        "Given the following linear equation system with two variables:\n{}\nDetermine the values of x and y. Ensure your results are within a relative precision of 0.001 (or 0.1%) compared to the ground truth values. Your response should be formatted as: <<<x's value y's value>>>, e.g., if x=1 and y=2, then it should be <<<1 2>>>",
+        "Given the following linear equation system with two variables:\n{descriptions}\nDetermine the values of x and y. Ensure your results are within a relative precision of 0.001 (or 0.1%) compared to the ground truth values. Your response should be formatted as: <<<x's value y's value>>>, e.g., if x=1 and y=2, then it should be <<<1 2>>>",
     ],
 
     "bool_logic": [
-        "Here is a description of a boolean logic problem:\n{}\nCompute the result of {}. If the solution can not be calculated, answer 'N/A'. Ensure your final result begins with '<<<' and ends with '>>>', for example, if the answer is True, your final result should be <<<True>>>.",
+        "Here is a description of a boolean logic problem:\n{descriptions}\nCompute the result of {vars}. If the solution can not be calculated, answer 'N/A'. Ensure your final result begins with '<<<' and ends with '>>>', for example, if the answer is True, your final result should be <<<True>>>.",
     ],
 
     "deductive_logic": [
-        "Here is a description of a deductive logic problem:\n{}\nThe symbol '->' represents a deductive relationship, e.g., A -> B implies that if A is true, then B is true. If A is false, B's truth value remains undetermined (N/A). Deduce the result of {}. If the solution can not be deduced, answer 'N/A'. Ensure your final result begins with '<<<' and ends with '>>>', for example, if the answer is True, your final result should be <<<True>>>.",
+        "Here is a description of a deductive logic problem:\n{descriptions}\nThe symbol '->' represents a deductive relationship, e.g., A -> B implies that if A is true, then B is true. If A is false, B's truth value remains undetermined (N/A). Deduce the result of {vars}. If the solution can not be deduced, answer 'N/A'. Ensure your final result begins with '<<<' and ends with '>>>', for example, if the answer is True, your final result should be <<<True>>>.",
     ],
 
     "abductive_logic": [
-        "Here is a description of an abductive logic problem:{}\nThe symbol '->' represents a deductive relationship, e.g., A -> B implies that if B is false, then A is false. If B is true, A's truth value remains undetermined (N/A). If the solution can not be abduced, answer 'N/A'. Ensure your final result begins with '<<<' and ends with '>>>', for example, if the answer is True, your final result should be <<<True>>>.",
+        "Here is a description of an abductive logic problem:{descriptions}\nThe symbol '->' represents a deductive relationship, e.g., A -> B implies that if B is false, then A is false. If B is true, A's truth value remains undetermined (N/A). If the solution can not be abduced, answer 'N/A'. Ensure your final result begins with '<<<' and ends with '>>>', for example, if the answer is True, your final result should be <<<True>>>.",
     ],
 
     "reachability": [
-        "Given a directed graph:\n{}\nRespond with either '<<<True>>>' if reachable, or '<<<False>>>' otherwise.",
+        "Given a directed graph:\n{descriptions}\nRespond with either '<<<True>>>' if reachable, or '<<<False>>>' otherwise.",
     ],
 
     "max_sum_path": [
-        "Given a directed graph with values assigned to each node:\n{}\nFor exmaple, the value of the path A->B->C is obtained by summing the values of nodes A, B, and C. Please format your response as <<<Answer>>>. For example, if the answer is 1, it should be presented as <<<1>>>.",
+        "Given a directed graph with values assigned to each node:\n{descriptions}\nFor exmaple, the value of the path A->B->C is obtained by summing the values of nodes A, B, and C. Please format your response as <<<Answer>>>. For example, if the answer is 1, it should be presented as <<<1>>>.",
     ],
 
 }
-
-API_MODELS = [
-    'chatgpt',
-    'chatgpt-16k',
-    'gpt4',
-]
-
-
-MODEL_SET = [ 
-    'google/flan-t5-large',
-    'EleutherAI/gpt-neox-20b',
-    'tiiuae/falcon-40b-instruct',
-    'llama-13b',
-    'llama2-7b',
-    'llama2-7b-chat',
-    'llama2-13b',
-    'llama2-13b-ft',
-    'llama2-13b-chat',
-    'llama2-13b-chat',
-    'llama2-70b',
-    'llama2-70b-chat',
-    'vicuna-13b',
-    'vicuna-13b-v1.3',
-    'google/flan-ul2',
-    'cerebras/Cerebras-GPT-13B',
-    'databricks/dolly-v1-6b',
-    "microsoft/phi-1_5",
-    "Xwin-LM/Xwin-LM-70B-V0.1",
-    "Xwin-LM/Xwin-LM-13B-V0.1",
-    "WizardLM/WizardMath-13B-V1.0",
-    "WizardLM/WizardMath-70B-V1.0",
-
-    'chatgpt',
-    'chatgpt-16k',
-    'gpt4',
-]
 
 
 LEAST2MOST_EXAMPLES = {

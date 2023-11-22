@@ -79,7 +79,7 @@ from promptbench.models import LLMModel
 
 # prompts = Prompt(dataset_name='sst2')
 prompts = Prompt("Classify the sentence as positive or negative: {content}")
-data = {"content": "I am happy today.", "label": "positive"}
+dataset = [{"content": "I am happy today.", "label": 1}, {"content": "It's slow, very slow...", "label": 0}]
 print(prompts[:2])
 
 
@@ -99,15 +99,15 @@ print(prompts[:2])
 # dataset = DatasetLoader.load_dataset('sst2')
 
 import promptbench as pb
-# print(pb.LLMModel.model_list())
-# model = pb.LLMModel(model='google/flan-t5-large', max_new_tokens=10)
+print(pb.LLMModel.model_list())
+model = pb.LLMModel(model='phi-1.5', max_new_tokens=20)
 
 # print(pb.DatasetLoader.dataset_list())
 # dataset = pb.DatasetLoader.load_dataset("sst2")
 # print(dataset[:5])
 
-dataset = pb.DyValDataset("arithmetic", num_samples=100, depth=3, num_children_per_node=2, add_rand_desc=1)
-print(dataset["topological"][0])
+# dataset = pb.DyValDataset("arithmetic", num_samples=100, depth=3, num_children_per_node=2, add_rand_desc=1)
+# print(dataset["topological"][0])
 
 
 # prompts = pb.Prompt(["Classify the sentence as positive or negative: {content}",
@@ -121,28 +121,30 @@ print(dataset["topological"][0])
 # But the model output is 'negative' and 'positive'.
 # So we need to define a projection function to map the model output to the label.
 # """
-# def proj_func(pred):
-#     mapping = {
-#         "positive": 1,
-#         "negative": 0
-#     }
-#     return mapping.get(pred, -1)
+def proj_func(pred):
+    mapping = {
+        "positive": 1,
+        "negative": 0
+    }
+    return mapping.get(pred, -1)
 
 
-# from tqdm import tqdm
-# for prompt in prompts:
-#     preds = []
-#     labels = []
-#     for data in tqdm(dataset):
-#         input_text = pb.InputProcess.basic_format(prompt, data)
-#         label = data['label']
-#         raw_pred = model(input_text)
-#         pred = pb.OutputProcess.cls(raw_pred, proj_func)
-#         preds.append(pred)
-#         labels.append(label)
+from tqdm import tqdm
+for prompt in prompts:
+    preds = []
+    labels = []
+    for data in tqdm(dataset):
+        input_text = pb.InputProcess.basic_format(prompt, data)
+        print(input_text)
+        label = data['label']
+        raw_pred = model(input_text)
+        print(raw_pred)
+        pred = pb.OutputProcess.cls(raw_pred, proj_func)
+        preds.append(pred)
+        labels.append(label)
     
-#     score = pb.Eval.compute_cls_accuracy(preds, labels)
-#     print(f"{score:.3f}, {prompt}")
+    score = pb.Eval.compute_cls_accuracy(preds, labels)
+    print(f"{score:.3f}, {prompt}")
 
 
 

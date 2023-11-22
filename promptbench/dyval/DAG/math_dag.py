@@ -4,7 +4,7 @@ import numpy as np
 
 from .dag import Node, TreeDAG
 from .describer import TreeDAGDescriber
-from ..utils import round_value
+from ..dyval_utils import round_value
 
 class ArithmeticDAG(TreeDAG):
     def __init__(self, ops, uni_ops, depth, num_children_per_node=2, extra_links_per_node=1, add_cycles=0):

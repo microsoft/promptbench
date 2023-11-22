@@ -1,5 +1,5 @@
 from tqdm import tqdm
-from .utils import process_training_sample
+from .dyval_utils import process_dyval_training_sample
 
 class DyValDataset:
     def __init__(self, 
@@ -44,24 +44,6 @@ class DyValDataset:
     def __getitem__(self, key):
         return self.data[key]
     
-    # def create_dataset(self):
-    #     data = {"descriptions": {}, "answers": []}
-    #     for _ in tqdm(range(self.num_samples)):
-    #         sample = self._generate_sample()
-    #         for key in sample.keys():
-    #             if key not in data:
-    #                 data[key] = []
-
-    #             if key == "descriptions":
-    #                 for order, desc in sample[key].items():
-    #                     if order not in data[key]:
-    #                         data[key][order] = []
-    #                     data[key][order].append(desc)
-    #             else:
-    #                 data[key].append(sample[key])
-        
-    #     return data
-
     def create_dataset(self):
         data = {}
         # data = {"descriptions": {}, "answers": []}
@@ -172,20 +154,6 @@ class DyValDataset:
         if is_trainset:
             inference_desc = describer.describe_inference_steps()
             sample["inferences"] = inference_desc
-            sample = process_training_sample(sample, dataset_type)
+            sample = process_dyval_training_sample(sample, dataset_type)
 
-        print("random order:")
-        print(sample["descriptions"]["random"])
-        print()
-        # # # print("reversed order:")
-        # # # print(sample["descriptions"]["reversed"])
-        # # # print()
-        # # # print("random order:")
-        # # # print(sample["descriptions"]["random"])
-        if is_trainset:
-            print("inference steps:")
-            print(sample["inferences"])
-            print()
-        print("answer:")
-        print(sample["answers"])
         return sample
