@@ -1,7 +1,7 @@
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT License.
-from abc import ABC, abstractmethod
-
+from abc import ABC
+import torch
 
 class LMMBaseModel(ABC):
     def __init__(self, model, max_new_tokens, temperature=0):
@@ -31,7 +31,17 @@ class PhiModel(LMMBaseModel):
         from transformers import AutoTokenizer, AutoModelForCausalLM
         self.tokenizer = AutoTokenizer.from_pretrained("microsoft/phi-1_5", trust_remote_code=True, torch_dtype="auto", device_map="auto")
         self.pipe = AutoModelForCausalLM.from_pretrained("microsoft/phi-1_5", trust_remote_code=True, torch_dtype="auto", device_map="auto")
+    
+    def predict(self, input_text, **kwargs):
+        input_ids = self.tokenizer(input_text, return_tensors="pt").input_ids.to("cuda")
 
+        outputs = self.pipe.generate(input_ids, 
+                                     max_new_tokens=self.max_new_tokens, 
+                                     temperature=self.temperature,
+                                     **kwargs)
+        
+        out = self.tokenizer.decode(outputs[0])
+        return out[len(input_text):]
 
 class T5Model(LMMBaseModel):
 
@@ -40,7 +50,6 @@ class T5Model(LMMBaseModel):
         from transformers import T5Tokenizer, T5ForConditionalGeneration
         
         # TODO: implement system_prompt
-        
         self.tokenizer = T5Tokenizer.from_pretrained(
             self.model, device_map="auto")
         self.pipe = T5ForConditionalGeneration.from_pretrained(
@@ -58,7 +67,7 @@ class UL2Model(LMMBaseModel):
         self.tokenizer = AutoTokenizer.from_pretrained(
             self.model, device_map="auto")
         self.pipe = T5ForConditionalGeneration.from_pretrained(
-            self.model, device_map="auto")
+            self.model, device_map="auto", torch_dtype=torch.bfloat16)
 
 
 class LlamaModel(LMMBaseModel):
@@ -74,11 +83,12 @@ class LlamaModel(LMMBaseModel):
         # TODO: rename Llama2 model to be consistent with huggingface
         # TODO: add default huggingface loader
         self.tokenizer = LlamaTokenizer.from_pretrained(model_dir, device_map="auto")
-        self.pipe = LlamaForCausalLM.from_pretrained(model_dir, device_map="auto")
+        self.pipe = LlamaForCausalLM.from_pretrained(model_dir, device_map="auto", torch_dtype=torch.float16)
 
     def predict(self, input_text, **kwargs):
-        # input_text = f"<s>[INST] <<SYS>>{self.system_prompt}<</SYS>>\n{input_text}[/INST]"
+        input_text = f"<s>[INST] <<SYS>>{self.system_prompt}<</SYS>>\n{input_text}[/INST]"
         input_ids = self.tokenizer(input_text, return_tensors="pt").input_ids.to("cuda")
+        
         outputs = self.pipe.generate(input_ids, 
                                      max_new_tokens=self.max_new_tokens, 
                                      temperature=self.temperature,
@@ -101,7 +111,7 @@ class VicunaModel(LMMBaseModel):
         from transformers import AutoModelForCausalLM, AutoTokenizer
 
         self.tokenizer = AutoTokenizer.from_pretrained(model_dir, device_map="auto", use_fast=False)
-        self.pipe = AutoModelForCausalLM.from_pretrained(model_dir, device_map="auto")
+        self.pipe = AutoModelForCausalLM.from_pretrained(model_dir, device_map="auto", torch_dtype=torch.float16)
 
     def predict(self, input_text, **kwargs):
         input_ids = self.tokenizer(input_text, return_tensors="pt").input_ids.to("cuda")

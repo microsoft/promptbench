@@ -1,22 +1,13 @@
 from .dataset import *
 
+SUPPORTED_DATASETS = [
+    "cola", "sst2", "qqp", "mnli", "mnli_matched", "mnli_mismatched", 
+    "qnli", "wnli", "rte", "mrpc", "mmlu", "squad_v2", "un_multi", 
+    "iwslt", "math", "bool_logic", "valid_parentheses", 
+    'gsm8k', "csqa", "bigbench_date", "bigbench_object_tracking"
+]
 
 class DatasetLoader:
-    SUPPORTED_DATASETS = [
-        "cola", "sst2", "qqp", "mnli", "mnli_matched", "mnli_mismatched", 
-        "qnli", "wnli", "rte", "mrpc", "mmlu", "squad_v2", "un_multi", 
-        "iwslt", "math", "bool_logic", "valid_parentheses", 
-        'gsm8k', "csqa", "bigbench_date", "bigbench_object_tracking"
-        # todo gsm8k
-    ]
-
-    @staticmethod
-    def dataset_list():
-        """
-        Return a list of all supported datasets.
-        """
-        return DatasetLoader.SUPPORTED_DATASETS
-
     @staticmethod
     def load_dataset(dataset_name, *args):
         """
