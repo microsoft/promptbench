@@ -7,6 +7,35 @@ from .describer import TreeDAGDescriber
 
 
 class BoolDAG(TreeDAG):
+    """
+    A specialized TreeDAG for Boolean logic operations.
+
+    Extends TreeDAG to represent boolean logic trees where nodes represent boolean values and operations.
+
+    Parameters:
+    -----------
+    ops : list
+        List of binary operations (e.g., 'and', 'or').
+    uni_ops : list
+        List of unary operations (e.g., 'not').
+    depth : int
+        Depth of the tree.
+    num_children_per_node : int, optional
+        Number of children per node (default is 2).
+    extra_links_per_node : int, optional
+        Extra links per node (default is 1).
+    add_cycles : int, optional
+        Number of cycles to add to the tree (default is 0).
+
+    Methods:
+    --------
+    generate_tree(depth)
+        Generates the tree structure with specified depth.
+    check_link_constraint(father_node, child_node)
+        Checks if a link between two nodes is valid.
+    update_values()
+        Updates the values of the nodes based on their boolean logic.
+    """
     def __init__(self, ops, uni_ops, depth, num_children_per_node=2, extra_links_per_node=1, add_cycles=0):
         self.ops = ops
         self.uni_ops = uni_ops
@@ -69,6 +98,31 @@ class BoolDAG(TreeDAG):
 
 
 class BoolDAGDescriber(TreeDAGDescriber):
+    """
+    Describer class for BoolDAG.
+
+    Provides methods to describe BoolDAG nodes and their boolean operations.
+
+    Parameters:
+    -----------
+    dag_obj : BoolDAG
+        The BoolDAG instance to describe.
+    ops : list
+        List of binary operations.
+    uni_ops : list
+        List of unary operations.
+    add_rand_desc : int, optional
+        Number of random descriptions to add.
+    delete_desc : int, optional
+        Number of descriptions to delete.
+
+    Methods:
+    --------
+    describe_question_node(node)
+        Describes a BoolDAG node to form a question.
+    describe_inference_node(node)
+        Describes a BoolDAG node for inference steps (training).
+    """
     def __init__(self, dag_obj, ops, uni_ops, add_rand_desc=0, delete_desc=0):
         self.ops = ops
         self.uni_ops = uni_ops
@@ -113,6 +167,31 @@ class BoolDAGDescriber(TreeDAGDescriber):
 
 
 class DeductionDAG(TreeDAG):
+    """
+    A specialized TreeDAG for deductive reasoning.
+
+    Parameters:
+    -----------
+    ops : list
+        List of operations for deduction (e.g., 'and', 'or', 'not').
+    uni_ops : list
+        List of unary operations.
+    depth : int
+        Depth of the tree.
+    probs : list of float, optional
+        Probability distribution for selecting operations (default is [0.16, 0.51, 0.33]).
+    num_children_per_node : int, optional
+        Number of children per node.
+
+    Methods:
+    --------
+    generate_tree(depth)
+        Generates a deductive reasoning tree.
+    check_link_constraint(father_node, child_node)
+        Checks if a link between two nodes is valid (always False for DeductionDAG).
+    update_values()
+        Updates the values of the nodes based on deductive logic (always returns True).
+    """
     def __init__(self, ops, uni_ops, depth, probs=[0.16, 0.51, 0.33], num_children_per_node=2):
         self.ops = ops
         self.uni_ops = uni_ops
@@ -163,6 +242,30 @@ class DeductionDAG(TreeDAG):
 
 
 class DeductionDAGDescriber(TreeDAGDescriber):
+    """
+    Describer class for DeductionDAG.
+
+    Provides methods to describe nodes and their deductive logic in DeductionDAG.
+
+    Parameters:
+    -----------
+    dag_obj : DeductionDAG
+        The DeductionDAG instance to describe.
+    ops : list
+        List of operations.
+    uni_ops : list
+        List of unary operations.
+    add_rand_desc : int, optional
+        Number of random descriptions to add.
+
+    Methods:
+    --------
+    describe_question_node(node)
+        Describes a DeductionDAG node for question formation.
+    describe_inference_node(node)
+        Describes a DeductionDAG node for inference.
+    """
+
     def __init__(self, dag_obj, ops, uni_ops, add_rand_desc=0):
         self.ops = ops
         self.uni_ops = uni_ops
@@ -233,8 +336,36 @@ class DeductionDAGDescriber(TreeDAGDescriber):
         return description
 
 
-
 class AbductionDAG(TreeDAG):
+    """
+    A specialized TreeDAG for abductive reasoning.
+
+    Parameters:
+     -----------
+    ops : list
+        List of operations for abduction (e.g., 'and', 'or', 'not').
+    uni_ops : list
+        List of unary operations.
+    depth : int
+        Depth of the tree.
+    probs : list of float, optional
+        Probability distribution for selecting operations.
+    num_children_per_node : int, optional
+        Number of children per node.
+
+    Methods:
+    --------
+    generate_tree(depth)
+        Generates an abductive reasoning tree.
+    _find_path(start, end)
+        Finds a path from start node to end node.
+    abduct_node_value(start, end)
+        Performs abductive reasoning from start to end node.
+    check_link_constraint(father_node, child_node)
+        Checks if a link between two nodes is valid (always False for AbductionDAG).
+    update_values()
+        Updates the values of the nodes based on abductive logic (always returns True).
+    """
     def __init__(self, ops, uni_ops, depth, probs=[0.16, 0.51, 0.33], num_children_per_node=2):
         self.ops = ops
         self.uni_ops = uni_ops
@@ -339,6 +470,35 @@ class AbductionDAG(TreeDAG):
 
 
 class AbductionDAGDescriber(TreeDAGDescriber):
+    """
+    Describer class for AbductionDAG.
+
+    Provides methods to describe nodes and their abductive logic in AbductionDAG.
+
+    Parameters:
+    -----------
+    dag_obj : AbductionDAG
+        The AbductionDAG instance to describe.
+    ops : list
+        List of operations.
+    uni_ops : list
+        List of unary operations.
+    add_rand_desc : int, optional
+        Number of random descriptions to add.
+
+    Methods:
+    --------
+    describe_question_node(node)
+        Describes an AbductionDAG node for question formation.
+    describe_abduction()
+        Describes the abduction process from a start node to an end node.
+    describe_inference_steps()
+        Describes the inference steps in the abduction process.
+    describe_answer()
+        Provides the answer based on the abduction process.
+    describe_question()
+        Describes the DAG for question formation in various traversal orders.
+    """
     def __init__(self, dag_obj: AbductionDAG, ops, uni_ops, add_rand_desc=0):
         self.ops = ops
         self.uni_ops = uni_ops

@@ -1,11 +1,13 @@
 from abc import ABC, abstractmethod
 
-from ..prompts.method_oriented import METHOD_ORIENTED_PROMPTS
+from .base import Base
+from ..prompts.method_oriented import get_prompt
 
-class Base:
+class BaseCoT(Base):
     def __init__(self, **kwargs):
-        self.cot_trigger = METHOD_ORIENTED_PROMPTS['chain_of_thought']['cot_trigger']      
-        self.dataset_name = kwargs.get('dataset')
+        super().__init__(**kwargs)
+        
+        self.cot_trigger= get_prompt(['chain_of_thought', 'cot_trigger'])
         
         if self.dataset_name == "aqua":
             self.direct_answer_trigger = "Therefore, among A through E, the answer is"
@@ -37,25 +39,21 @@ class Base:
         pass
     
 
-class ZSCoT(Base):  
+class ZSCoT(BaseCoT):  
     def __init__(self, **kwargs):      
         super().__init__(**kwargs)
     
     def query(self, input_text, model):   
         prompt_question = model.convert_text_to_prompt(input_text, 'user')
-        prompt_zscot = model.convert_text_to_prompt(self.cot_trigger, 'assistant')
         
-        prompt_get_chain_path = model.concat_prompts([prompt_question, prompt_zscot])
+        instr_get_answer = self.cot_trigger + '\n' + \
+                           f'Please output your answer at the end as ##<your answer ({self.output_range})>'
+        prompt_get_answer = model.convert_text_to_prompt(instr_get_answer, 'assistant')
         
-        chain_path = model(prompt_get_chain_path)
+        prompt_get_answer = model.concat_prompts([prompt_question, prompt_get_answer])
         
-        instr_cot = self.cot_trigger + '\n' + chain_path + '\n' + self.direct_answer_trigger
-        prompt_cot = model.convert_text_to_prompt(instr_cot, 'assistant')
-        
-        prompt_get_answer = model.concat_prompts([prompt_question, prompt_cot])
-        answer = model(prompt_get_answer)  
-        
-        # print(chain_path)
+        answer = model(prompt_get_answer)
+
         # print(answer)
         return answer
     
@@ -64,17 +62,24 @@ class ZSCoT(Base):
         #         prompt + [{'role': 'assistant', 'content': answer}] 
         #     ) 
 
-class CoT(Base):
+class CoT(BaseCoT):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.few_shot_examples = METHOD_ORIENTED_PROMPTS['chain_of_thought'][self.dataset_name]['few_shot']
+        self.few_shot_examples = get_prompt(['chain_of_thought', self.dataset_name])
     
     def query(self, input_text, model):
         instr_question = self.few_shot_examples + '\n'+ 'Q: ' + input_text + '\n' + 'A:'
         prompt_question = model.convert_text_to_prompt(instr_question, 'user')
-        prompt_cot = model.convert_text_to_prompt(self.cot_trigger, 'assistant')
-        prompt_get_answer = model.concat_prompts([prompt_question, prompt_cot])
+        instr_get_answer = self.cot_trigger + '\n' + \
+                           f'Please output your answer at the end as ##<your answer ({self.output_range})>'
+        prompt_get_answer = model.convert_text_to_prompt(instr_get_answer, 'assistant')
+        prompt_get_answer = model.concat_prompts([prompt_question, prompt_get_answer])
+        
         answer = model(prompt_get_answer)
+        
+        # print(instr_question)
+        # print(instr_get_answer)
+        # print(answer)
         return answer
           
         

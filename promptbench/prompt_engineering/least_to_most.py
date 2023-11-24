@@ -1,13 +1,11 @@
-from ..prompts.method_oriented import METHOD_ORIENTED_PROMPTS
+from ..prompts.method_oriented import get_prompt
+from .base import Base
 
-
-# TODO: 写一个map，用来记录每个方法可用的数据集，进行统一检查
-
-class LeastToMost:  
+class LeastToMost(Base):  
     def __init__(self, **kwargs):      
-        self.dataset_name = kwargs.get('dataset') 
+        super().__init__(**kwargs)
         
-        self.instruct_head = METHOD_ORIENTED_PROMPTS['least_to_most'][self.dataset_name]
+        self.instruct_head = get_prompt(['least_to_most', self.dataset_name]).get_prompt()
         
         if self.dataset_name == 'gsm8k':
             self.direct_answer_trigger = "Therefore, the answer (arabic numerals) is"
@@ -27,8 +25,8 @@ class LeastToMost:
                                         ])
         answer = model(prompt_get_answer)       
         
-        print(ans_subproblem)
-        print(answer) 
+        # print(ans_subproblem)
+        # print(answer) 
 
         return answer 
     

@@ -1,7 +1,7 @@
 from tqdm import tqdm
 import promptbench as pb
 import argparse
-
+import os
 
 # create a logging parser
 parser = argparse.ArgumentParser()
@@ -23,15 +23,22 @@ if __name__ == '__main__':
         
     # load dataset
     dataset = pb.DatasetLoader.load_dataset(dataset_name)
-
+    
+    # openai_key = os.getenv('OPENAI_KEY')
+    openai_key = 'sk-xxx'
+    # print(openai_key)
+    
     # load a model.
     model = pb.LLMModel(model=model_name, 
-                        openai_key = 'sk-xxx',
+                        openai_key = openai_key,
                         model_dir = f'/mnt/mydata/llms/{model_name}',
                         max_new_tokens=30)
 
     # load method
-    method = pb.PEMethod(method=method_name, dataset=dataset_name)
+    method = pb.PEMethod(method=method_name, 
+                        dataset=dataset_name,
+                        prompt_id = 1  # for emotion_prompt 
+                        )
 
     # test and get results
     results = method.test(dataset, model)

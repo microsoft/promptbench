@@ -2,6 +2,54 @@ from tqdm import tqdm
 from .dyval_utils import process_dyval_training_sample
 
 class DyValDataset:
+    """
+    A class for creating and managing datasets for various types of Directed Acyclic Graph (DAG) tasks.
+
+    This class can generate datasets for arithmetic, Boolean logic, linear equations, deductive logic, abductive logic, reachability, and max sum path problems using different types of DAGs.
+
+    Parameters:
+    -----------
+    dataset_type : str
+        The type of dataset to be generated (e.g., 'arithmetic', 'bool_logic').
+    is_trainset : bool, optional
+        Specifies whether the dataset is a training set (default is False).
+    num_samples : int, optional
+        The number of samples to generate in the dataset (default is 100).
+    num_nodes_per_sample : int, optional
+        The number of nodes per sample (default is 10).
+    min_links_per_node : int, optional
+        The minimum number of links per node (default is 1).
+    max_links_per_node : int, optional
+        The maximum number of links per node (default is 3).
+    depth : int, optional
+        The depth of the DAG (default is 3).
+    num_children_per_node : int, optional
+        The number of children per node (default is 2).
+    extra_links_per_node : int, optional
+        The number of extra links per node (default is 1).
+    add_rand_desc : int, optional
+        The number of random descriptions to add (default is 0).
+    delete_desc : int, optional
+        The number of descriptions to delete (default is 0).
+    add_cycles : int, optional
+        The number of cycles to add to the DAG (default is 0).
+    num_dags : int, optional
+        The number of DAGs to generate for linear equations (default is 1).
+
+    Methods:
+    --------
+    __len__()
+        Returns the number of samples in the dataset.
+    __getitem__(key)
+        Retrieves a specific sample from the dataset.
+    create_dataset()
+        Generates the dataset based on the specified parameters.
+    get_fewshot_examples(shots)
+        Generates few-shot examples for the dataset.
+    _generate_sample(**kwargs)
+        Generates a single sample for the dataset.
+    """
+    
     def __init__(self, 
                  dataset_type,
                  is_trainset=False,

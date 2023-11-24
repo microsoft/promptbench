@@ -1,28 +1,4 @@
 from .models import *
-"""
-Basically, there are 3 args, model, max_new_tokens, and model_dir.
-For llama and vicuna model, the model_dir is required.
-The max_new_tokens is used to control the length of the output.
-
-Example usage:
-
-from promptbench.models import LLMModel
-
-# Create a T5 model
-model_t5 = LLMModel(model='google/flan-t5-large')
-output_t5 = model_t5("Translate English to German: 'Hello World'")
-print(output_t5)
-
-# Create a LLAMA model and get predictions
-model_llama = LLMModel(model='llama2-7b-chat', model_dir=/path/to/your/llama/model)
-output_llama = model_llama("How's the weather today?")
-print(output_llama)
-
-# List supported models
-print(LLMModel.model_list())
-
-Note: Ensure the required models and dependencies are installed and available in the environment.
-"""
 
 # A dictionary mapping of model architecture to its supported model names
 MODEL_LIST = {
@@ -39,8 +15,41 @@ SUPPORTED_MODELS = [model for model_class in MODEL_LIST.keys() for model in MODE
 
 class LLMModel(object):
     """
-    A class that provides an interface for various language models.
-    It supports model creation, and inference based on model name.
+    A class providing an interface for various language models.
+
+    This class supports creating and interfacing with different language models, handling prompt engineering, and performing model inference.
+
+    Parameters:
+    -----------
+    model : str
+        The name of the model to be used.
+    max_new_tokens : int, optional
+        The maximum number of new tokens to be generated (default is 20).
+    temperature : float, optional
+        The temperature for text generation (default is 0).
+    model_dir : str or None, optional
+        The directory containing the model files (default is None).
+    system_prompt : str or None, optional
+        The system prompt to be used (default is None).
+    openai_key : str or None, optional
+        The OpenAI API key, if required (default is None).
+    sleep_time : int, optional
+        The sleep time between inference calls (default is 3).
+
+    Methods:
+    --------
+    _create_model(max_new_tokens, temperature, model_dir, system_prompt, openai_key, sleep_time)
+        Creates and returns the appropriate model instance.
+    convert_text_to_prompt(text, role)
+        Constructs a prompt based on the text and role.
+    concat_prompts(prompt_list)
+        Concatenates multiple prompts into a single prompt.
+    _gpt_concat_prompts(prompt_list)
+        Concatenates prompts for GPT models.
+    _other_concat_prompts(prompt_list)
+        Concatenates prompts for non-GPT models.
+    __call__(input_text, **kwargs)
+        Makes a prediction based on the input text using the loaded model.
     """
 
     def __init__(self, model, max_new_tokens=20, temperature=0, model_dir=None, system_prompt=None, openai_key=None, sleep_time=3):
@@ -71,7 +80,8 @@ class LLMModel(object):
         if self.model == ['gpt4', 'gpt-3.5-turbo-16k', 'gpt-3.5-turbo-0301', 'gpt-3.5-turbo']:
             return {'role': role, 'content': text} 
         else:
-            return str(role) + ': ' + str(text) + '\n'
+            # return str(role) + ': ' + str(text) + '\n'
+            return str(text) + '\n'
 
     def concat_prompts(self, prompt_list):
         """Concatenates the prompts into a single prompt."""
