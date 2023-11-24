@@ -2,6 +2,40 @@ import random
 from .dag import BaseDAG, GeneralDAG, TreeDAG
 
 class BaseDAGDescriber:
+    """
+    Base class for creating descriptions of Directed Acyclic Graphs (DAGs).
+
+    This class provides methods to traverse and describe DAGs in various orders and to manipulate descriptions.
+
+    Parameters:
+    -----------
+    dag_obj : BaseDAG
+        The DAG object to be described.
+    add_rand_desc : int, optional
+        The number of random descriptions to add.
+    delete_desc : int, optional
+        The number of descriptions to delete.
+
+    Methods:
+    --------
+    describe_question_node(node)
+        Describes a node in the DAG for question formation.
+    generate_rand_description()
+        Generates random descriptions based on the DAG type.
+    topological_traversal(desc_func)
+        Traverses the DAG in topological order and applies a description function.
+    reverse_topological_traversal(topo_desc)
+        Reverses the order of topological descriptions.
+    random_traversal(topo_desc)
+        Shuffles the topological descriptions randomly.
+    add_rand_description(desc)
+        Adds random descriptions to the existing description list.
+    delete_description(desc)
+        Deletes descriptions from the existing description list.
+    _describe_question()
+        Describes the DAG for question formation in various traversal orders.
+    """
+
     def __init__(self, dag_obj: BaseDAG, add_rand_desc=0, delete_desc=0):
         self.dag_obj = dag_obj
         self.add_rand_desc = add_rand_desc
@@ -64,6 +98,30 @@ class BaseDAGDescriber:
 
 
 class GeneralDAGDescriber(BaseDAGDescriber):
+    """
+    A describer class for GeneralDAG instances.
+
+    Inherits from BaseDAGDescriber and provides specific implementations for describing GeneralDAG nodes.
+
+    Parameters:
+    -----------
+    dag_obj : GeneralDAG
+        The GeneralDAG instance to describe.
+    add_rand_desc : int, optional
+        The number of random descriptions to add (inherited).
+    delete_desc : int, optional
+        The number of descriptions to delete (inherited).
+
+    Methods:
+    --------
+    describe_question_node(node)
+        Provides a description for a GeneralDAG node.
+    generate_rand_description()
+        Generates random descriptions specific to GeneralDAG.
+    describe_answer()
+        Describes the DAG for answer formation (not implemented yet).
+    """
+
     def __init__(self, dag_obj: GeneralDAG, add_rand_desc=0, delete_desc=0):
         super().__init__(dag_obj, add_rand_desc, delete_desc)
 
@@ -87,6 +145,36 @@ class GeneralDAGDescriber(BaseDAGDescriber):
 
 
 class TreeDAGDescriber(BaseDAGDescriber):
+    """
+    A describer class for TreeDAG instances.
+
+    Inherits from BaseDAGDescriber and provides specific implementations for describing TreeDAG nodes.
+
+    Parameters:
+    -----------
+    dag_obj : TreeDAG
+        The TreeDAG instance to describe.
+    add_rand_desc : int, optional
+        The number of random descriptions to add (inherited).
+    delete_desc : int, optional
+        The number of descriptions to delete (inherited).
+    trainset : bool
+        Indicates if the describer is used for training set generation.
+
+    Methods:
+    --------
+    describe_inference_node(node)
+        Provides a description for a TreeDAG node for inference.
+    generate_rand_description()
+        Generates random descriptions specific to TreeDAG.
+    describe_inference_steps()
+        Describes the inference steps based on the DAG's topology.
+    describe_answer()
+        Provides the answer based on the root value of the TreeDAG.
+    describe_question()
+        Describes the DAG for question formation in various traversal orders.
+    """
+
     def __init__(self, dag_obj: TreeDAG, add_rand_desc=0, delete_desc=0, trainset=False):
         self.trainset = trainset
         super().__init__(dag_obj, add_rand_desc, delete_desc)

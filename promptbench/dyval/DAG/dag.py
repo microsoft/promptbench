@@ -6,17 +6,64 @@ from nltk.corpus import words
 
 
 class Node:
+    """
+    Represents a node in a graph or a tree structure.
+
+    Attributes:
+    -----------
+    value : Any
+        The value stored in the node.
+    op : Any, optional
+        The operation or function associated with the node.
+    name : str, optional
+        The unique identifier of the node.
+    children : list of Node, optional
+        The children nodes of this node.
+    """
     def __init__(self, value=None, op=None, name=None, children=None):
         self.value = value
         self.op = op
         self.children = children if children is not None else []
         self.name = name
 
-    def __str__(self):
-        return f"{self.name}({self.value})"
-
 
 class BaseDAG:
+    """
+    Base class for Directed Acyclic Graph (DAG) structures.
+
+    This class provides foundational functionality for DAG operations, including node management,
+    topological sorting, and cycle detection.
+
+    Attributes:
+    -----------
+    symbols_set : str
+        A string of alphabets used in generating unique node names.
+    forbidden_names : set of str
+        A set of names that are not allowed for nodes.
+    name_generator : generator
+        A generator for producing unique node names.
+    nodes : list of Node
+        The list of nodes in the DAG.
+    add_cycles : int
+        The number of cycles to add to the DAG.
+
+    Methods:
+    --------
+    get_node_by_name(name)
+        Retrieves a node by its name.
+    topological_sort()
+        Performs topological sorting on the DAG nodes.
+    check_link_constraint(father_node, child_node)
+        Checks if a link between two nodes is valid.
+    generate_cycles()
+        Introduces cycles in the DAG.
+    _form_cycle(start, end)
+        Checks if adding a link forms a cycle.
+    _generate_name()
+        Generates a unique name for a node.
+    _get_reachable_nodes(start)
+        Finds all nodes reachable from a given starting node.
+    """
     def __init__(self, add_cycles=0):
         self.symbols_set = 'abcdefghijklmnopqrstuvwxyz'
         self.forbidden_names = {word for word in set(words.words()) if len(word) < 4}
@@ -116,6 +163,27 @@ class BaseDAG:
 
 
 class GeneralDAG(BaseDAG):
+    """
+    Represents a general Directed Acyclic Graph with customizable parameters.
+
+    Inherits from BaseDAG and allows for specifying the number of nodes and the range of links per node.
+
+    Parameters:
+    -----------
+    num_nodes : int
+        The number of nodes in the DAG.
+    min_links_per_node : int
+        The minimum number of links each node can have.
+    max_links_per_node : int
+        The maximum number of links each node can have.
+    add_cycles : int, optional
+        The number of cycles to be added to the DAG (default is 0).
+
+    Methods:
+    --------
+    generate_dag(num_nodes)
+        Generates the DAG with the specified number of nodes.
+    """
     def __init__(self, num_nodes, min_links_per_node=1, max_links_per_node=3, add_cycles=0):
         super().__init__(add_cycles)
         
@@ -149,6 +217,38 @@ class GeneralDAG(BaseDAG):
 
 
 class TreeDAG(BaseDAG):
+    """
+    Represents a Directed Acyclic Graph built from a tree structure.
+
+    This class extends BaseDAG and allows for the creation of a DAG from a tree, with additional
+    properties like depth, number of children per node, and extra links per node.
+
+    Parameters:
+    -----------
+    depth : int
+        The depth of the tree to generate.
+    num_children_per_node : int
+        The number of children each node can have.
+    extra_links_per_node : int
+        The number of extra links per node.
+    add_cycles : int, optional
+        The number of cycles to be added to the DAG (default is 0).
+
+    Methods:
+    --------
+    generate_tree(depth)
+        Generates the tree structure.
+    update_values()
+        Updates the value of each node after adding links.
+    check_link_constraint(father_node, child_node)
+        Defines constraints for link addition between nodes.
+    check_uni_ops()
+        Checks if all nodes' operations are unary.
+    generate_dag()
+        Generates the DAG based on the tree.
+    collect_nodes(node)
+        Collects all nodes from a given starting node.
+    """
     def __init__(self, depth, num_children_per_node=2, extra_links_per_node=1, add_cycles=0):
         super().__init__(add_cycles)
         self.num_children_per_node = num_children_per_node

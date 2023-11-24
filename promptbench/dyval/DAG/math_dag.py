@@ -7,6 +7,35 @@ from .describer import TreeDAGDescriber
 from ..dyval_utils import round_value
 
 class ArithmeticDAG(TreeDAG):
+    """
+    A specialized TreeDAG for arithmetic operations.
+
+    Extends TreeDAG to represent arithmetic operations with nodes representing numerical values and operations.
+
+    Parameters:
+    -----------
+    ops : list
+        List of arithmetic operations (e.g., '+', '-', '*', '/').
+    uni_ops : list
+        List of unary operations (e.g., 'sqrt', '**').
+    depth : int
+        Depth of the tree.
+    num_children_per_node : int, optional
+        Number of children per node (default is 2).
+    extra_links_per_node : int, optional
+        Extra links per node (default is 1).
+    add_cycles : int, optional
+        Number of cycles to add to the tree (default is 0).
+
+    Methods:
+    --------
+    generate_tree(depth)
+        Generates the tree structure with specified depth.
+    check_link_constraint(father_node, child_node)
+        Checks if a link between two nodes is valid.
+    update_values()
+        Updates the values of the nodes based on arithmetic operations.
+    """
     def __init__(self, ops, uni_ops, depth, num_children_per_node=2, extra_links_per_node=1, add_cycles=0):
         self.ops = ops
         self.uni_ops = uni_ops
@@ -162,6 +191,31 @@ class ArithmeticDAG(TreeDAG):
 
     
 class ArithmeticDAGDescriber(TreeDAGDescriber):
+    """
+    Describer class for ArithmeticDAG.
+
+    Provides methods to describe ArithmeticDAG nodes and their arithmetic operations.
+
+    Parameters:
+    -----------
+    dag_obj : ArithmeticDAG
+        The ArithmeticDAG instance to describe.
+    ops : list
+        List of binary operations.
+    uni_ops : list
+        List of unary operations.
+    add_rand_desc : int, optional
+        Number of random descriptions to add.
+    delete_desc : int, optional
+        Number of descriptions to delete.
+
+    Methods:
+    --------
+    describe_question_node(node)
+        Describes an ArithmeticDAG node for question formation.
+    describe_inference_node(node)
+        Describes an ArithmeticDAG node for inference.
+    """
     def __init__(self, dag_obj, ops, uni_ops, add_rand_desc=0, delete_desc=0):
         self.ops = ops
         self.uni_ops = uni_ops
@@ -218,6 +272,43 @@ class ArithmeticDAGDescriber(TreeDAGDescriber):
 
 
 class LinearEq:
+    """
+    Class for generating and describing linear equations using ArithmeticDAGs.
+
+    It creates a set of linear equations and uses ArithmeticDAGs to represent the coefficients.
+
+    Parameters:
+    -----------
+    ops : list
+        List of arithmetic operations.
+    uni_ops : list
+        List of unary operations.
+    depth : int, optional
+        Depth of the DAGs (default is 3).
+    num_dags : int, optional
+        Number of DAGs to generate (default is 1).
+    num_children_per_node : int, optional
+        Number of children per node in the DAG.
+    extra_links_per_node : int, optional
+        Extra links per node in the DAG.
+    add_rand_desc : int, optional
+        Number of random descriptions to add.
+
+    Methods:
+    --------
+    describe_question()
+        Describes the linear equation problem.
+    describe_inference_steps()
+        Describes the inference steps to solve the linear equation.
+    describe_answer()
+        Provides the answer to the linear equation.
+    _solve_linear_eq()
+        Solves the linear equation using numpy's linear algebra solver.
+    _has_unique_solution(coeff)
+        Checks if the equation has a unique solution.
+    _describe_linear_eq_solution()
+        Describes the solution of the linear equation.
+    """
     def __init__(self, ops, uni_ops, depth=3, num_dags=1, num_children_per_node=2, extra_links_per_node=1, add_rand_desc=0):
         self.ops = ops
         self.uni_ops = uni_ops

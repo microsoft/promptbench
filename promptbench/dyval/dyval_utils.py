@@ -1,10 +1,40 @@
 import re
 
 def round_value(val):
+    """
+    Rounds a numerical value to 8 decimal places.
+
+    Parameters:
+    -----------
+    val : float or str
+        The value to be rounded.
+
+    Returns:
+    --------
+    str
+        The rounded value as a string.
+    """
     return str(round(float(val), 8))
 
 
 def evaluate(dataset_type, preds, gts):
+    """
+    Evaluates predictions against ground truths for different dataset types.
+
+    Parameters:
+    -----------
+    dataset_type : str
+        The type of dataset (e.g., 'arithmetic', 'max_sum_path').
+    preds : list
+        A list of predictions.
+    gts : list
+        A list of ground truths.
+
+    Returns:
+    --------
+    float
+        The accuracy of predictions as a proportion of correct answers.
+    """
     correct = 0
     total = len(gts)
     
@@ -63,11 +93,23 @@ def evaluate(dataset_type, preds, gts):
 
     return correct/total
 
-"""
-Processing inputs, training eaxmples, and predictions of LLMs usually depends on the prompt,
-so that's why we have separate functions for it.
-"""
+
 def process_dyval_inputs(prompt, dataset):
+    """
+    Processes inputs for dynamic value (DyVal) dataset.
+
+    Parameters:
+    -----------
+    prompt : str
+        The prompt template to be formatted.
+    dataset : DyValDataset
+        The dataset containing descriptions and other relevant data.
+
+    Returns:
+    --------
+    dict
+        A dictionary of processed inputs organized by order.
+    """
     descriptions = {}
     dataset_type = dataset.dataset_type
 
@@ -84,7 +126,21 @@ def process_dyval_inputs(prompt, dataset):
     return descriptions
 
 def process_dyval_training_sample(sample, dataset_type):
+    """
+    Processes a single training sample for dynamic value (DyVal) dataset.
 
+    Parameters:
+    -----------
+    sample : dict
+        The sample to be processed.
+    dataset_type : str
+        The type of dataset (e.g., 'arithmetic', 'bool_logic').
+
+    Returns:
+    --------
+    dict
+        The processed sample.
+    """
     prompt = DYVAL_PROMPTS[dataset_type][0]
     for order, input_text in sample["descriptions"].items():
         if dataset_type in ["arithmetic", "bool_logic", "deductive_logic"]:
@@ -123,7 +179,19 @@ def process_dyval_training_sample(sample, dataset_type):
     return sample
 
 def process_dyval_preds(raw_pred):
+    """
+    Processes the raw prediction string to extract the predicted value.
 
+    Parameters:
+    -----------
+    raw_pred : str
+        The raw prediction string.
+
+    Returns:
+    --------
+    str
+        The extracted prediction.
+    """
     raw_pred = raw_pred.replace(',', '')
     pred = ""
     match = re.search('<<<(.*?)>>>', raw_pred)

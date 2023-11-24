@@ -3,15 +3,48 @@
 
 
 class Eval:
+    """
+    A utility class for computing various evaluation metrics.
 
+    This class provides static methods to compute metrics such as classification accuracy, SQuAD V2 F1 score, BLEU score, and math accuracy.
+
+    Attributes:
+    -----------
+    BLEU_NORMALIZATION_FACTOR : int
+        The normalization factor for the BLEU score.
+    SQUAD_V2_NORMALIZATION_FACTOR : int
+        The normalization factor for the SQuAD V2 F1 score.
+
+    Methods:
+    --------
+    compute_cls_accuracy(preds, gts)
+        Computes classification accuracy.
+    compute_squad_v2_f1(preds, gts, dataset)
+        Computes the F1 score for the SQuAD V2 dataset.
+    compute_bleu(preds, gts)
+        Computes the BLEU score for translation tasks.
+    compute_math_accuracy(dataset, preds, gts)
+        Computes accuracy for math dataset.
+    """
     BLEU_NORMALIZATION_FACTOR = 100
     SQUAD_V2_NORMALIZATION_FACTOR = 100
     
     @staticmethod
     def compute_cls_accuracy(preds, gts):
-        """Compute simple accuracy for a given dataset, predictions, and ground truths.
+        """
+        Computes classification accuracy based on predictions and ground truths.
 
-        It normalizes the predictions and ground truths to lowercase.
+        Parameters:
+        -----------
+        preds : list
+            A list of predictions.
+        gts : list
+            A list of ground truths.
+
+        Returns:
+        --------
+        float
+            The classification accuracy.
         """
         try:
             preds = [str(pred).lower() for pred in preds]
@@ -27,8 +60,23 @@ class Eval:
 
     @staticmethod
     def compute_squad_v2_f1(preds, gts, dataset):
-        """Compute F1 score for the SQuAD V2 dataset based on model predictions and ground truths."""
+        """
+        Computes the F1 score for the SQuAD V2 dataset.
 
+        Parameters:
+        -----------
+        preds : list
+            A list of predictions.
+        gts : list
+            A list of ground truth IDs.
+        dataset : list
+            The dataset containing the SQuAD V2 data.
+
+        Returns:
+        --------
+        float
+            The F1 score for the SQuAD V2 dataset.
+        """
         from .squad_v2.squad_v2 import SquadV2
         metric = SquadV2()
 
@@ -46,8 +94,21 @@ class Eval:
 
     @staticmethod
     def compute_bleu(preds, gts):
-        """Compute BLEU score for translation tasks based on model predictions and ground truths."""
+        """
+        Computes the BLEU score for translation tasks.
 
+        Parameters:
+        -----------
+        preds : list
+            A list of predictions.
+        gts : list
+            A list of ground truth translations.
+
+        Returns:
+        --------
+        float
+            The BLEU score.
+        """
         from .bleu.bleu import Bleu
         metric = Bleu()
         results = metric.compute(predictions=preds, references=gts)
@@ -55,8 +116,23 @@ class Eval:
 
     @staticmethod
     def compute_math_accuracy(self, dataset, preds, gts):
-        """Compute accuracy for the 'math' dataset by normalizing certain prediction values."""
+        """
+        Computes accuracy for the 'math' dataset.
 
+        Parameters:
+        -----------
+        dataset : list
+            The dataset containing math data.
+        preds : list
+            A list of predictions.
+        gts : list
+            A list of ground truths.
+
+        Returns:
+        --------
+        float
+            The math accuracy.
+        """
         processed_preds = []
         processed_gts = []
         

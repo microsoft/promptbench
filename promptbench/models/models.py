@@ -4,6 +4,27 @@ from abc import ABC
 import torch
 
 class LMMBaseModel(ABC):
+    """
+    Abstract base class for language model interfaces.
+
+    This class provides a common interface for various language models and includes methods for prediction.
+
+    Parameters:
+    -----------
+    model : str
+        The name of the language model.
+    max_new_tokens : int
+        The maximum number of new tokens to be generated.
+    temperature : float, optional
+        The temperature for text generation (default is 0).
+
+    Methods:
+    --------
+    predict(input_text, **kwargs)
+        Generates a prediction based on the input text.
+    __call__(input_text, **kwargs)
+        Shortcut for predict method.
+    """
     def __init__(self, model, max_new_tokens, temperature=0):
         self.model = model
         self.max_new_tokens = max_new_tokens
@@ -25,7 +46,22 @@ class LMMBaseModel(ABC):
 
 
 class PhiModel(LMMBaseModel):
+    """
+    Language model class for the Phi model.
 
+    Inherits from LMMBaseModel and sets up the Phi language model for use.
+
+    Parameters:
+    -----------
+    model : str
+        The name of the Phi model.
+    max_new_tokens : int
+        The maximum number of new tokens to be generated.
+    temperature : float, optional
+        The temperature for text generation (default is 0).
+    system_prompt : str, optional
+        The system prompt to be used (default is None).
+    """
     def __init__(self, model, max_new_tokens, temperature=0, system_prompt=None):
         super(PhiModel, self).__init__(model, max_new_tokens, temperature)
         from transformers import AutoTokenizer, AutoModelForCausalLM
@@ -44,7 +80,22 @@ class PhiModel(LMMBaseModel):
         return out[len(input_text):]
 
 class T5Model(LMMBaseModel):
+    """
+    Language model class for the T5 model.
 
+    Inherits from LMMBaseModel and sets up the T5 language model for use.
+
+    Parameters:
+    -----------
+    model : str
+        The name of the T5 model.
+    max_new_tokens : int
+        The maximum number of new tokens to be generated.
+    temperature : float, optional
+        The temperature for text generation (default is 0).
+    system_prompt : str, optional
+        The system prompt to be used (default is None).
+    """
     def __init__(self, model, max_new_tokens, temperature=0, system_prompt=None):
         super(T5Model, self).__init__(model, max_new_tokens, temperature)
         from transformers import T5Tokenizer, T5ForConditionalGeneration
@@ -57,7 +108,22 @@ class T5Model(LMMBaseModel):
 
 
 class UL2Model(LMMBaseModel):
+    """
+    Language model class for the UL2 model.
 
+    Inherits from LMMBaseModel and sets up the UL2 language model for use.
+
+    Parameters:
+    -----------
+    model : str
+        The name of the UL2 model.
+    max_new_tokens : int
+        The maximum number of new tokens to be generated.
+    temperature : float, optional
+        The temperature for text generation (default is 0).
+    system_prompt : str, optional
+        The system prompt to be used (default is None).
+    """
     def __init__(self, model, max_new_tokens, temperature=0, system_prompt=None):
         super(UL2Model, self).__init__(model, max_new_tokens, temperature)
         from transformers import AutoTokenizer, T5ForConditionalGeneration
@@ -71,7 +137,24 @@ class UL2Model(LMMBaseModel):
 
 
 class LlamaModel(LMMBaseModel):
+    """
+    Language model class for the Llama model.
 
+    Inherits from LMMBaseModel and sets up the Llama language model for use.
+
+    Parameters:
+    -----------
+    model : str
+        The name of the Llama model.
+    max_new_tokens : int
+        The maximum number of new tokens to be generated.
+    temperature : float, optional
+        The temperature for text generation (default is 0).
+    system_prompt : str, optional
+        The system prompt to be used (default is None).
+    model_dir : str, optional
+        The directory containing the model files (default is None).
+    """
     def __init__(self, model, max_new_tokens, temperature=0, system_prompt=None, model_dir=None):
         super(LlamaModel, self).__init__(model, max_new_tokens, temperature)
         if system_prompt is None:
@@ -102,7 +185,24 @@ class LlamaModel(LMMBaseModel):
 
 
 class VicunaModel(LMMBaseModel):
+    """
+    Language model class for the Vicuna model.
 
+    Inherits from LMMBaseModel and sets up the Vicuna language model for use.
+
+    Parameters:
+    -----------
+    model : str
+        The name of the Vicuna model.
+    max_new_tokens : int
+        The maximum number of new tokens to be generated.
+    temperature : float, optional
+        The temperature for text generation (default is 0).
+    system_prompt : str, optional
+        The system prompt to be used (default is None).
+    model_dir : str, optional
+        The directory containing the model files (default is None).
+    """
     def __init__(self, model, max_new_tokens, temperature=0, system_prompt=None, model_dir=None):
         super(VicunaModel, self).__init__(model, max_new_tokens, temperature, system_prompt)
 
@@ -126,7 +226,33 @@ class VicunaModel(LMMBaseModel):
 
 
 class OpenAIModel(LMMBaseModel):
+    """
+    Language model class for interfacing with OpenAI's GPT models.
 
+    Inherits from LMMBaseModel and sets up a model interface for OpenAI GPT models.
+
+    Parameters:
+    -----------
+    model : str
+        The name of the OpenAI model.
+    max_new_tokens : int
+        The maximum number of new tokens to be generated.
+    temperature : float, optional
+        The temperature for text generation (default is 0).
+    system_prompt : str, optional
+        The system prompt to be used (default is None).
+    openai_key : str, optional
+        The OpenAI API key (default is None).
+    sleep_time : int, optional
+        The sleep time between inference calls (default is 3).
+
+    Methods:
+    --------
+    sleep(seconds)
+        Sleep for the specified number of seconds.
+    predict(input_text)
+        Predicts the output based on the given input text using the OpenAI model.
+    """
     def __init__(self, model, max_new_tokens, temperature=0, system_prompt=None, openai_key=None, sleep_time=3):
         super(OpenAIModel, self).__init__(model, max_new_tokens, temperature, system_prompt)
         self.openai_key = openai_key

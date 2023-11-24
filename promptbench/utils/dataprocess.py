@@ -2,6 +2,16 @@
 # Licensed under the MIT License.
 
 class InputProcess:
+    """
+    A utility class for processing input data for language models.
+
+    This class provides static methods to format input data based on given prompt templates and input data dictionaries.
+
+    Methods:
+    --------
+    basic_format(prompt_template, input_data_dict)
+        Combines a prompt template and input data to create a formatted model input.
+    """
     @staticmethod
     def basic_format(prompt_template, input_data_dict):
         """
@@ -20,6 +30,23 @@ class InputProcess:
     # ...
 
 class OutputProcess:
+    """
+    A utility class for processing raw predictions from language models.
+
+    This class provides static methods for various ways to process and clean up raw prediction text.
+
+    Methods:
+    --------
+    general(raw_pred, proj_func=None)
+        Performs general processing on the raw prediction text.
+    cls(raw_pred, proj_func=None)
+        Processes the raw prediction text for classification tasks.
+    pattern_split(raw_pred, pattern, proj_func=None)
+        Splits the raw prediction text based on a pattern.
+    pattern_re(raw_pred, pattern, proj_func=None)
+        Uses regular expressions to process the raw prediction text.
+    """
+    
     @staticmethod
     def _base_pred_process(pred):
         """

@@ -3,7 +3,28 @@ from .dag import GeneralDAG
 from .describer import GeneralDAGDescriber
 
 class CodeDAG(GeneralDAG):
+    """
+    A specialized Directed Acyclic Graph (DAG) for representing and analyzing code structures.
 
+    This class extends GeneralDAG and provides additional functionality specific to code analysis,
+    including reachability and maximum sum path calculations.
+
+    Parameters:
+    -----------
+    num_nodes : int
+        The number of nodes in the DAG.
+    min_links_per_node : int, optional
+        The minimum number of links per node (default is 1).
+    max_links_per_node : int, optional
+        The maximum number of links per node (default is 3).
+
+    Methods:
+    --------
+    reachability(start, end)
+        Determines whether there is a path from the start node to the end node.
+    max_sum_path(start, end)
+        Finds the path from start to end having the maximum sum of node values.
+    """
     def __init__(self, num_nodes, min_links_per_node=1, max_links_per_node=3):
         super().__init__(num_nodes, min_links_per_node, max_links_per_node, add_cycles=0)
     
@@ -75,6 +96,33 @@ class CodeDAG(GeneralDAG):
 
 
 class CodeDAGDescriber(GeneralDAGDescriber):
+    """
+    Describer class for CodeDAG, providing natural language descriptions of various DAG properties and questions.
+
+    This class extends GeneralDAGDescriber to work specifically with CodeDAG instances.
+
+    Parameters:
+    -----------
+    dag_obj : CodeDAG
+        The CodeDAG instance to describe.
+    dataset_type : str
+        The type of dataset for the DAG (e.g., 'reachability', 'max_sum_path').
+    add_rand_desc : int, optional
+        Random description addition parameter (default is 0).
+
+    Methods:
+    --------
+    describe_reachability()
+        Generates a natural language description of a reachability question in the DAG.
+    describe_max_sum_path()
+        Generates a natural language description of a maximum sum path question in the DAG.
+    describe_question()
+        Generates a natural language description based on the dataset type.
+    describe_answer()
+        Returns the answer to the described question.
+    describe_inference_steps()
+        Returns the natural language inference steps for the described question.
+    """
     def __init__(self, dag_obj: CodeDAG, dataset_type, add_rand_desc=0):
         super().__init__(dag_obj, add_rand_desc, delete_desc=0)
         self.dataset_type = dataset_type
