@@ -56,22 +56,32 @@ from .goal_function import AdvPromptGoalFunction
 
 
 class Attack(object):
-    def __init__(self, model, attack_name, dataset, prompt):
+    def __init__(self, model, attack_name, dataset, prompt, input_process_func, output_process_func, eval_func, unmodifiable_words=None):
         self.model = model
         self.attack_name = attack_name
         self.dataset = dataset
         self.prompt = prompt
-        self.goal_function = AdvPromptGoalFunction(self.model, self.dataset, query_budget=attack_config["goal_function"]["query_budget"], model_wrapper=None)
-        self.unmodifiable_words = LABEL_SET[dataset]
+        self.goal_function = AdvPromptGoalFunction(self.model, 
+                                                   self.dataset, 
+                                                   input_process_func, 
+                                                   output_process_func, 
+                                                   eval_func, 
+                                                   query_budget=attack_config["goal_function"]["query_budget"], 
+                                                   model_wrapper=None)
+        if unmodifiable_words:
+            self.unmodifiable_words = unmodifiable_words
+        else:
+            print("Using default unmodifiable words.")
+            self.unmodifiable_words = LABEL_SET[dataset]
         
         print(f"These words (if they appear in the prompt) are not allowed to be attacked:\n{self.unmodifiable_words}")
-        self.attack = self._create_attack(attack_name, self.unmodifiable_words)
+        self.prompt_attack = self._create_attack(attack_name, self.unmodifiable_words, self.goal_function)
 
     @staticmethod
     def attack_list():
         return ["textbugger", "deepwordbug", "textfooler", "bertattack", "checklist", "stresstest", "semantic"]
 
-    def _create_attack(self, attack, unmodifiable_words):
+    def _create_attack(self, attack, unmodifiable_words, goal_function):
         if attack == "semantic":
             return None
         
@@ -101,7 +111,6 @@ class Attack(object):
                 skip_text_shorter_than_window=True,
             )
             constraints.append(use_constraint)
-            goal_function = goal_function
             search_method = GreedyWordSwapWIR(wir_method="delete")
 
         elif attack == "textbugger":
@@ -199,7 +208,7 @@ class Attack(object):
             return results
                   
         else:
-            return self.attack.attack(self.prompt)
+            return self.prompt_attack.attack(self.prompt)
 
 
 class AdvPromptAttack:

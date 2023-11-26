@@ -127,7 +127,7 @@ def process_dyval_inputs(prompt, dataset):
 
 def process_dyval_training_sample(sample, dataset_type):
     """
-    Processes a single training sample for dynamic value (DyVal) dataset.
+    Processes a single training sample for DyVal training dataset.
 
     Parameters:
     -----------
