@@ -8,13 +8,24 @@
 # # # # eval = Eval()
 # # # # print(eval)
 
-# # from promptbench.models import LLMModel
 
+import promptbench as pb
+from promptbench.models import LLMModel
+from promptbench.prompt_attack import Attack
 # # # # print all supported models
 # # # print(LLMModel.model_list())
 
 # # # Create a T5 model
-# # model_t5 = LLMModel(model='google/flan-t5-large')
+model_t5 = LLMModel(model='google/flan-t5-large')
+dataset = pb.DatasetLoader.load_dataset("sst2")
+prompt = "As a sentiment classifier, determine whether the following text is 'positive' or 'negative'. Please classify: \nQuestion: {content}\nAnswer:"
+input_process_func = pb.InputProcess.basic_format
+output_process_func = pb.OutputProcess.cls
+eval_func = pb.Eval.compute_cls_accuracy
+unmodifiable_words = ["positive", "negative", "content", "question", "answer"]
+
+attack = Attack(model_t5, "stresstest", dataset, prompt, input_process_func, output_process_func, eval_func, unmodifiable_words)
+print(attack.attack())
 
 # # input_sentence = "As an instrument for entailment evaluation, consider the two sentences and determine if their relationship is 'entailment' or 'not_entailment'. Respond with 'entailment' or 'not_entailment'  and true is true :"
 # # label = 'not_entailment'
@@ -146,59 +157,59 @@
 #     score = pb.Eval.compute_cls_accuracy(preds, labels)
 #     print(f"{score:.3f}, {prompt}")
 
-import torch
-import transformers
-from transformers import LlamaForCausalLM, LlamaTokenizer, AutoTokenizer, AutoModelForCausalLM
+# import torch
+# import transformers
+# from transformers import LlamaForCausalLM, LlamaTokenizer, AutoTokenizer, AutoModelForCausalLM
 
-# model_dir = "../llama2-13b"
+# # model_dir = "../llama2-13b"
 
-model_dir = "meta-llama/Llama-2-13b-hf"
+# model_dir = "meta-llama/Llama-2-13b-hf"
 
-tokenizer = LlamaTokenizer.from_pretrained(model_dir, device_map="auto")
-pipe = LlamaForCausalLM.from_pretrained(model_dir, device_map="auto", torch_dtype=torch.float16)
-print(tokenizer.eos_token)
+# tokenizer = LlamaTokenizer.from_pretrained(model_dir, device_map="auto")
+# pipe = LlamaForCausalLM.from_pretrained(model_dir, device_map="auto", torch_dtype=torch.float16)
+# print(tokenizer.eos_token)
+
+# # base_prompt = """
+# # <<SYS>>
+# # Analyze the text in the content and evaluate the overall sentiment for 'User'.\n
+# # And return your sentiment analysis only as : Positive, Negative, or Neutral \n
+# # <</SYS>>
+# # [INST]
+# # User:{user_prompt}
+# # [/INST]\n
+
+# # Assistant:
+# # """
 
 # base_prompt = """
-# <<SYS>>
-# Analyze the text in the content and evaluate the overall sentiment for 'User'.\n
+# Analyze the text in the content and evaluate the overall sentiment.\n
 # And return your sentiment analysis only as : Positive, Negative, or Neutral \n
-# <</SYS>>
-# [INST]
-# User:{user_prompt}
-# [/INST]\n
-
-# Assistant:
+# {user_prompt}
 # """
 
-base_prompt = """
-Analyze the text in the content and evaluate the overall sentiment.\n
-And return your sentiment analysis only as : Positive, Negative, or Neutral \n
-{user_prompt}
-"""
+# # model = "meta-llama/Llama-2-13b-hf"
 
-# model = "meta-llama/Llama-2-13b-hf"
+# # tokenizer = AutoTokenizer.from_pretrained(model)
+# # pipeline = transformers.pipeline(
+# #     "text-generation",
+# #     model=model,
+# #     torch_dtype=torch.float16,
+# #     device_map="auto",
+# # )
 
-# tokenizer = AutoTokenizer.from_pretrained(model)
-# pipeline = transformers.pipeline(
-#     "text-generation",
-#     model=model,
-#     torch_dtype=torch.float16,
-#     device_map="auto",
-# )
+# # base_prompt = "<s>[INST]\n<<SYS>>\n{system_prompt}\n<</SYS>>\n\n{user_prompt}[/INST]"
+# system_prompt = "You are a helpful assistant to help 'User'."
+# user_prompt = "It's slow, very slow..."
 
-# base_prompt = "<s>[INST]\n<<SYS>>\n{system_prompt}\n<</SYS>>\n\n{user_prompt}[/INST]"
-system_prompt = "You are a helpful assistant to help 'User'."
-user_prompt = "It's slow, very slow..."
+# # input_text = base_prompt.format(system_prompt=system_prompt, user_prompt=user_prompt)
+# input_text = base_prompt.format(user_prompt=user_prompt)
 
-# input_text = base_prompt.format(system_prompt=system_prompt, user_prompt=user_prompt)
-input_text = base_prompt.format(user_prompt=user_prompt)
+# input_ids = tokenizer(input_text, return_tensors="pt").input_ids.to("cuda")
+# outputs = pipe.generate(input_ids, 
+#                         max_new_tokens=100, 
+#                         temperature=0.0000001,
+#                         do_sample=True,)
 
-input_ids = tokenizer(input_text, return_tensors="pt").input_ids.to("cuda")
-outputs = pipe.generate(input_ids, 
-                        max_new_tokens=100, 
-                        temperature=0.0000001,
-                        do_sample=True,)
+# out = tokenizer.decode(outputs[0], skip_special_tokens=True, clean_up_tokenization_spaces=False)
 
-out = tokenizer.decode(outputs[0], skip_special_tokens=True, clean_up_tokenization_spaces=False)
-
-print(out)
+# print(out)
