@@ -1,0 +1,2 @@
+sphinx==7.1.2  # specify the version you're using
+sphinx_rtd_theme
