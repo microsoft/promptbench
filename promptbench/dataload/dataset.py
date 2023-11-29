@@ -17,7 +17,8 @@ DATA_SET = [
     "qnli", "wnli", "rte", "mrpc",
     "mmlu", "squad_v2", "un_multi", "iwslt", "math",
     "bool_logic", "valid_parentheses",
-    "gsm8k", "commonsenseQA", "bigbench_date", "bigbench_object_tracking"
+    "gsm8k", "csqa", "bigbench_date", "bigbench_object_tracking",
+    'last_letter_concat', 'numersense', 'qasc'
 ]
 
 def shuffleDict(d):
@@ -348,7 +349,7 @@ class BigBench(Dataset):
             else:
                 raise ValueError("dataset is not properly defined ...")
             for line in json_data:
-                q = line["input"].strip()
+                raw_q = line["input"].strip()
                 if self.dataset_name == "bigbench_date":
                     choice = "Answer Choices:"
                     # Randomly shuffle the answer choice dictionary because the original answer is always A ...
@@ -367,7 +368,7 @@ class BigBench(Dataset):
                     if value == 1:
                         a = choice_index[i]
                         #a = key
-                q = q + " " + choice
+                q = raw_q + " " + choice
                 self.data.append({"content": q, "label": a})
     
     def extract_answer(self, output): 
@@ -392,7 +393,7 @@ class CSQA(Dataset):
             choice_index = ['A','B','C','D','E']
             for line in json_data:
                 answer = line["answer"]
-                q = line["query"].strip()
+                raw_q = line["query"].strip()
                 choice = "\nAnswer Choices:"
                 choice_list = line["cands"]
                 for i, c in enumerate(choice_list):
@@ -402,11 +403,68 @@ class CSQA(Dataset):
                     choice += c
                     if c == answer:
                         a = choice_index[i]
-                q = q + " " + choice
+                q = raw_q + " " + choice
                 self.data.append({"content": q, "label": a})
                 
     def extract_answer(self, output): 
         answer = re.findall(r'A|B|C|D|E', output)
+        answer = answer[0] if len(answer) > 0 else ""
+        
+        # print(answer)
+        return answer
+    
+
+class LastLetterConcat(Dataset):
+    def __init__(self):
+        super().__init__("last_letter_concat")
+        
+        self.data = []
+        with open(self.filepath, 'r') as f:
+            json_data = json.load(f)
+            for line in json_data:
+                q = line["question"].strip()
+                a = line["answer"]
+                self.data.append({"content": q, "label": a})
+    
+
+class NumerSense(Dataset):
+    def __init__(self):
+        super().__init__("numersense")
+        
+        self.data = []
+        with open(self.filepath, 'r') as f:
+            json_data = json.load(f)
+            for line in json_data:
+                q = line["query"].strip()
+                a = line["answer"]
+                self.data.append({"content": q, "label": a})
+                
+
+class QASC(Dataset):
+    def __init__(self):
+        super().__init__("qasc")
+        
+        self.data = []
+        with open(self.filepath, 'r') as f:
+            json_data = json.load(f)
+            choice_index = ['A','B','C','D','E','F','G','H']
+            for line in json_data:
+                answer = line["answer"]
+                raw_q = line["query"].strip()
+                choice = "\nAnswer Choices:"
+                choice_list = line["cands"]
+                for i, c in enumerate(choice_list):
+                    choice += " ("
+                    choice += choice_index[i]
+                    choice += ") "
+                    choice += c
+                    if c == answer:
+                        a = choice_index[i]
+                q = raw_q + " " + choice
+                self.data.append({"content": q, "label": a})
+                
+    def extract_answer(self, output): 
+        answer = re.findall(r'A|B|C|D|E|F|G|H', output)
         answer = answer[0] if len(answer) > 0 else ""
         
         # print(answer)

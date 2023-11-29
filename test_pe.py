@@ -14,9 +14,8 @@ dataset_name = args.dataset_name
 model_name = args.model_name
 method_name = args.method_name
 
-log_dir = './logs/' if 'gpt' in model_name else ''
+log_dir = './logs/' if 'gpt' in model_name or 'palm' in model_name else ''
     
-
 if __name__ == '__main__':
     log_file = open(f'{log_dir}{method_name}_{model_name}_{dataset_name}.txt', 'w')
     log_file.write(f"Method: {method_name} \nModel: {model_name} \nDataset: {dataset_name}\n\n")
@@ -25,13 +24,13 @@ if __name__ == '__main__':
     dataset = pb.DatasetLoader.load_dataset(dataset_name)
     
     # openai_key = os.getenv('OPENAI_KEY')
-    openai_key = 'sk-xxx'
     # print(openai_key)
     
     # load a model.
     model = pb.LLMModel(model=model_name, 
-                        openai_key = openai_key,
-                        model_dir = f'/mnt/mydata/llms/{model_name}',
+                        openai_key=openai_key,
+                        palm_key=palm_key,
+                        model_dir=f'/mnt/mydata/llms/{model_name}',
                         max_new_tokens=30)
 
     # load method

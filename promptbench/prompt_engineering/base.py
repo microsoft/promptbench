@@ -10,6 +10,15 @@ class Base:
             self.output_range = "among A through F"
         elif self.dataset_name == "bigbench_object_tracking":
             self.output_range = "among A through C"
+        elif self.dataset_name == "qasc":
+            self.output_range = "among A through H"
+        elif self.dataset_name == "numersense":
+            self.output_range = "numbers expressed in English words, e.g. 'one', 'two', 'three', ..." 
+        elif self.dataset_name == "last_letter_concat":
+            self.output_range = "English letter combinations, e.g. 'afsa', 'abgsa', ..."
+        else:
+            self.output_range = "No format restrictions"
+            
     
     def query(self, input_text, model):
         instr_get_answer = input_text  + '\n' + \

@@ -5,6 +5,7 @@ MODEL_LIST = {
     T5Model: ['google/flan-t5-large'],
     LlamaModel: ['llama2-7b', 'llama2-7b-chat', 'llama2-13b', 'llama2-13b-chat', 'llama2-70b', 'llama2-70b-chat',],
     PhiModel: ['phi-1.5'],
+    PaLMModel: ['palm'],
     OpenAIModel: ['gpt-3.5-turbo', 'gpt-4', 'gpt-4-1106-preview', 'gpt-3.5-turbo-1106'],
     VicunaModel: ['vicuna-7b', 'vicuna-13b', 'vicuna-13b-v1.3'],
     UL2Model: ['google/flan-ul2'],
@@ -52,11 +53,11 @@ class LLMModel(object):
         Makes a prediction based on the input text using the loaded model.
     """
 
-    def __init__(self, model, max_new_tokens=20, temperature=0, model_dir=None, system_prompt=None, openai_key=None, sleep_time=3):
+    def __init__(self, model, max_new_tokens=20, temperature=0, model_dir=None, system_prompt=None, openai_key=None, palm_key=None, sleep_time=3):
         self.model = model
-        self.infer_model = self._create_model(max_new_tokens, temperature, model_dir, system_prompt, openai_key, sleep_time)
+        self.infer_model = self._create_model(max_new_tokens, temperature, model_dir, system_prompt, openai_key, palm_key, sleep_time)
 
-    def _create_model(self, max_new_tokens=20, temperature=0, model_dir=None, system_prompt=None, openai_key=None, sleep_time=3):
+    def _create_model(self, max_new_tokens=20, temperature=0, model_dir=None, system_prompt=None, openai_key=None, palm_key=None, sleep_time=3):
         """Creates and returns the appropriate model based on the model name."""
 
         # Dictionary mapping of model names to their respective classes
@@ -69,6 +70,8 @@ class LLMModel(object):
                 return model_class(self.model, max_new_tokens, temperature, system_prompt, model_dir)
             elif model_class == OpenAIModel:
                 return model_class(self.model, max_new_tokens, temperature, system_prompt, openai_key, sleep_time)
+            elif model_class == PaLMModel:
+                return model_class(self.model, max_new_tokens, temperature, system_prompt, palm_key, sleep_time)
             else:
                 return model_class(self.model, max_new_tokens, temperature, system_prompt)
         else:
