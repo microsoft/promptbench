@@ -17,7 +17,7 @@ def round_value(val):
     return str(round(float(val), 8))
 
 
-def evaluate(dataset_type, preds, gts):
+def dyval_evaluate(dataset_type, preds, gts):
     """
     Evaluates predictions against ground truths for different dataset types.
 
