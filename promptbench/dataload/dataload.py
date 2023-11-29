@@ -16,13 +16,11 @@ class DatasetLoader:
         This function acts as a factory method, returning the appropriate dataset object 
         based on the provided dataset name. Note that 'un_multi' and 'iwslt' require 
         additional arguments to specify the languages used in the dataset.
-        
+
         The supported languages are: 
-        LANGUAGES = {
-            'de': 'German',
-            'en': 'English',
-            'fr': 'French',
-        }
+            - 'de': 'German',
+            - 'en': 'English',
+            - 'fr': 'French',
 
         Args:
             dataset_name (str): The name of the dataset to load.
@@ -33,8 +31,7 @@ class DatasetLoader:
 
         Raises:
             NotImplementedError: If the dataset_name does not correspond to any known dataset.
-        """
-        
+        """        
         # GLUE datasets
         if dataset_name in ["cola", "sst2", "qqp", "mnli", "mnli_matched", "mnli_mismatched", 
                             "qnli", "wnli", "rte", "mrpc"]:

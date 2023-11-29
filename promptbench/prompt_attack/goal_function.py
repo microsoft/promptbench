@@ -239,13 +239,30 @@ class AdvPromptGoalFunction(GoalFunction):
     """A goal function defined on a model that outputs a probability for some
     number of classes."""
 
-    def __init__(self, model, dataset, query_budget, *args, target_max_acc=0, **kwargs):
-        self.model = model
-        self.query_budget = query_budget
-        self.dataset = dataset
-        self.target_max_acc = target_max_acc
+    def __init__(self, model, dataset, input_process_func, output_process_func, eval_func, query_budget, *args, target_max_acc=0, **kwargs):
         super().__init__(*args, **kwargs)
+        self.model = model
+        self.dataset = dataset
+        self.input_process_func = input_process_func
+        self.output_process_func = output_process_func
+        self.eval_func = eval_func
+        self.query_budget = query_budget
+        self.target_max_acc = target_max_acc
 
+    def _call_model(self, attacked_text_list):
+        acc_list = []
+        for attacked_prompt in attacked_text_list:
+            prompt = attacked_prompt.text
+            labels = []
+            preds = []
+            for d in self.dataset:
+                input_text = self.input_process_func(prompt, d)
+                labels.append(d["label"])
+                print(self.model)
+                exit()
+                raw_pred = self.model(input_text)
+                pred = self.output_process_func(raw_pred)
+                preds.append(pred)
     def _process_model_outputs(self, inputs, outputs):
         return outputs
 
@@ -277,18 +294,20 @@ class AdvPromptGoalFunction(GoalFunction):
         acc_list = []
         for attacked_prompt in attacked_text_list:
             prompt = attacked_prompt.text
-            from ..process import process_input, process_pred
-            from ..metrics import eval
-
-            input_texts, labels = process_input(prompt, self.raw_dataset)
-            
-            import tqdm
-            raw_preds = []
-            for input_text in tqdm.tqdm(input_texts):
-                raw_preds.append(self.model[input_text])
-            
-            preds = process_pred(self.raw_dataset.dataset_name, raw_preds)
-            acc = eval(self.raw_dataset, preds, labels)
+            labels = []
+            preds = []
+            idx = 0 
+            for d in self.dataset:
+                idx += 1
+                if idx > 2:
+                    break
+                input_text = self.input_process_func(prompt, d)
+                labels.append(d["label"])
+                raw_pred = self.model(input_text)
+                pred = self.output_process_func(raw_pred)
+                preds.append(pred)
+                
+            acc = self.eval_func(preds, labels)
 
             acc_list.append(acc)
         return acc_list

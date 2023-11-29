@@ -126,21 +126,7 @@ def process_dyval_inputs(prompt, dataset):
     return descriptions
 
 def process_dyval_training_sample(sample, dataset_type):
-    """
-    Processes a single training sample for dynamic value (DyVal) dataset.
 
-    Parameters:
-    -----------
-    sample : dict
-        The sample to be processed.
-    dataset_type : str
-        The type of dataset (e.g., 'arithmetic', 'bool_logic').
-
-    Returns:
-    --------
-    dict
-        The processed sample.
-    """
     prompt = DYVAL_PROMPTS[dataset_type][0]
     for order, input_text in sample["descriptions"].items():
         if dataset_type in ["arithmetic", "bool_logic", "deductive_logic"]:
