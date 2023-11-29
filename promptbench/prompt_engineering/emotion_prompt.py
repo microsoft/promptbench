@@ -1,17 +1,22 @@
-from ..prompts.method_oriented import METHOD_ORIENTED_PROMPTS
+from .base import Base
+from ..prompts.method_oriented import get_prompt
 
 
-class EmotionPrompt:
+class EmotionPrompt(Base):
     def __init__(self, **kwargs):
-        self.prompt_id = kwargs.get('prompt_id')
-        self.dataset_name = kwargs.get('dataset')
+        super().__init__(**kwargs)
         
-        self.emotion_prompt = METHOD_ORIENTED_PROMPTS['emotion_prompts']['prompts'][self.prompt_id]
+        self.prompt_id = int(kwargs.get('prompt_id'))
+        
+        self.emotion_prompt = get_prompt(['emotion_prompt', 'prompts', self.prompt_id])
         
     def query(self, input_text, model):
-        instr_get_answer = input_text + ', ' + self.emotion_prompt
+        instr_get_answer = input_text + ' ' + self.emotion_prompt + '\n' + \
+                           f'Please output your answer at the end as ##<your answer ({self.output_range})>'
         prompt_get_answer = model.convert_text_to_prompt(instr_get_answer, 'user')
         
         answer = model(prompt_get_answer)
         
+        # print(instr_get_answer)
+        # print(answer)
         return answer
