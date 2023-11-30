@@ -1,7 +1,7 @@
-promptbench.dyval.DAG.logic_dag
+dyval.dyval_dataset
 ===============================
 
-.. automodule:: promptbench.dyval.DAG.logic_dag
+.. automodule:: promptbench.dyval.dyval_dataset
    :members:
    :undoc-members:
    :show-inheritance:

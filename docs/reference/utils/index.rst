@@ -1,5 +1,5 @@
-promptbench.utils
-=================
+utils
+=====
 
 .. toctree::
    :maxdepth: 1

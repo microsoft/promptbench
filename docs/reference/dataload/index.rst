@@ -1,4 +1,4 @@
-promptbench.dataload
+dataload
 ====================
 
 .. toctree::

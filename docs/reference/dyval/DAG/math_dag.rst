@@ -1,7 +1,7 @@
-promptbench.dyval.DAG.code_dag
+dyval.DAG.math_dag
 ==============================
 
-.. automodule:: promptbench.dyval.DAG.code_dag
+.. automodule:: promptbench.dyval.DAG.math_dag
    :members:
    :undoc-members:
    :show-inheritance:

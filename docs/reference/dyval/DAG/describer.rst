@@ -1,4 +1,4 @@
-promptbench.dyval.DAG.describer
+dyval.DAG.describer
 ===============================
 
 .. automodule:: promptbench.dyval.DAG.describer

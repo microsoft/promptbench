@@ -1,7 +1,7 @@
-promptbench.models.models
+dyval.DAG.dag
 =========================
 
-.. automodule:: promptbench.models.models
+.. automodule:: promptbench.dyval.DAG.dag
    :members:
    :undoc-members:
    :show-inheritance:

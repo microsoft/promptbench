@@ -1,4 +1,4 @@
-promptbench.dataload.dataset
+dataload.dataset
 ============================
 
 .. automodule:: promptbench.dataload.dataset

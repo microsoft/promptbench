@@ -1,4 +1,4 @@
-promptbench.dyval.DAG
+dyval.DAG
 =====================
 
 .. toctree::

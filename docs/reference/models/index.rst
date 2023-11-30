@@ -1,5 +1,5 @@
-promptbench.models
-==================
+models
+======
 
 .. toctree::
    :maxdepth: 1

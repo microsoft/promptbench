@@ -1,4 +1,4 @@
-promptbench.dyval
+dyval
 =================
 
 .. toctree::

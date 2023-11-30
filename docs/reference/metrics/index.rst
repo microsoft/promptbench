@@ -1,4 +1,4 @@
-promptbench.metrics
+metrics
 ===================
 
 .. toctree::

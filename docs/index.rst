@@ -6,15 +6,29 @@
 Welcome to promptbench's documentation!
 =======================================
 
-.. toctree::
-   :maxdepth: 3
-   :caption: Contents:
+**PromptBench** is a unified library for evaluating and understanding large language models. Please refer to [PromptBench](https://aka.ms/promptbench) for the code.
 
-   dataload/index
-   dyval/index
-   metrics/index
-   models/index
-   utils/index
+.. image:: ../imgs/promptbench.png
+   :align: center
+   :width: 70%
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Examples
+
+   examples/basic
+   examples/dyval
+   examples/prompt_attack
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Reference
+
+   reference/dataload/index
+   reference/dyval/index
+   reference/metrics/index
+   reference/models/index
+   reference/utils/index
 
 
 Indices and tables

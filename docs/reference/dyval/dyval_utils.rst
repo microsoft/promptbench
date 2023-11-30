@@ -1,7 +1,7 @@
-promptbench.dataload.dataload
+dyval.dyval_utils
 =============================
 
-.. automodule:: promptbench.dataload.dataload
+.. automodule:: promptbench.dyval.dyval_utils
    :members:
    :undoc-members:
    :show-inheritance:

@@ -1,4 +1,4 @@
-promptbench.metrics.eval
+metrics.eval
 ========================
 
 .. automodule:: promptbench.metrics.eval
