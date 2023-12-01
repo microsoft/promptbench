@@ -14,6 +14,13 @@ Welcome to promptbench's documentation!
 
 .. toctree::
    :maxdepth: 1
+   :caption: Get Started
+
+   start/intro
+   start/installation
+
+.. toctree::
+   :maxdepth: 1
    :caption: Examples
 
    examples/basic
@@ -29,6 +36,14 @@ Welcome to promptbench's documentation!
    reference/metrics/index
    reference/models/index
    reference/utils/index
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Leaderboards
+
+   leaderboard/advprompt
+   leaderboard/dyval
+   leaderboard/pe
 
 
 Indices and tables
