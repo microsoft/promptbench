@@ -7,15 +7,15 @@
 
 ## What does promptbench currently contain?
 1. **Quick access your model performance:** We provide a user-friendly interface for quick build models, load dataset, and evaluate model performance.
-2. **Prompt Engineering:**
-3. **Evaluating adversarial prompts:** promptbench integrated [prompt attacks](https://arxiv.org/abs/2306.04528) [1] for researchers simulate black-box adversarial prompt attacks on the models and evaluate their performances.
-4. **Dynamic evaluation to mitigate potential test data contamination:** we integrated the dynamic evaluation framework [DyVal](https://arxiv.org/pdf/2309.17167) [2], which generates evaluation samples on-the-fly with controlled complexity.
+2. **Prompt Engineering:** We have implemented many prompt engineering methods. For example: [Few-shot Chain-of-Thought](https://arxiv.org/abs/2201.11903) [1],  [Emotion Prompt](https://arxiv.org/abs/2307.11760) [2], [Expert Prompting](https://arxiv.org/abs/2305.14688) [3] and so on.
+3. **Evaluating adversarial prompts:** promptbench integrated [prompt attacks](https://arxiv.org/abs/2306.04528) [4] for researchers simulate black-box adversarial prompt attacks on the models and evaluate their performances.
+4. **Dynamic evaluation to mitigate potential test data contamination:** we integrated the dynamic evaluation framework [DyVal](https://arxiv.org/pdf/2309.17167) [5], which generates evaluation samples on-the-fly with controlled complexity.
 
 
 ## Where should I get started?
 If you want to
 1. **evaluate my model on existing benchmarks:** please refer to the `examples/basic.ipynb` for constructing your evaluation pipeline.
-2. **test the effects of different prompting techniques:** 
+2. **test the effects of different prompting techniques:** please refer to the `examples/prompt_engineering.ipynb` for testing performance of different methods.
 3. **examine the robustness for prompt attacks**, please refer to `examples/prompt_attack.ipynb` to construct the attacks.
 4. **use DyVal for evaluation:** please refer to `examples/dyval.ipynb` to construct DyVal datasets.
 
@@ -49,7 +49,13 @@ We support a range of datasets to facilitate comprehensive analysis, including:
 - Math
 - Bool Logic (BigBench)
 - Valid Parentheses (BigBench)
-- 
+- Object Tracking (BigBench)
+- Date (BigBench)
+- GSM8K
+- CSQA (CommonSense QA)
+- Numersense
+- QASC
+- Last Letter Concatenate
 
 ### Models
 
@@ -64,6 +70,7 @@ We support a range of datasets to facilitate comprehensive analysis, including:
 - cerebras/Cerebras-GPT-13B
 - EleutherAI/gpt-neox-20b
 - google/flan-ul2
+- palm
 - chatgpt
 - gpt4
 
@@ -72,8 +79,11 @@ We support a range of datasets to facilitate comprehensive analysis, including:
 
 - TextAttack: https://github.com/QData/TextAttack.
 - We thank the volunteers: Hanyuan Zhang, Lingrui Li, Yating Zhou for conducting the semantic preserving experiment.
-- [1] Zhu, Kaijie, et al. "PromptBench: Towards Evaluating the Robustness of Large Language Models on Adversarial Prompts." arXiv preprint arXiv:2306.04528 (2023).
-- [2] Zhu, Kaijie, et al. "DyVal: Graph-informed Dynamic Evaluation of Large Language Models." arXiv preprint arXiv:2309.17167 (2023).
+- [1] Jason Wei, et al. "Chain-of-Thought Prompting Elicits Reasoning in Large Language Models." arXiv preprint arXiv:2201.11903 (2022).
+- [2] Cheng Li, et al. "Emotionprompt: Leveraging psychology for large language models enhancement via emotional stimulus." arXiv preprint arXiv:2307.11760 (2023).
+- [3] BenFeng Xu, et al. "ExpertPrompting: Instructing Large Language Models to be Distinguished Experts" arXiv preprint arXiv:2305.14688 (2023).
+- [4] Zhu, Kaijie, et al. "PromptBench: Towards Evaluating the Robustness of Large Language Models on Adversarial Prompts." arXiv preprint arXiv:2306.04528 (2023).
+- [5] Zhu, Kaijie, et al. "DyVal: Graph-informed Dynamic Evaluation of Large Language Models." arXiv preprint arXiv:2309.17167 (2023).
 
 
 
