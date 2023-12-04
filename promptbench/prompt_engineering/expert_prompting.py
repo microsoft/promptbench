@@ -47,6 +47,8 @@ class ExpertPrompting(Base):
 
         answer = model(prompt_get_answer)
         
-        # print(instr_get_answer)
-        # print(answer)
+        if self.verbose:
+            print(prompt_get_answer)
+            print(answer)
+            
         return answer

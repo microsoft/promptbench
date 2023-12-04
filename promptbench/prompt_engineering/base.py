@@ -1,6 +1,7 @@
 class Base:
     def __init__(self, **kwargs): 
         self.dataset_name  = kwargs.get('dataset')
+        self.verbose = kwargs.get('verbose', False)
         
         if self.dataset_name == "gsm8k":
             self.output_range = "arabic numerals"

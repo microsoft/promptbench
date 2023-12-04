@@ -59,6 +59,10 @@ class ZSCoT(BaseCoT):
         
         answer = model(prompt_get_answer)
         
+        if self.verbose:
+            print(prompt_get_answer)
+            print(answer)
+        
         return answer
 
 
@@ -96,6 +100,10 @@ class CoT(BaseCoT):
         prompt_get_answer = model.concat_prompts([prompt_question, prompt_get_answer])
         
         answer = model(prompt_get_answer)
+        
+        if self.verbose:
+            print(prompt_get_answer)
+            print(answer)
         
         return answer
           

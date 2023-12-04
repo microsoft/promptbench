@@ -39,4 +39,8 @@ class EmotionPrompt(Base):
         
         answer = model(prompt_get_answer)
         
+        if self.verbose:
+            print(prompt_get_answer)
+            print(answer)
+        
         return answer

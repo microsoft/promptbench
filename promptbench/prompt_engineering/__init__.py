@@ -25,7 +25,7 @@ METHOD_SUPPORT_DATASET = {
     'ZSCoT': ['gsm8k', 'csqa', 'bigbench_date', 'bigbench_object_tracking'],
     'expert_prompting': ['gsm8k', 'csqa', 'bigbench_date', 'bigbench_object_tracking'],
     'emotion_prompt': ['gsm8k', 'csqa', 'bigbench_date', 'bigbench_object_tracking'],
-    'least_to_most': ['gsm8k', 'drop', 'last_letter_concat'],
+    'least_to_most': ['gsm8k', 'last_letter_concat'],
     'generated_knowledge': ['csqa', 'numersense', 'qasc'],
     'baseline': ['gsm8k', 'csqa', 'bigbench_date', 'bigbench_object_tracking', 'drop', 'last_letter_concat', 'numersense', 'qasc'],
 }

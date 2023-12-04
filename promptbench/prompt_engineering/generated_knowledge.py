@@ -43,6 +43,10 @@ class GeneratedKnowledge(Base):
         knowledges = list(set([_ for _ in knowledges if _ != '']))
         knowledge  = '\n'.join(knowledges) 
         
+        if self.verbose:
+            print(prompt_gen_knowledge)
+            print(knowledge)
+        
         return knowledge
 
     def query(self, input_text, model):  
@@ -59,5 +63,9 @@ class GeneratedKnowledge(Base):
             instr_get_answer, 'user'
         )
         answer = model(prompt_get_answer)  
+        
+        if self.verbose:
+            print(prompt_get_answer)
+            print(answer)
         
         return answer
