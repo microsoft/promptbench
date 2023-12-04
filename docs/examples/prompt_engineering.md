@@ -60,7 +60,7 @@ print(pb.SUPPORTED_MODELS)
 # If model is openai/palm, need to provide openai_key/palm_key
 # If model is llama, vicuna, need to provide model dir
 model = pb.LLMModel(model='gpt-3.5-turbo', 
-                    openai_key = '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',
+                    openai_key = 'sk-xxx',
                     max_new_tokens=150)
 ```
 
