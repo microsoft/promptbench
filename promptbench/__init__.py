@@ -1,5 +1,5 @@
 from .models import LLMModel, SUPPORTED_MODELS
-from .prompt_engineering import PEMethod, METHOD_MAP, METHOD_SUPPORT_DATASET
+from .prompt_engineering import PEMethod, SUPPORTED_METHODS, METHOD_SUPPORT_DATASET
 from .dataload import DatasetLoader, SUPPORTED_DATASETS
 from .prompts import Prompt
 from .utils import InputProcess, OutputProcess

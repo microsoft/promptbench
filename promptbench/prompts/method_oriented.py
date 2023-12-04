@@ -295,8 +295,11 @@ def get_prompt(key_list):
         else:
             raise ValueError(f"Key {key} not found in {data}")
     
-    processed_lines = [line.strip() for line in data.split('\n')]
-    processed_lines = [line for line in processed_lines if line != '']
-    processed_text = '\n'.join(processed_lines)
+    if isinstance(data, str):
+        processed_lines = [line.strip() for line in data.split('\n')]
+        processed_lines = [line for line in processed_lines if line != '']
+        processed_text = '\n'.join(processed_lines)
+    else:
+        processed_text = data
     
     return processed_text

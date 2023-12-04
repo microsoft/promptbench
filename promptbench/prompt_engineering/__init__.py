@@ -10,6 +10,8 @@ from .emotion_prompt import EmotionPrompt
 
 from ..metrics import Eval
 
+SUPPORTED_METHODS = ['CoT', 'ZSCoT', 'least_to_most', 'generated_knowledge', 'expert_prompting', 'emotion_prompt', 'baseline']
+
 METHOD_MAP = {
     'CoT': CoT,
     'ZSCoT': ZSCoT,
@@ -27,7 +29,7 @@ METHOD_SUPPORT_DATASET = {
     'emotion_prompt': ['gsm8k', 'csqa', 'bigbench_date', 'bigbench_object_tracking'],
     'least_to_most': ['gsm8k', 'last_letter_concat'],
     'generated_knowledge': ['csqa', 'numersense', 'qasc'],
-    'baseline': ['gsm8k', 'csqa', 'bigbench_date', 'bigbench_object_tracking', 'drop', 'last_letter_concat', 'numersense', 'qasc'],
+    'baseline': ['gsm8k', 'csqa', 'bigbench_date', 'bigbench_object_tracking', 'last_letter_concat', 'numersense', 'qasc'],
 }
 
 # Model: GPT3.5, GPT4, Llama7b-chat, Llama13b-chat, llama70b-chat
@@ -57,11 +59,14 @@ class PEMethod(object):
         """Returns a list of supported methods."""
         return METHOD_MAP.keys()
     
-    def test(self, dataset, model):
+    def test(self, dataset, model, num_samples=None):
         """Tests the method on the given dataset and returns the accuracy."""""
         preds = []
         labels = []
-        for data in tqdm(dataset):
+        for i, data in enumerate(tqdm(dataset)):
+            if num_samples and i >= num_samples:
+                break
+            
             label = data['label']
             labels.append(label)
             

@@ -30,10 +30,11 @@ class EmotionPrompt(Base):
         
         self.prompt_id = int(kwargs.get('prompt_id'))
         
-        self.emotion_prompt = get_prompt(['emotion_prompt', 'prompts', self.prompt_id])
+        self.emotion_prompts = get_prompt(['emotion_prompt', 'prompts'])
+        self.emotion_prompt = self.emotion_prompts[self.prompt_id]
         
     def query(self, input_text, model):
-        instr_get_answer = input_text + ' ' + self.emotion_prompt + '\n' + \
+        instr_get_answer = input_text + '\n' + self.emotion_prompt + '\n' + \
                            f'Please output your answer at the end as ##<your answer ({self.output_range})>'
         prompt_get_answer = model.convert_text_to_prompt(instr_get_answer, 'user')
         
