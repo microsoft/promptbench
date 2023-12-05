@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
+
 from .models import *
 
 # A dictionary mapping of model architecture to its supported model names

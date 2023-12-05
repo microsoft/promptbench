@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
+
 from .dyval_dataset import DyValDataset
 from .dyval_utils import *
 

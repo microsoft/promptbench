@@ -1,7 +1,6 @@
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT License.
 
-
 class Eval:
     """
     A utility class for computing various evaluation metrics.

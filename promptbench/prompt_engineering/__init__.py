@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
+
 from tqdm import tqdm
 import re
 

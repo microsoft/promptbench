@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
+
 from ..prompts.method_oriented import get_prompt
 from .base import Base
 

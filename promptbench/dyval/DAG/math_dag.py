@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
+
 import random
 from math import sqrt, prod
 import numpy as np

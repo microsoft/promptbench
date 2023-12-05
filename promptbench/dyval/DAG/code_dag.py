@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
+
 import random
 from .dag import GeneralDAG
 from .describer import GeneralDAGDescriber

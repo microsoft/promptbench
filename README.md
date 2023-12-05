@@ -41,13 +41,11 @@
     <a href="https://github.com/microsoft/promptbench"><strong>Explore the docs »</strong></a>
     <br /> -->
     <br />
-    <a href="https://arxiv.org/pdf/2306.04528">Paper</a>
-    ·
-    <a href="https://llm-eval.github.io/">Benchmark</a>
+    <a href="https://llm-eval.github.io/pages/papers.html">Papers</a>
     ·
     <a href="https://promptbench.readthedocs.io/en/latest/">Docs</a>
     ·
-    <a href="https://https://arxiv.org/abs/2307.03109">Evaluation Survey</a>
+    <a href="https://llm-eval.github.io/pages/leaderboard.html">Leaderboard</a>
   </p>
 </div>
 
@@ -57,19 +55,11 @@
   <summary>Table of Contents</summary>
   <ol>
     <li><a href="#news-and-updates">News and Updates</a></li>
-    <li><a href="#intro">Introduction</a></li>
-    <li>
-      <a href="#getting-started">Getting Started</a>
-      <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
-      </ul>
-    </li>
+    <li><a href="#introduction">Introduction</a></li>
+    <li><a href="#installation">Installation</a></li>
     <li><a href="#usage">Usage</a></li>
+    <li><a href="#supported-datasets-and-models">Datasets and Models</a></li>
     <li><a href="#benchmark-results">Benchmark Results</a></li>
-    <li><a href="#model-zoo">Model Zoo</a></li>
-    <li><a href="#contributing">Community</a></li>
-    <li><a href="#license">License</a></li>
     <li><a href="#acknowledgments">Acknowledgments</a></li>
   </ol>
 </details>
@@ -91,10 +81,10 @@
 
 
 
-## What does promptbench currently provide?
-1. **Quick access your model performance:** We provide a user-friendly interface for quick build models, load dataset, and evaluate model performance.
+### What does promptbench currently provide?
+1. **Quick model performance assessment:** We offer a user-friendly interface that allows for quick model building, dataset loading, and evaluation of model performance.
 2. **Prompt Engineering:** We implemented several prompt engineering methods. For example: [Few-shot Chain-of-Thought](https://arxiv.org/abs/2201.11903) [1],  [Emotion Prompt](https://arxiv.org/abs/2307.11760) [2], [Expert Prompting](https://arxiv.org/abs/2305.14688) [3] and so on.
-3. **Evaluating adversarial prompts:** promptbench integrated [prompt attacks](https://arxiv.org/abs/2306.04528) [4] for researchers simulate black-box adversarial prompt attacks on the models and evaluate their performances.
+3. **Evaluating adversarial prompts:** promptbench integrated [prompt attacks](https://arxiv.org/abs/2306.04528) [4], enabling researchers to simulate black-box adversarial prompt attacks on models and evaluate their robustness.
 4. **Dynamic evaluation to mitigate potential test data contamination:** we integrated the dynamic evaluation framework [DyVal](https://arxiv.org/pdf/2309.17167) [5], which generates evaluation samples on-the-fly with controlled complexity.
 
 
@@ -136,12 +126,6 @@ pip install -r requirements.txt
 ```
 
 Note that this only installed basic python packages. For Prompt Attacks, it requires to install textattacks.
-
-
-
-
-
-
 
 
 ## Usage
@@ -196,11 +180,12 @@ We support a range of datasets to facilitate comprehensive analysis, including:
 
 Please refer to our [benchmark website](llm-eval.github.io) for benchmark results on Prompt Attacks, Prompt Engineering and Dynamic Evaluation DyVal.
 
+## TODO
+- [] Add prompt attacks and prompt engineering documents.
+- [] Add detailed instructions for users to add new models and datasets.
 
 ## Acknowledgements
 
-- [HuggingFace](https://huggingface.co/docs/transformers/index)
-- [Pytorch Lighting](https://github.com/Lightning-AI/lightning)
 - [textattacks](https://github.com/textattacks)
 - [README Template](https://github.com/othneildrew/Best-README-Template)
 - We thank the volunteers: Hanyuan Zhang, Lingrui Li, Yating Zhou for conducting the semantic preserving experiment in Prompt Attack benchmark.

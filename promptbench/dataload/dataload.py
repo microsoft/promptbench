@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
+
 from .dataset import *
 
 SUPPORTED_DATASETS = [
