@@ -10,7 +10,7 @@ Welcome to promptbench's documentation!
 
 .. image:: ../imgs/promptbench.png
    :align: center
-   :width: 70%
+   :width: 75%
 
 .. toctree::
    :maxdepth: 1
