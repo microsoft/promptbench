@@ -1,39 +1,162 @@
-# PromptBench
+<div id="top"></div>
+<!--
+*** Thanks for checking out the Best-README-Template. If you have a suggestion
+*** that would make this better, please fork the repo and create a pull request
+*** or simply open an issue with the tag "enhancement".
+*** Don't forget to give the project a star!
+*** Thanks again! Now go create something AMAZING! :D
+-->
 
-<img src="./imgs/promptbench.png" alt="promptbench" style="zoom:100%;" />
+<!-- PROJECT SHIELDS -->
 
-**PromptBench** is a unified library for evaluating and understanding large language models.
+<!--
+*** I'm using markdown "reference style" links for readability.
+*** Reference links are enclosed in brackets [ ] instead of parentheses ( ).
+*** See the bottom of this document for the declaration of the reference variables
+*** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
+*** https://www.markdownguide.org/basic-syntax/#reference-style-links
+-->
+
+[![Contributors][contributors-shield]][contributors-url]
+[![Forks][forks-shield]][forks-url]
+[![Stargazers][stars-shield]][stars-url]
+[![Issues][issues-shield]][issues-url]
+<!-- 
+***[![MIT License][license-shield]][license-url]
+-->
+
+<!-- PROJECT LOGO -->
+
+<br />
+<div align="center">
+  <a href="https://github.com/microsoft/promptbench">
+    <img src="imgs/promptbench_logo.png" alt="Logo" width="300">
+  </a>
+
+<!-- <h3 align="center">USB</h3> -->
+
+<p align="center">
+    <strong>PromptBench</strong>: A Unified Library for Evaluating and Understanding Large Language Models.
+    <!-- <br />
+    <a href="https://github.com/microsoft/promptbench"><strong>Explore the docs »</strong></a>
+    <br /> -->
+    <br />
+    <a href="https://arxiv.org/pdf/2306.04528">Paper</a>
+    ·
+    <a href="https://llm-eval.github.io/">Benchmark</a>
+    ·
+    <a href="https://promptbench.readthedocs.io/en/latest/">Docs</a>
+    ·
+    <a href="https://https://arxiv.org/abs/2307.03109">Evaluation Survey</a>
+  </p>
+</div>
+
+<!-- TABLE OF CONTENTS -->
+
+<details>
+  <summary>Table of Contents</summary>
+  <ol>
+    <li><a href="#news-and-updates">News and Updates</a></li>
+    <li><a href="#intro">Introduction</a></li>
+    <li>
+      <a href="#getting-started">Getting Started</a>
+      <ul>
+        <li><a href="#prerequisites">Prerequisites</a></li>
+        <li><a href="#installation">Installation</a></li>
+      </ul>
+    </li>
+    <li><a href="#usage">Usage</a></li>
+    <li><a href="#benchmark-results">Benchmark Results</a></li>
+    <li><a href="#model-zoo">Model Zoo</a></li>
+    <li><a href="#contributing">Community</a></li>
+    <li><a href="#license">License</a></li>
+    <li><a href="#acknowledgments">Acknowledgments</a></li>
+  </ol>
+</details>
+
+<!-- News and Updates -->
+
+## News and Updates
+
+- [05/12/2023] Published promptbench 0.0.1.
 
 
-## What does promptbench currently contain?
+<!-- Introduction -->
+
+## Introduction
+
+**PromptBench** is a Pytorch-based Python package for Evaluation of Large Language Models (LLMs). It provides user-friendly APIs for researchers to conduct evaluation on LLMs.
+
+![Code Structure](./imgs/promptbench.png)
+
+
+
+## What does promptbench currently provide?
 1. **Quick access your model performance:** We provide a user-friendly interface for quick build models, load dataset, and evaluate model performance.
-2. **Prompt Engineering:**
-3. **Evaluating adversarial prompts:** promptbench integrated [prompt attacks](https://arxiv.org/abs/2306.04528) [1] for researchers simulate black-box adversarial prompt attacks on the models and evaluate their performances.
-4. **Dynamic evaluation to mitigate potential test data contamination:** we integrated the dynamic evaluation framework [DyVal](https://arxiv.org/pdf/2309.17167) [2], which generates evaluation samples on-the-fly with controlled complexity.
+2. **Prompt Engineering:** We implemented several prompt engineering methods. For example: [Few-shot Chain-of-Thought](https://arxiv.org/abs/2201.11903) [1],  [Emotion Prompt](https://arxiv.org/abs/2307.11760) [2], [Expert Prompting](https://arxiv.org/abs/2305.14688) [3] and so on.
+3. **Evaluating adversarial prompts:** promptbench integrated [prompt attacks](https://arxiv.org/abs/2306.04528) [4] for researchers simulate black-box adversarial prompt attacks on the models and evaluate their performances.
+4. **Dynamic evaluation to mitigate potential test data contamination:** we integrated the dynamic evaluation framework [DyVal](https://arxiv.org/pdf/2309.17167) [5], which generates evaluation samples on-the-fly with controlled complexity.
 
 
-## Where should I get started?
-If you want to
-1. **evaluate my model on existing benchmarks:** please refer to the `examples/basic.ipynb` for constructing your evaluation pipeline.
+
+<!-- GETTING STARTED -->
+
+## Installation
+
+### Install via `pip`
+We provide a Python package *promptbench* for users who want to start evaluation quickly. Simply run 
+```sh
+pip install promptbench
+```
+
+
+### Install via github
+
+First, clone the repo:
+```sh
+git clone git@github.com:microsoft/promptbench.git
+```
+
+Then, 
+
+```sh
+cd promptbench
+```
+
+To install the required packages, you can create a conda environment:
+
+```sh
+conda create --name promptbench python=3.9
+```
+
+then use pip to install required packages:
+
+```sh
+pip install -r requirements.txt
+```
+
+Note that this only installed basic python packages. For Prompt Attacks, it requires to install textattacks.
+
+
+
+
+
+
+
+
+## Usage
+
+promptbench is easy to use and extend. Going through the bellowing examples will help you familiar with promptbench for quick use, evaluate an existing datasets and LLMs, or creating your own datasets and models.
+
+<!-- TODO: add quick start example and refer lighting notebook -->
+
+Please see [Installation](#installation) to install promptbench first. We provide ipynb tutorials for:
+
+1. **evaluate models on existing benchmarks:** please refer to the `examples/basic.ipynb` for constructing your evaluation pipeline.
 2. **test the effects of different prompting techniques:** 
 3. **examine the robustness for prompt attacks**, please refer to `examples/prompt_attack.ipynb` to construct the attacks.
 4. **use DyVal for evaluation:** please refer to `examples/dyval.ipynb` to construct DyVal datasets.
 
-## Installation
-### Install via `pip`
-
-Simply run `pip install promptbench`.
-
-### Install via github
-
-First, clone the repo `git clone git@github.com:microsoft/promptbench.git`.
-
-Then, 
-
-```cmd
-cd promptbench
-pip install -r requirements.txt
-```
 
 ## Supported Datasets and Models
 
@@ -49,37 +172,57 @@ We support a range of datasets to facilitate comprehensive analysis, including:
 - Math
 - Bool Logic (BigBench)
 - Valid Parentheses (BigBench)
-- 
+- Object Tracking (BigBench)
+- Date (BigBench)
+- GSM8K
+- CSQA (CommonSense QA)
+- Numersense
+- QASC
+- Last Letter Concatenate
 
 ### Models
 
 - google/flan-t5-large
 - databricks/dolly-v1-6b
-- llama2-13b
-- llama2-13b-chat
-- llama2-7b
-- llama2-7b-chat
-- vicuna-13b
-- vicuna-13b-v1.3
+- llama2 (7b, 13b, 7b-chat, 13b-chat)
+- vicuna-13b, vicuna-13b-v1.3
 - cerebras/Cerebras-GPT-13B
 - EleutherAI/gpt-neox-20b
 - google/flan-ul2
-- chatgpt
-- gpt4
+- palm
+- chatgpt, gpt4
+
+## Benchmark Results
+
+Please refer to our [benchmark website](llm-eval.github.io) for benchmark results on Prompt Attacks, Prompt Engineering and Dynamic Evaluation DyVal.
 
 
 ## Acknowledgements
 
-- TextAttack: https://github.com/QData/TextAttack.
-- We thank the volunteers: Hanyuan Zhang, Lingrui Li, Yating Zhou for conducting the semantic preserving experiment.
-- [1] Zhu, Kaijie, et al. "PromptBench: Towards Evaluating the Robustness of Large Language Models on Adversarial Prompts." arXiv preprint arXiv:2306.04528 (2023).
-- [2] Zhu, Kaijie, et al. "DyVal: Graph-informed Dynamic Evaluation of Large Language Models." arXiv preprint arXiv:2309.17167 (2023).
+- [HuggingFace](https://huggingface.co/docs/transformers/index)
+- [Pytorch Lighting](https://github.com/Lightning-AI/lightning)
+- [textattacks](https://github.com/textattacks)
+- [README Template](https://github.com/othneildrew/Best-README-Template)
+- We thank the volunteers: Hanyuan Zhang, Lingrui Li, Yating Zhou for conducting the semantic preserving experiment in Prompt Attack benchmark.
 
 
+## Reference
+[1] Jason Wei, et al. "Chain-of-Thought Prompting Elicits Reasoning in Large Language Models." arXiv preprint arXiv:2201.11903 (2022).
 
-## Citations
+[2] Cheng Li, et al. "Emotionprompt: Leveraging psychology for large language models enhancement via emotional stimulus." arXiv preprint arXiv:2307.11760 (2023).
 
-If you find this work helpful, please cite it as:
+[3] BenFeng Xu, et al. "ExpertPrompting: Instructing Large Language Models to be Distinguished Experts" arXiv preprint arXiv:2305.14688 (2023).
+
+[4] Zhu, Kaijie, et al. "PromptBench: Towards Evaluating the Robustness of Large Language Models on Adversarial Prompts." arXiv preprint arXiv:2306.04528 (2023).
+
+[5] Zhu, Kaijie, et al. "DyVal: Graph-informed Dynamic Evaluation of Large Language Models." arXiv preprint arXiv:2309.17167 (2023).
+
+<!-- CITE -->
+
+## Citing promptbench and other research papers
+
+Please cite us if you fine this project helpful for your project/paper:
+
 ```
 @article{zhu2023promptbench,
   title={PromptBench: Towards Evaluating the Robustness of Large Language Models on Adversarial Prompts},
@@ -94,9 +237,17 @@ If you find this work helpful, please cite it as:
   journal={arXiv preprint arXiv:2309.17167},
   year={2023}
 }
+
+@article{chang2023survey,
+  title={A survey on evaluation of large language models},
+  author={Chang, Yupeng and Wang, Xu and Wang, Jindong and Wu, Yuan and Zhu, Kaijie and Chen, Hao and Yang, Linyi and Yi, Xiaoyuan and Wang, Cunxiang and Wang, Yidong and others},
+  journal={arXiv preprint arXiv:2307.03109},
+  year={2023}
+}
+
 ```
 
-
+<!-- CONTRIBUTING -->
 
 ## Contributing
 
@@ -112,12 +263,41 @@ This project has adopted the [Microsoft Open Source Code of Conduct](https://ope
 For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or
 contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
 
+If you have a suggestion that would make promptbench better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
+Don't forget to give the project a star! Thanks again!
 
+1. Fork the project
+2. Create your branch (`git checkout -b your_name/your_branch`)
+3. Commit your changes (`git commit -m 'Add some features'`)
+4. Push to the branch (`git push origin your_name/your_branch`)
+5. Open a Pull Request
+
+
+<!-- TRADEMARKS -->
 
 ## Trademarks
 
-This project may contain trademarks or logos for projects, products, or services. Authorized use of Microsoft 
-trademarks or logos is subject to and must follow 
-[Microsoft's Trademark & Brand Guidelines](https://www.microsoft.com/en-us/legal/intellectualproperty/trademarks/usage/general).
+This project may contain trademarks or logos for projects, products, or services. Authorized use of Microsoft
+trademarks or logos is subject to and must follow
+[Microsoft&#39;s Trademark &amp; Brand Guidelines](https://www.microsoft.com/en-us/legal/intellectualproperty/trademarks/usage/general).
 Use of Microsoft trademarks or logos in modified versions of this project must not cause confusion or imply Microsoft sponsorship.
 Any use of third-party trademarks or logos are subject to those third-party's policies.
+
+
+
+
+
+<!-- MARKDOWN LINKS & IMAGES -->
+
+<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+
+[contributors-shield]: https://img.shields.io/github/contributors/microsoft/promptbench.svg?style=for-the-badge
+[contributors-url]: https://github.com/microsoft/promptbench/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/microsoft/promptbench.svg?style=for-the-badge
+[forks-url]: https://github.com/microsoft/promptbench/network/members
+[stars-shield]: https://img.shields.io/github/stars/microsoft/promptbench.svg?style=for-the-badge
+[stars-url]: https://github.com/microsoft/promptbench/stargazers
+[issues-shield]: https://img.shields.io/github/issues/microsoft/promptbench.svg?style=for-the-badge
+[issues-url]: https://github.com/microsoft/promptbench/issues
+[license-shield]: https://img.shields.io/github/license/microsoft/promptbench.svg?style=for-the-badge
+[license-url]: https://github.com/microsoft/promptbench/blob/main/LICENSE.txt
