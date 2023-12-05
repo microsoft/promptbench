@@ -8,6 +8,11 @@ SUPPORTED_DATASETS = [
 ]
 
 class DatasetLoader:
+    
+    @staticmethod
+    def dataset_list():
+        return SUPPORTED_DATASETS
+    
     @staticmethod
     def load_dataset(dataset_name, *args):
         """

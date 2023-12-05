@@ -51,6 +51,10 @@ class LLMModel(object):
     __call__(input_text, **kwargs)
         Makes a prediction based on the input text using the loaded model.
     """
+    
+    @staticmethod
+    def model_list():
+        return SUPPORTED_MODELS
 
     def __init__(self, model, max_new_tokens=20, temperature=0, model_dir=None, system_prompt=None, openai_key=None, sleep_time=3):
         self.model = model
