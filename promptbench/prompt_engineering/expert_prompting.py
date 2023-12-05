@@ -3,6 +3,27 @@ from ..prompts.method_oriented import get_prompt
 
  
 class ExpertPrompting(Base): 
+    """
+    A class designed for generating and utilizing expert-level prompts in AI models.
+
+    This class focuses on creating advanced, expert-level prompts based on input text. It uses few-shot examples to guide the model in generating contextually rich and specialized prompts. These prompts are then used to extract expert-level answers from the model.
+
+    Attributes:
+    -----------
+    few_shot_examples : str
+        Predefined expert-level few-shot examples that aid in guiding the model to generate context-specific, expert prompts.
+
+    Methods:
+    --------
+    __init__(**kwargs)
+        Initializes the ExpertPrompting instance, setting up few-shot examples for expert prompting.
+    generate_expert_prompt(input_text, model)
+        Generates an expert prompt based on the input text. This method appends few-shot examples to the input text to create a prompt that guides the model in generating an expert-level response.
+    query(input_text, model)
+        Processes the input text by first generating an expert prompt and then using this prompt to guide the model's response. The method formats the model's response with a specific answer notation, ensuring clarity and precision in the answer provided.
+    
+    Paper Link: https://arxiv.org/pdf/2305.14688.pdf
+    """
     def __init__(self, **kwargs): 
         super().__init__(**kwargs)
     
@@ -26,6 +47,8 @@ class ExpertPrompting(Base):
 
         answer = model(prompt_get_answer)
         
-        # print(instr_get_answer)
-        # print(answer)
+        if self.verbose:
+            print(prompt_get_answer)
+            print(answer)
+            
         return answer
