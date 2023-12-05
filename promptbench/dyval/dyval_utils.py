@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
+
 import re
 
 def round_value(val):
@@ -17,7 +20,7 @@ def round_value(val):
     return str(round(float(val), 8))
 
 
-def evaluate(dataset_type, preds, gts):
+def dyval_evaluate(dataset_type, preds, gts):
     """
     Evaluates predictions against ground truths for different dataset types.
 
@@ -126,21 +129,7 @@ def process_dyval_inputs(prompt, dataset):
     return descriptions
 
 def process_dyval_training_sample(sample, dataset_type):
-    """
-    Processes a single training sample for DyVal training dataset.
 
-    Parameters:
-    -----------
-    sample : dict
-        The sample to be processed.
-    dataset_type : str
-        The type of dataset (e.g., 'arithmetic', 'bool_logic').
-
-    Returns:
-    --------
-    dict
-        The processed sample.
-    """
     prompt = DYVAL_PROMPTS[dataset_type][0]
     for order, input_text in sample["descriptions"].items():
         if dataset_type in ["arithmetic", "bool_logic", "deductive_logic"]:

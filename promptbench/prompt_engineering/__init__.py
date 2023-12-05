@@ -1,5 +1,10 @@
-from tqdm import tqdm
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
 
+from tqdm import tqdm
+import re
+
+from .base import Base
 from .least_to_most import LeastToMost
 from .generated_knowledge import GeneratedKnowledge
 from .chain_of_thought import ZSCoT, CoT
@@ -8,6 +13,8 @@ from .emotion_prompt import EmotionPrompt
 
 from ..metrics import Eval
 
+SUPPORTED_METHODS = ['CoT', 'ZSCoT', 'least_to_most', 'generated_knowledge', 'expert_prompting', 'emotion_prompt', 'baseline']
+
 METHOD_MAP = {
     'CoT': CoT,
     'ZSCoT': ZSCoT,
@@ -15,6 +22,7 @@ METHOD_MAP = {
     'generated_knowledge': GeneratedKnowledge,
     'expert_prompting': ExpertPrompting,
     'emotion_prompt': EmotionPrompt,
+    'baseline': Base,
 }
 
 METHOD_SUPPORT_DATASET = {
@@ -22,8 +30,9 @@ METHOD_SUPPORT_DATASET = {
     'ZSCoT': ['gsm8k', 'csqa', 'bigbench_date', 'bigbench_object_tracking'],
     'expert_prompting': ['gsm8k', 'csqa', 'bigbench_date', 'bigbench_object_tracking'],
     'emotion_prompt': ['gsm8k', 'csqa', 'bigbench_date', 'bigbench_object_tracking'],
-    'least_to_most': ['gsm8k', 'drop', 'last-letter-concat'],
+    'least_to_most': ['gsm8k', 'last_letter_concat'],
     'generated_knowledge': ['csqa', 'numersense', 'qasc'],
+    'baseline': ['gsm8k', 'csqa', 'bigbench_date', 'bigbench_object_tracking', 'last_letter_concat', 'numersense', 'qasc'],
 }
 
 # Model: GPT3.5, GPT4, Llama7b-chat, Llama13b-chat, llama70b-chat
@@ -53,18 +62,22 @@ class PEMethod(object):
         """Returns a list of supported methods."""
         return METHOD_MAP.keys()
     
-    def test(self, dataset, model):
+    def test(self, dataset, model, num_samples=None):
         """Tests the method on the given dataset and returns the accuracy."""""
         preds = []
         labels = []
-        for data in tqdm(dataset):
+        for i, data in enumerate(tqdm(dataset)):
+            if num_samples and i >= num_samples:
+                break
+            
             label = data['label']
             labels.append(label)
             
             input_text = data['content']
-            pred = self.infer_method.query(input_text, model)
+            ouput = self.infer_method.query(input_text, model)
+            res = re.findall(r'##(.*)', ouput)
+            pred = res[0] if res else ouput
             pred = dataset.extract_answer(pred)  #FIXME 执行取片操作后丢失类
-            # print(pred)
             preds.append(pred)
             
         score = Eval.compute_cls_accuracy(preds, labels)

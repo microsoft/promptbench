@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
+
 from tqdm import tqdm
 from .dyval_utils import process_dyval_training_sample
 

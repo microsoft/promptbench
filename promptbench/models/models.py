@@ -1,5 +1,6 @@
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT License.
+
 from abc import ABC
 import torch
 
@@ -254,21 +255,21 @@ class OpenAIModel(LMMBaseModel):
         Predicts the output based on the given input text using the OpenAI model.
     """
     def __init__(self, model, max_new_tokens, temperature=0, system_prompt=None, openai_key=None, sleep_time=3):
-        super(OpenAIModel, self).__init__(model, max_new_tokens, temperature, system_prompt)
+        super(OpenAIModel, self).__init__(model, max_new_tokens, temperature)
         self.openai_key = openai_key
         self.sleep_time = sleep_time
 
         if self.temperature > 0:
             raise Warning("Temperature is not 0, so that the results may not be reproducable!")
 
-        if self.sleep_time > 0:
+        if self.sleep_time == 0:
             raise Warning("We suggest to set sleep time > 0 (i.e., 5).")
 
     def sleep(self, seconds):
         import time
         time.sleep(seconds)
 
-    def predict(self, input_text):
+    def predict(self, input_text, **kwargs):
         
         from openai import OpenAI
         client = OpenAI(api_key=self.openai_key)
@@ -280,15 +281,29 @@ class OpenAIModel(LMMBaseModel):
         else:
             messages = [{"role": "user", "content": input_text}]
         
+        # extra parameterss
+        n = kwargs['n'] if 'n' in kwargs else 1
+        temperature = kwargs['temperature'] if 'temperature' in kwargs else self.temperature
+        max_new_tokens = kwargs['max_new_tokens'] if 'max_new_tokens' in kwargs else self.max_new_tokens
+        
         retry_count = 0
         while retry_count < 3:
             try:
                 response = client.chat.completions.create(
                     model=self.model,
                     messages=messages,
-                    temperature=self.temperature,
+                    temperature=temperature,
+                    max_tokens=max_new_tokens,
+                    n=n,
                 )
-                result = response.choices[0].message.content
+                # for i, choice in enumerate(response.choices):
+                #     print(str(i) + ':' + choice.message.content)
+                
+                if n > 1:
+                    result = [choice.message.content for choice in response.choices]
+                else:
+                    result = response.choices[0].message.content
+                    
                 return result
                 
             except Exception as e:
@@ -296,3 +311,57 @@ class OpenAIModel(LMMBaseModel):
                 print("Retrying...")
                 self.sleep(self.sleep_time)
                 retry_count += 1
+                
+
+class PaLMModel(LMMBaseModel):
+    """
+    Language model class for interfacing with PaLM models.
+
+    Inherits from LMMBaseModel and sets up a model interface for PaLM models.
+
+    Parameters:
+    -----------
+    model : str
+        The name of the PaLM model.
+    max_new_tokens : int
+        The maximum number of new tokens to be generated.
+    temperature : float, optional
+        The temperature for text generation (default is 0).
+    system_prompt : str, optional
+        The system prompt to be used (default is None).
+    model_dir : str, optional
+        The directory containing the model files (default is None).
+    """
+    def __init__(self, model, max_new_tokens, temperature=0, system_prompt=None, palm_key=None, sleep_time=3):
+        super(PaLMModel, self).__init__(model, max_new_tokens, temperature)
+        self.palm_key = palm_key
+        self.sleep_time = sleep_time
+    
+    def predict(self, input_text, **kwargs):
+        import google.generativeai as palm 
+        
+        palm.configure(api_key=self.palm_key)
+        models = [m for m in palm.list_models() if 'generateText' in m.supported_generation_methods]
+        model = models[0].name
+        
+        n = kwargs['n'] if 'n' in kwargs else 1
+        temperature = kwargs['temperature'] if 'temperature' in kwargs else self.temperature
+        max_new_tokens = kwargs['max_new_tokens'] if 'max_new_tokens' in kwargs else self.max_new_tokens
+        
+        completion = palm.generate_text(
+            model=model,
+            prompt=input_text,
+            temperature=temperature,
+            candidate_count = n,
+            max_output_tokens=max_new_tokens,
+        )
+        
+        if n > 1:
+            result = [cand.output for cand in completion.candidates]
+        else:
+            result = completion.result
+        
+        print(result)
+        return result
+        
+        

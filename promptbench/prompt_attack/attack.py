@@ -1,5 +1,11 @@
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT License.
+#
+# Source Attribution:
+# The majority of this code is derived from the following sources:
+# - TextAttack GitHub Repository: https://github.com/QData/TextAttack
+# - Reference Paper: Morris, John X., et al. "TextAttack: A Framework for Adversarial Attacks, Data Augmentation, and Adversarial Training in NLP." arXiv preprint arXiv:2005.05909 (2020).
+
 
 
 """
