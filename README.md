@@ -181,8 +181,8 @@ We support a range of datasets to facilitate comprehensive analysis, including:
 Please refer to our [benchmark website](llm-eval.github.io) for benchmark results on Prompt Attacks, Prompt Engineering and Dynamic Evaluation DyVal.
 
 ## TODO
-- [] Add prompt attacks and prompt engineering documents.
-- [] Add detailed instructions for users to add new models and datasets.
+- [ ] Add prompt attacks and prompt engineering documents.
+- [ ] Add detailed instructions for users to add new models and datasets.
 
 ## Acknowledgements
 
