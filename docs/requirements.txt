@@ -1,6 +1,7 @@
 autocorrect==2.6.1
 accelerate==0.25.0
 datasets==2.15.0
+myst-parser
 nltk==3.8.1
 openai==1.3.7
 sentencepiece==0.1.99

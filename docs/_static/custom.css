@@ -1,0 +1,12 @@
+/* CSS rules to make .docutils.align-default tables scrollable */
+.docutils.align-default {
+    overflow-x: auto;
+    display: block;
+    max-width: 100%;
+}
+
+.docutils.align-default table {
+    white-space: normal;
+    width: auto;
+    display: block;
+}
