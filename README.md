@@ -102,7 +102,7 @@ pip install promptbench
 ```
 
 
-### Install via github
+### Install via GitHub
 
 First, clone the repo:
 ```sh
