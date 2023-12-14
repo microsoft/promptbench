@@ -41,11 +41,13 @@
     <a href="https://github.com/microsoft/promptbench"><strong>Explore the docs »</strong></a>
     <br /> -->
     <br />
-    <a href="https://llm-eval.github.io/pages/papers.html">Papers</a>
+    <a href="https://arxiv.org/abs/2312.07910">Paper</a>
     ·
-    <a href="https://promptbench.readthedocs.io/en/latest/">Docs</a>
+    <a href="https://promptbench.readthedocs.io/en/latest/">Documentation</a>
     ·
     <a href="https://llm-eval.github.io/pages/leaderboard.html">Leaderboard</a>
+    ·
+    <a href="https://llm-eval.github.io/pages/papers.html">More papers</a>
   </p>
 </div>
 
@@ -75,7 +77,7 @@
 
 ## Introduction
 
-**PromptBench** is a Pytorch-based Python package for Evaluation of Large Language Models (LLMs). It provides user-friendly APIs for researchers to conduct evaluation on LLMs.
+**PromptBench** is a Pytorch-based Python package for Evaluation of Large Language Models (LLMs). It provides user-friendly APIs for researchers to conduct evaluation on LLMs. Check the technical report: https://arxiv.org/abs/2312.07910.
 
 ![Code Structure](./imgs/promptbench.png)
 
@@ -209,6 +211,13 @@ Please refer to our [benchmark website](llm-eval.github.io) for benchmark result
 Please cite us if you fine this project helpful for your project/paper:
 
 ```
+@article{zhu2023promptbench2,
+  title={PromptBench: A Unified Library for Evaluation of Large Language Models},
+  author={Zhu, Kaijie and Zhao, Qinlin and Chen, Hao and Wang, Jindong and Xie, Xing},
+  journal={arXiv preprint arXiv:2312.07910},
+  year={2023}
+}
+
 @article{zhu2023promptbench,
   title={PromptBench: Towards Evaluating the Robustness of Large Language Models on Adversarial Prompts},
   author={Zhu, Kaijie and Wang, Jindong and Zhou, Jiaheng and Wang, Zichen and Chen, Hao and Wang, Yidong and Yang, Linyi and Ye, Wei and Gong, Neil Zhenqiang and Zhang, Yue and others},
