@@ -4,20 +4,19 @@
 from .dataset import *
 
 SUPPORTED_DATASETS = [
-    "cola", "sst2", "qqp", "mnli", "mnli_matched", "mnli_mismatched", 
-    "qnli", "wnli", "rte", "mrpc", "mmlu", "squad_v2", "un_multi", 
-    "iwslt", "math", "bool_logic", "valid_parentheses", 
-    'gsm8k', "csqa", "bigbench_date", "bigbench_object_tracking"
+    "sst2", "cola", "qqp",
+    "mnli", "mnli_matched", "mnli_mismatched",
+    "qnli", "wnli", "rte", "mrpc",
+    "mmlu", "squad_v2", "un_multi", "iwslt2017", "math",
+    "bool_logic", "valid_parentheses",
+    "gsm8k", "csqa", "bigbench_date", "bigbench_object_tracking",
+    'last_letter_concat', 'numersense', 'qasc'
 ]
 
 class DatasetLoader:
     
     @staticmethod
-    def dataset_list():
-        return SUPPORTED_DATASETS
-    
-    @staticmethod
-    def load_dataset(dataset_name, *args):
+    def load_dataset(dataset_name, supported_languages=None):
         """
         Load and return the specified dataset.
 
@@ -32,8 +31,9 @@ class DatasetLoader:
 
         Args:
             dataset_name (str): The name of the dataset to load.
-            *args: Additional arguments required by specific datasets.
-
+            supported_languages: list: Additional arguments required by 'iwslt'. 
+                                Please visit https://huggingface.co/datasets/iwslt2017 to see the supported languages for iwslt.
+                                e.g. supported_languages=['de-en', 'ar-en'] for German-English and Arabic-English translation.
         Returns:
             Dataset object corresponding to the given dataset_name.
 
@@ -49,9 +49,9 @@ class DatasetLoader:
         elif dataset_name == "squad_v2":
             return SQUAD_V2()
         elif dataset_name == 'un_multi':
-            return UnMulti(args[0])  # First argument specifies a configuration for 'un_multi'
-        elif dataset_name == 'iwslt':
-            return IWSLT(args[0])    # First argument specifies a configuration for 'iwslt'
+            return UnMulti()
+        elif dataset_name == 'iwslt2017':
+            return IWSLT(supported_languages)
         elif dataset_name == 'math':
             return Math()
         elif dataset_name == 'bool_logic':

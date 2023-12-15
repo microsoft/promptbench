@@ -11,16 +11,6 @@ from promptbench.config import *
 from datasets import load_dataset
 
 
-DATA_SET = [
-    "sst2", "cola", "qqp",
-    "mnli", "mnli_matched", "mnli_mismatched",
-    "qnli", "wnli", "rte", "mrpc",
-    "mmlu", "squad_v2", "un_multi", "iwslt", "math",
-    "bool_logic", "valid_parentheses",
-    "gsm8k", "csqa", "bigbench_date", "bigbench_object_tracking",
-    'last_letter_concat', 'numersense', 'qasc'
-]
-
 def shuffleDict(d):
     keys = list(d.keys())
     random.shuffle(keys)
@@ -35,17 +25,12 @@ def shuffleDict(d):
 class Dataset(object):
     def __init__(self, dataset_name):
         self.data = []
-        self.data_list = DATA_SET
         self.dataset_name = dataset_name
 
         # Get the parent directory
         cur_dir = os.path.dirname(os.path.abspath(__file__))
-        parent_dir = os.path.dirname(cur_dir)
+        self.data_dir = os.path.join(os.path.dirname(cur_dir), 'data')
 
-        # Construct the path to the data directory in A
-        self.data_dir = os.path.join(parent_dir, 'data')
-
-        # check if the data path exists
         if not os.path.exists(self.data_dir):
             os.mkdir(self.data_dir)
         
@@ -96,58 +81,50 @@ class ValidParentheses(Dataset):
 
 class Math(Dataset):
     def __init__(self) -> None:
-        super().__init__("math")
-        
-        with open(self.filepath, 'r') as f:
-            data = json.load(f)
-        
+        # MATH dataset now is loaded from huggingface datasets: /math_dataset (test set).
+        # https://huggingface.co/datasets/math_dataset/
+        self.data = []
+
         MATH_QUESTION_TYPES = {
-            'algebra_linear_1d': ' linear algebra ',
-            'algebra_linear_2d': ' linear algebra ',
-            'algebra_sequence_next_term': ' given a sequence predict the next term ',
-            'arithmetic_addition_sub_multiple': ' arithmetic addition and subtraction ',
-            'arithmetic_mul_div_multiple': ' arithmetic multiplication and division ',
-            'arithmetic_mixed': ' arithmetic addition, subtraction, multiplication and division ',
-            'arithmetic_nearest_integer_root': ' arithmetic nearest integer root ',
-            'comparison_closest': ' compare which one of given numbers is closest to target number ',
-            'comparison_kth_biggest': ' compare which one of given numbers is kth biggest or smallest ',
-            'comparison_pair': ' comparison which one of given numbers is bigger or smaller ',
-            'measurement_conversion': ' measurement conversion ',
-            'numbers_base_conversion': ' numbers base conversion ',
-            'numbers_div_remainder': ' numbers division and remainder ',
-            'numbers_gcd': ' numbers greatest common divisor ',
-            'numbers_is_factor': ' if one number is a factor of antoher number ',
-            'number_is_prime': ' if a number is prime ',
-            'numbers_lcm': ' least common multiple ',
-            'numbers_place_value': ' place value ',
-            'numbers_round_number': ' round number ',
-            'polynomials_evaluate': ' polynomials evaluate ',
+            'algebra__linear_1d': ' linear algebra ',
+            'algebra__linear_2d': ' linear algebra ',
+            'algebra__sequence_next_term': ' given a sequence predict the next term ',
+            'arithmetic__addition_sub_multiple': ' arithmetic addition and subtraction ',
+            'arithmetic__mul_div_multiple': ' arithmetic multiplication and division ',
+            'arithmetic__mixed': ' arithmetic addition, subtraction, multiplication and division ',
+            'arithmetic__nearest_integer_root': ' arithmetic nearest integer root ',
+            'comparison__closest': ' compare which one of given numbers is closest to target number ',
+            'comparison__kth_biggest': ' compare which one of given numbers is kth biggest or smallest ',
+            'comparison__pair': ' comparison which one of given numbers is bigger or smaller ',
+            'measurement__conversion': ' measurement conversion ',
+            'numbers__base_conversion': ' numbers base conversion ',
+            'numbers__div_remainder': ' numbers division and remainder ',
+            'numbers__gcd': ' numbers greatest common divisor ',
+            'numbers__is_factor': ' if one number is a factor of antoher number ',
+            'number__is_prime': ' if a number is prime ',
+            'numbers__lcm': ' least common multiple ',
+            'numbers__place_value': ' place value ',
+            'numbers__round_number': ' round number ',
+            'polynomials__evaluate': ' polynomials evaluate ',
         }
         
-        for task in data.keys():
-            for d in data[task]:
-                d["task"] = MATH_QUESTION_TYPES[task]
+        for task in MATH_QUESTION_TYPES.keys():
+            data = load_dataset("math_dataset", task)["test"]
+            for d in data:
+                d["task"] = task
+                d["task_explanation"] = MATH_QUESTION_TYPES[task]
                 self.data.append(d)
 
 
 class UnMulti(Dataset):
 
-    def __init__(self, supported_languages):
+    def __init__(self):
+        # un_multi dataset only have train set and is large, so we selected partial dataset.
         super().__init__("un_multi")
 
         with open(self.filepath, 'r') as f:
             data = json.load(f)
-        self.data = dict()
-
-        idx = 0
-        supported_tasks = []
-        for task_i in data.keys():
-            source, target = task_i.split('-')
-            if source in supported_languages and target in supported_languages:
-                supported_tasks.append(task_i)
-
-        num_tasks = len(supported_tasks)
-        num_samples = 100
+        self.data = []
 
         LANGUAGES = {
             'ar': 'Arabic',
@@ -164,35 +141,23 @@ class UnMulti(Dataset):
             'ko': 'Korean',
         }
 
-        for task_i in supported_tasks:
+        for task_i in data.keys():
             source, target = task_i.split('-')
-            for d in data[task_i][:int(num_samples//num_tasks)]:
-                self.data[idx] = {
+            for d in data[task_i]:
+                self.data.append({
                     'source': d[source],
                     'target': d[target],
                     'soruce_lang': LANGUAGES[source],
                     'target_lang': LANGUAGES[target],
-                }
-                idx += 1
+                })
 
 
 class IWSLT(Dataset):
     def __init__(self, supported_languages):
-        super().__init__("iwslt")
+        # IWSLT now is loaded from huggingface datasets.
+        # https://huggingface.co/datasets/iwslt
 
-        with open(self.filepath, 'r') as f:
-            data = json.load(f)
-        self.data = dict()
-
-        idx = 0
-        supported_tasks = []
-        for task_i in data.keys():
-            source, target = task_i.split('-')
-            if source in supported_languages and target in supported_languages:
-                supported_tasks.append(task_i)
-
-        num_tasks = len(supported_tasks)
-        num_samples = 100
+        self.data = []
 
         LANGUAGES = {
             'ar': 'Arabic',
@@ -209,74 +174,60 @@ class IWSLT(Dataset):
             'ko': 'Korean',
         }
 
-        for task_i in supported_tasks:
+        for task_i in supported_languages:
             source, target = task_i.split('-')
-            for d in data[task_i][:int(num_samples//num_tasks)]:
-                self.data[idx] = {
+            data = load_dataset("iwslt2017", "iwslt2017-"+task_i)["test"]
+            for d in data:
+                d = d["translation"]
+                self.data.append({
                     'source': d[source],
                     'target': d[target],
                     'soruce_lang': LANGUAGES[source],
                     'target_lang': LANGUAGES[target],
-                }
-                idx += 1
+                })
 
 
 class SQUAD_V2(Dataset):
     def __init__(self):
-        super().__init__("squad_v2")
-        with open(self.filepath, "r") as file:
-            data = json.load(file)
-        
-        for d in data:
-            self.data.append({"id": d["id"], "content": "Context: " + d["context"] + "\n" + "Question: " + d["question"] + "\n", "answers": d["answers"]})
-
-        import random
-        random.seed(42)
-        random.shuffle(self.data)
-        self.data = self.data[:200]
+        # SQUAD_V2 dataset now is loaded from huggingface datasets.
+        # https://huggingface.co/datasets/squad_v2
+        self.data = load_dataset("squad_v2")["validation"]
 
 
 class MMLU(Dataset):
     def __init__(self):
-        super().__init__("mmlu")
-        self.tasks = ['high_school_european_history', 'business_ethics', 'clinical_knowledge', 'medical_genetics',
-                      'high_school_us_history', 'high_school_physics', 'high_school_world_history', 'virology',
-                      'high_school_microeconomics', 'econometrics', 'college_computer_science', 'high_school_biology',
-                      'abstract_algebra', 'professional_accounting', 'philosophy', 'professional_medicine', 'nutrition',
-                      'global_facts', 'machine_learning', 'security_studies', 'public_relations', 'professional_psychology',
-                      'prehistory', 'anatomy', 'human_sexuality', 'college_medicine', 'high_school_government_and_politics',
-                      'college_chemistry', 'logical_fallacies', 'high_school_geography', 'elementary_mathematics', 'human_aging',
-                      'college_mathematics', 'high_school_psychology', 'formal_logic', 'high_school_statistics', 'international_law',
-                      'high_school_mathematics', 'high_school_computer_science', 'conceptual_physics', 'miscellaneous', 'high_school_chemistry',
-                      'marketing', 'professional_law', 'management', 'college_physics', 'jurisprudence', 'world_religions', 'sociology',
-                      'us_foreign_policy', 'high_school_macroeconomics', 'computer_security', 'moral_scenarios', 'moral_disputes',
-                      'electrical_engineering', 'astronomy', 'college_biology']
+        # MMLU dataset now is loaded from huggingface datasets: lukaemon/mmlu (test set).
+        # https://huggingface.co/datasets/lukaemon/mmlu/viewer/abstract_algebra/test
         
-        with open(self.filepath, "r") as file:
-            self.raw_data = json.load(file)
-
-        cnt = {}
         self.data = []
+        self.tasks = ['high_school_european_history', 'business_ethics', 'clinical_knowledge', 'medical_genetics',
+                    'high_school_us_history', 'high_school_physics', 'high_school_world_history', 'virology',
+                    'high_school_microeconomics', 'econometrics', 'college_computer_science', 'high_school_biology',
+                    'abstract_algebra', 'professional_accounting', 'philosophy', 'professional_medicine', 'nutrition',
+                    'global_facts', 'machine_learning', 'security_studies', 'public_relations', 'professional_psychology',
+                    'prehistory', 'anatomy', 'human_sexuality', 'college_medicine', 'high_school_government_and_politics',
+                    'college_chemistry', 'logical_fallacies', 'high_school_geography', 'elementary_mathematics', 'human_aging',
+                    'college_mathematics', 'high_school_psychology', 'formal_logic', 'high_school_statistics', 'international_law',
+                    'high_school_mathematics', 'high_school_computer_science', 'conceptual_physics', 'miscellaneous', 'high_school_chemistry',
+                    'marketing', 'professional_law', 'management', 'college_physics', 'jurisprudence', 'world_religions', 'sociology',
+                    'us_foreign_policy', 'high_school_macroeconomics', 'computer_security', 'moral_scenarios', 'moral_disputes',
+                    'electrical_engineering', 'astronomy', 'college_biology']
 
         for task in self.tasks:
-            cnt[task] = 0
-
-        for d in self.raw_data:
-            task = d["task"].replace(" ", "_")
-            if cnt[task] < 10:
+            data = load_dataset("lukaemon/mmlu", task)["test"]
+            for d in data:
+                d["task"] = task
                 self.data.append(d)
-                cnt[task] += 1
 
-
+            
 class GLUE(Dataset):
-    def __init__(self, task, dataset_type="validation"):
+    def __init__(self, task):
         self.data = []
         self.supported_tasks = ["sst2", "cola", "qqp", "mnli",
                                 "mnli_matched", "mnli_mismatched", "qnli", "wnli", "rte", "mrpc"]
         assert task in self.supported_tasks
 
         self.task = task
-        self.dataset_type = dataset_type
 
         if self.task == "mnli":
             from datasets import concatenate_datasets
@@ -284,7 +235,7 @@ class GLUE(Dataset):
             mismatched = load_dataset("glue", "mnli")["validation_mismatched"]
             data = concatenate_datasets([matched, mismatched])
         else:
-            data = load_dataset("glue", task)[dataset_type]
+            data = load_dataset("glue", task)["test"]
         
         for d in data:
             if task == "sst2" or task == "cola":
