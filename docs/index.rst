@@ -6,7 +6,7 @@
 Welcome to promptbench's documentation!
 =======================================
 
-**PromptBench** is a unified library for evaluating and understanding large language models. Please refer to [PromptBench](https://aka.ms/promptbench) for the code.
+**PromptBench** is a unified library for evaluating and understanding large language models. Please refer to `PromptBench <https://aka.ms/promptbench>`_ for the code.
 
 .. image:: ../imgs/promptbench.png
    :align: center
