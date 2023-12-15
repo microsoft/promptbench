@@ -67,7 +67,7 @@
 <!-- News and Updates -->
 
 ## News and Updates
-
+- [15/12/2023] Add detailed instructions for users to add new modules (models, datasets, etc.) `examples/add_new_modules.md`. 
 - [05/12/2023] Published promptbench 0.0.1.
 
 
@@ -182,7 +182,6 @@ Please refer to our [benchmark website](llm-eval.github.io) for benchmark result
 
 ## TODO
 - [ ] Add prompt attacks and prompt engineering documents.
-- [ ] Add detailed instructions for users to add new models and datasets.
 
 ## Acknowledgements
 
