@@ -69,6 +69,7 @@
 <!-- News and Updates -->
 
 ## News and Updates
+- [16/12/2023] Fix bugs for dataset downloading.
 - [15/12/2023] Add detailed instructions for users to add new modules (models, datasets, etc.) `examples/add_new_modules.md`. 
 - [05/12/2023] Published promptbench 0.0.1.
 
@@ -86,7 +87,7 @@
 ### What does promptbench currently provide?
 1. **Quick model performance assessment:** We offer a user-friendly interface that allows for quick model building, dataset loading, and evaluation of model performance.
 2. **Prompt Engineering:** We implemented several prompt engineering methods. For example: [Few-shot Chain-of-Thought](https://arxiv.org/abs/2201.11903) [1],  [Emotion Prompt](https://arxiv.org/abs/2307.11760) [2], [Expert Prompting](https://arxiv.org/abs/2305.14688) [3] and so on.
-3. **Evaluating adversarial prompts:** promptbench integrated [prompt attacks](https://arxiv.org/abs/2306.04528) [4], enabling researchers to simulate black-box adversarial prompt attacks on models and evaluate their robustness.
+3. **Evaluating adversarial prompts:** promptbench integrated [prompt attacks](https://arxiv.org/abs/2306.04528) [4], enabling researchers to simulate black-box adversarial prompt attacks on models and evaluate their robustness ([details](promptbench/prompt_attack/README.md)).
 4. **Dynamic evaluation to mitigate potential test data contamination:** we integrated the dynamic evaluation framework [DyVal](https://arxiv.org/pdf/2309.17167) [5], which generates evaluation samples on-the-fly with controlled complexity.
 
 
@@ -138,10 +139,10 @@ promptbench is easy to use and extend. Going through the bellowing examples will
 
 Please see [Installation](#installation) to install promptbench first. We provide ipynb tutorials for:
 
-1. **evaluate models on existing benchmarks:** please refer to the `examples/basic.ipynb` for constructing your evaluation pipeline.
+1. **evaluate models on existing benchmarks:** please refer to the [examples/basic.ipynb](examples/basic.ipynb) for constructing your evaluation pipeline.
 2. **test the effects of different prompting techniques:** 
-3. **examine the robustness for prompt attacks**, please refer to `examples/prompt_attack.ipynb` to construct the attacks.
-4. **use DyVal for evaluation:** please refer to `examples/dyval.ipynb` to construct DyVal datasets.
+3. **examine the robustness for prompt attacks**, please refer to [examples/prompt_attack.ipynb](examples/prompt_attack.ipynb) to construct the attacks.
+4. **use DyVal for evaluation:** please refer to [examples/dyval.ipynb](examples/dyval.ipynb) to construct DyVal datasets.
 
 
 ## Supported Datasets and Models
