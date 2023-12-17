@@ -70,7 +70,7 @@
 
 ## News and Updates
 - [16/12/2023] Fix bugs for dataset downloading.
-- [15/12/2023] Add detailed instructions for users to add new modules (models, datasets, etc.) `examples/add_new_modules.md`. 
+- [15/12/2023] Add detailed instructions for users to add new modules (models, datasets, etc.) [examples/add_new_modules.md](examples/add_new_modules.md). 
 - [05/12/2023] Published promptbench 0.0.1.
 
 
@@ -87,7 +87,7 @@
 ### What does promptbench currently provide?
 1. **Quick model performance assessment:** We offer a user-friendly interface that allows for quick model building, dataset loading, and evaluation of model performance.
 2. **Prompt Engineering:** We implemented several prompt engineering methods. For example: [Few-shot Chain-of-Thought](https://arxiv.org/abs/2201.11903) [1],  [Emotion Prompt](https://arxiv.org/abs/2307.11760) [2], [Expert Prompting](https://arxiv.org/abs/2305.14688) [3] and so on.
-3. **Evaluating adversarial prompts:** promptbench integrated [prompt attacks](https://arxiv.org/abs/2306.04528) [4], enabling researchers to simulate black-box adversarial prompt attacks on models and evaluate their robustness ([details](promptbench/prompt_attack/README.md)).
+3. **Evaluating adversarial prompts:** promptbench integrated [prompt attacks](https://arxiv.org/abs/2306.04528) [4], enabling researchers to simulate black-box adversarial prompt attacks on models and evaluate their robustness (see details [here](promptbench/prompt_attack/README.md)).
 4. **Dynamic evaluation to mitigate potential test data contamination:** we integrated the dynamic evaluation framework [DyVal](https://arxiv.org/pdf/2309.17167) [5], which generates evaluation samples on-the-fly with controlled complexity.
 
 
