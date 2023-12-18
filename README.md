@@ -171,20 +171,22 @@ We support a range of datasets to facilitate comprehensive analysis, including:
 
 - google/flan-t5-large
 - databricks/dolly-v1-6b
-- llama2 (7b, 13b, 7b-chat, 13b-chat)
+- Llama2 (7b, 13b, 7b-chat, 13b-chat)
 - vicuna-13b, vicuna-13b-v1.3
-- cerebras/Cerebras-GPT-13B
+- Cerebras/Cerebras-GPT-13B
 - EleutherAI/gpt-neox-20b
-- google/flan-ul2
-- palm
-- chatgpt, gpt4
+- Google/flan-ul2
+- PaLM 2
+- ChatGPT
+- GPT-4
+- Phi
 
 ## Benchmark Results
 
 Please refer to our [benchmark website](llm-eval.github.io) for benchmark results on Prompt Attacks, Prompt Engineering and Dynamic Evaluation DyVal.
 
 ## TODO
-- [ ] Add prompt attacks and prompt engineering documents.
+- [ ] Add support for multi-modal models such as LlaVa and BLIP2.
 
 ## Acknowledgements
 
