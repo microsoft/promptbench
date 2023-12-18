@@ -66,8 +66,9 @@ class PhiModel(LMMBaseModel):
     def __init__(self, model_name, max_new_tokens, temperature=0, system_prompt=None):
         super(PhiModel, self).__init__(model_name, max_new_tokens, temperature)
         from transformers import AutoTokenizer, AutoModelForCausalLM
-        self.tokenizer = AutoTokenizer.from_pretrained("microsoft/phi-1_5", trust_remote_code=True, torch_dtype="auto", device_map="auto")
-        self.model = AutoModelForCausalLM.from_pretrained("microsoft/phi-1_5", trust_remote_code=True, torch_dtype="auto", device_map="auto")
+        model = "microsoft/phi-1_5" if model_name == "phi-1.5" else "microsoft/phi-2"
+        self.tokenizer = AutoTokenizer.from_pretrained(model, trust_remote_code=True, torch_dtype="auto", device_map="auto")
+        self.model = AutoModelForCausalLM.from_pretrained(model, trust_remote_code=True, torch_dtype="auto", device_map="auto")
     
     def predict(self, input_text, **kwargs):
         input_ids = self.tokenizer(input_text, return_tensors="pt").input_ids.to("cuda")
