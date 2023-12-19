@@ -63,6 +63,14 @@ class Dataset(object):
 
 
 class BoolLogic(Dataset):
+    """
+    BoolLogic is a dataset class (obtained from BigBench) representing boolean logic expressions. Each entry in the dataset consists of a boolean logic expression and its corresponding label (either 'true' or 'false'). The dataset is read from a JSON file containing questions and answers.
+    
+    https://github.com/google/BIG-bench/tree/main/bigbench/benchmark_tasks/boolean_expressions
+
+    Example data format:
+    [{'content': 'not ( not False and True ) or not True is ', 'label': 'false'}, ...]
+    """
     def __init__(self):
         super().__init__("bool_logic")
         with open(self.filepath, 'r') as f:
@@ -72,6 +80,14 @@ class BoolLogic(Dataset):
 
 
 class ValidParentheses(Dataset):
+    """
+    ValidParentheses is a dataset class (obtained from BigBench) for validating parentheses in strings. It checks if the given string of parentheses is valid or invalid. The dataset is initialized by reading from a JSON file, with each entry containing a string of parentheses and a label ('valid' or 'invalid').
+
+    https://github.com/google/BIG-bench/tree/main/bigbench/benchmark_tasks/cs_algorithms
+
+    Example data format:
+    [{'content': '( ] } (', 'label': 'invalid'}, ...]
+    """
     def __init__(self):
         super().__init__("valid_parentheses")
 
@@ -83,44 +99,96 @@ class ValidParentheses(Dataset):
 
 
 class Math(Dataset):
-    def __init__(self) -> None:
-        # MATH dataset now is loaded from huggingface datasets: /math_dataset (test set).
-        # https://huggingface.co/datasets/math_dataset/
+    """
+    Math is a dataset class that loads mathematical questions and answers from the Hugging Face datasets (math_dataset test set). This dataset covers various types of math questions, such as algebra, calculus, and arithmetic. It is initialized with a specific type of math question.
+
+    Reference: https://huggingface.co/datasets/math_dataset/
+
+    Example data format:
+    [{'question': "Solve -282*d + 929 - 178 = -1223 for d.\\n'", 'answer': "b'7\\n'", 'task': 'algebra__linear_1d'}, ...]
+    """
+    def __init__(self, task) -> None:
+
         self.data = []
 
-        MATH_QUESTION_TYPES = {
-            'algebra__linear_1d': ' linear algebra ',
-            'algebra__linear_2d': ' linear algebra ',
-            'algebra__sequence_next_term': ' given a sequence predict the next term ',
-            'arithmetic__addition_sub_multiple': ' arithmetic addition and subtraction ',
-            'arithmetic__mul_div_multiple': ' arithmetic multiplication and division ',
-            'arithmetic__mixed': ' arithmetic addition, subtraction, multiplication and division ',
-            'arithmetic__nearest_integer_root': ' arithmetic nearest integer root ',
-            'comparison__closest': ' compare which one of given numbers is closest to target number ',
-            'comparison__kth_biggest': ' compare which one of given numbers is kth biggest or smallest ',
-            'comparison__pair': ' comparison which one of given numbers is bigger or smaller ',
-            'measurement__conversion': ' measurement conversion ',
-            'numbers__base_conversion': ' numbers base conversion ',
-            'numbers__div_remainder': ' numbers division and remainder ',
-            'numbers__gcd': ' numbers greatest common divisor ',
-            'numbers__is_factor': ' if one number is a factor of antoher number ',
-            'number__is_prime': ' if a number is prime ',
-            'numbers__lcm': ' least common multiple ',
-            'numbers__place_value': ' place value ',
-            'numbers__round_number': ' round number ',
-            'polynomials__evaluate': ' polynomials evaluate ',
-        }
+        MATH_QUESTION_TYPES = [
+            'algebra__linear_1d',
+            'algebra__linear_1d_composed',
+            'algebra__linear_2d',
+            'algebra__linear_2d_composed',
+            'algebra__polynomial_roots',
+            'algebra__polynomial_roots_composed',
+            'algebra__sequence_next_term',
+            'algebra__sequence_nth_term',
+            'arithmetic__add_or_sub',
+            'arithmetic__add_or_sub_in_base',
+            'arithmetic__add_sub_multiple',
+            'arithmetic__div',
+            'arithmetic__mixed',
+            'arithmetic__mul',
+            'arithmetic__mul_div_multiple',
+            'arithmetic__nearest_integer_root',
+            'arithmetic__simplify_surd',
+
+            'calculus__differentiate',
+            'calculus__differentiate_composed',
+
+            'comparison__closest',
+            'comparison__closest_composed',
+            'comparison__kth_biggest',
+            'comparison__kth_biggest_composed',
+            'comparison__pair',
+            'comparison__pair_composed',
+            'comparison__sort',
+            'comparison__sort_composed',
+
+            'measurement__conversion',
+            'measurement__time',
+
+            'numbers__base_conversion',
+            'numbers__div_remainder',
+            'numbers__div_remainder_composed',
+            'numbers__gcd',
+            'numbers__gcd_composed',
+            'numbers__is_factor',
+            'numbers__is_factor_composed',
+            'numbers__is_prime',
+            'numbers__is_prime_composed',
+            'numbers__lcm',
+            'numbers__lcm_composed',
+            'numbers__list_prime_factors',
+            'numbers__list_prime_factors_composed',
+            'numbers__place_value',
+            'numbers__place_value_composed',
+            'numbers__round_number',
+            'numbers__round_number_composed',
+
+            'polynomials__add',
+            'polynomials__coefficient_named',
+            'polynomials__collect',
+            'polynomials__compose',
+            'polynomials__evaluate',
+            'polynomials__evaluate_composed',
+            'polynomials__expand',
+            'polynomials__simplify_power',
+            'probability__swr_p_level_set',
+            'probability__swr_p_sequence',
+        ]
         
-        for task in MATH_QUESTION_TYPES.keys():
-            data = load_dataset("math_dataset", task)["test"]
-            for d in data:
-                d["task"] = task
-                d["task_explanation"] = MATH_QUESTION_TYPES[task]
-                self.data.append(d)
+        assert task in MATH_QUESTION_TYPES, f"Task {task} is not supported in math dataset. Please choose from {MATH_QUESTION_TYPES}"
+        data = load_dataset("math_dataset", task)["test"]
+        for d in data:
+            d["task"] = task
+            self.data.append(d)
 
 
 class UnMulti(Dataset):
+    """
+    UnMulti is a dataset class for multilingual translation tasks. It includes translations between multiple language pairs. The dataset is partially loaded from a JSON file due to its large size.
 
+    Example data format:
+    [{'source': '4 - العميد بحري مرتضى سفاري، قائد القوات البحرية', 'target': 'Konteradmiral Morteza Safari (Kommandeur der Marine des Korps der Iranischen Revolutionsgarden)', 'soruce_lang': 'Arabic', 'target_lang': 'German'}, ...]
+    """
     def __init__(self):
         # un_multi dataset only have train set and is large, so we selected partial dataset.
         super().__init__("un_multi")
@@ -156,6 +224,14 @@ class UnMulti(Dataset):
 
 
 class IWSLT(Dataset):
+    """
+    IWSLT is a dataset class for the International Workshop on Spoken Language Translation. It includes pairs of sentences in different languages, intended for translation tasks. The dataset is loaded from Hugging Face datasets and supports multiple language pairs.
+
+    Reference: https://huggingface.co/datasets/iwslt
+
+    Example data format:
+    [{'source': 'قبل عدة سنوات، هنا في تيد، قدّم بيتر سكيلمان منافسة تصميم تسمى منافسة حلوى المارش مالو.', 'target': 'Several years ago here at TED, Peter Skillman introduced a design challenge called the marshmallow challenge.', 'soruce_lang': 'Arabic', 'target_lang': 'English'}, ...]
+    """
     def __init__(self, supported_languages):
         # IWSLT now is loaded from huggingface datasets.
         # https://huggingface.co/datasets/iwslt
@@ -191,17 +267,35 @@ class IWSLT(Dataset):
 
 
 class SQUAD_V2(Dataset):
+    """
+    SQUAD_V2 is a dataset class for the Stanford Question Answering Dataset (SQuAD) version 2, which involves question-answering tasks.
+    SQUAD_V2 dataset is loaded from huggingface datasets.
+    Reference: https://huggingface.co/datasets/squad_v2
+
+    Example data format:
+    [{'id': '56ddde6b9a695914005b9628', 'title': 'Normans', 'context': 'The Normans (Norman: Nourmands; French: Normands; Latin: Normanni) were the people who in the 10th and 11th centuries gave their name to Normandy, a region in France. They were descended from Norse ("Norman" comes from "Norseman") raiders and pirates from Denmark, Iceland and Norway who, under their leader Rollo, agreed to swear fealty to King Charles III of West Francia. Through generations of assimilation and mixing with the native Frankish and Roman-Gaulish populations, their descendants would gradually merge with the Carolingian-based cultures of West Francia. The distinct cultural and ethnic identity of the Normans emerged initially in the first half of the 10th century, and it continued to evolve over the succeeding centuries.', 'question': 'In what country is Normandy located?', 'answers': {'text': ['France', 'France', 'France', 'France'], 'answer_start': [159, 159, 159, 159]}}, ...]
+    """
     def __init__(self):
-        # SQUAD_V2 dataset now is loaded from huggingface datasets.
-        # https://huggingface.co/datasets/squad_v2
-        self.data = load_dataset("squad_v2")["validation"]
+        # 
+        # 
+        self.data = []
+        data = load_dataset("squad_v2")["validation"]
+        for d in data:
+            self.data.append(d)
 
 
 class MMLU(Dataset):
+    """
+    MMLU is a dataset class for the Multimodal Multi-Task Learning Understanding dataset, covering various educational and professional fields.
+    MMLU dataset is loaded from huggingface datasets: lukaemon/mmlu (test set).
+    
+    Reference: https://huggingface.co/datasets/lukaemon/mmlu/viewer/abstract_algebra/test
+
+    Example data format:
+    [{'input': "This question refers to the following information.\nRead the the following quotation to answer questions.\nThe various modes of worship which prevailed in the Roman world were all considered by the people as equally true; by the philosopher as equally false; and by the magistrate as equally useful.\nEdward Gibbon, The Decline and Fall of the Roman Empire, 1776–1788\nGibbon's interpretation of the state of religious worship in ancient Rome could be summarized as", 'A': "In ancient Rome, religious worship was decentralized and tended to vary with one's social position.", 'B': 'In ancient Rome, religious worship was the source of much social tension and turmoil.', 'C': 'In ancient Rome, religious worship was homogeneous and highly centralized.', 'D': 'In ancient Rome, religious worship was revolutionized by the introduction of Christianity.', 'target': 'A', 'task': 'high_school_european_history'}, ...]
+    """
     def __init__(self):
-        # MMLU dataset now is loaded from huggingface datasets: lukaemon/mmlu (test set).
-        # https://huggingface.co/datasets/lukaemon/mmlu/viewer/abstract_algebra/test
-        
+        #         
         self.data = []
         self.tasks = ['high_school_european_history', 'business_ethics', 'clinical_knowledge', 'medical_genetics',
                     'high_school_us_history', 'high_school_physics', 'high_school_world_history', 'virology',
@@ -224,6 +318,12 @@ class MMLU(Dataset):
 
             
 class GLUE(Dataset):
+    """
+    GLUE class is a dataset class for the General Language Understanding Evaluation benchmark, supporting multiple natural language understanding tasks.
+
+    Examples:
+    [{'content': "it 's a charming and often affecting journey . ", 'label': 1}, {'content': 'unflinchingly bleak and desperate ', 'label': 0}, ...]
+    """
     def __init__(self, task):
         self.data = []
         self.supported_tasks = ["sst2", "cola", "qqp", "mnli",
@@ -264,8 +364,6 @@ class GLUE(Dataset):
 
             self.data.append({"content": content, "label": d['label']})            
 
-
-""" Dataset for prompt engineering """
 
 class GSM8K(Dataset):
     def __init__(self):

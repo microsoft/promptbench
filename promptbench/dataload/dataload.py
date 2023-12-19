@@ -16,26 +16,24 @@ SUPPORTED_DATASETS = [
 class DatasetLoader:
     
     @staticmethod
-    def load_dataset(dataset_name, supported_languages=None):
+    def load_dataset(dataset_name, task=None, supported_languages=None):
         """
         Load and return the specified dataset.
 
         This function acts as a factory method, returning the appropriate dataset object 
-        based on the provided dataset name. Note that 'un_multi' and 'iwslt' require 
-        additional arguments to specify the languages used in the dataset.
-
-        The supported languages are: 
-            - 'de': 'German',
-            - 'en': 'English',
-            - 'fr': 'French',
+        based on the provided dataset name. 
+        'math', 'un_multi' and 'iwslt' require additional arguments to specify the languages used in the dataset.
 
         Args:
             dataset_name (str): The name of the dataset to load.
+            task: str: Additional arguments required by 'math'. 
+                        Please visit https://huggingface.co/datasets/math_dataset/ to see the supported tasks for math.
             supported_languages: list: Additional arguments required by 'iwslt'. 
                                 Please visit https://huggingface.co/datasets/iwslt2017 to see the supported languages for iwslt.
                                 e.g. supported_languages=['de-en', 'ar-en'] for German-English and Arabic-English translation.
         Returns:
             Dataset object corresponding to the given dataset_name.
+            The dataset object is an instance of a list, each element is a dictionary. Please refer to each dataset's documentation for details.
 
         Raises:
             NotImplementedError: If the dataset_name does not correspond to any known dataset.
@@ -52,8 +50,8 @@ class DatasetLoader:
             return UnMulti()
         elif dataset_name == 'iwslt2017':
             return IWSLT(supported_languages)
-        elif dataset_name == 'math':
-            return Math()
+        elif dataset_name in 'math':
+            return Math(task)
         elif dataset_name == 'bool_logic':
             return BoolLogic()
         elif dataset_name == 'valid_parentheses':

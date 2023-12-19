@@ -63,7 +63,7 @@ class PhiModel(LMMBaseModel):
     system_prompt : str, optional
         The system prompt to be used (default is None).
     """
-    def __init__(self, model_name, max_new_tokens, temperature=0, system_prompt=None):
+    def __init__(self, model_name, max_new_tokens, temperature=0):
         super(PhiModel, self).__init__(model_name, max_new_tokens, temperature)
         from transformers import AutoTokenizer, AutoModelForCausalLM
         model = "microsoft/phi-1_5" if model_name == "phi-1.5" else "microsoft/phi-2"
@@ -155,7 +155,7 @@ class LlamaModel(LMMBaseModel):
     system_prompt : str, optional
         The system prompt to be used (default is None).
     model_dir : str, optional
-        The directory containing the model files (default is None).
+        The directory containing the model files (default is None). If not provided, it will be downloaded from the HuggingFace model hub.
     """
     def __init__(self, model_name, max_new_tokens, temperature=0, system_prompt=None, model_dir=None):
         super(LlamaModel, self).__init__(model_name, max_new_tokens, temperature)
@@ -165,10 +165,21 @@ class LlamaModel(LMMBaseModel):
             self.system_prompt = system_prompt
         from transformers import LlamaForCausalLM, LlamaTokenizer, AutoTokenizer, AutoModelForCausalLM
         
-        # TODO: rename Llama2 model to be consistent with huggingface
-        # TODO: add default huggingface loader
-        self.tokenizer = LlamaTokenizer.from_pretrained(model_dir, device_map="auto")
-        self.model = LlamaForCausalLM.from_pretrained(model_dir, device_map="auto", torch_dtype=torch.float16)
+        if model_dir is None:
+            parts = model_name.split('-')
+            number = parts[1]
+            is_chat = 'chat' in parts
+
+            hf_name = f"meta-llama/Llama-2-{number}"
+            if is_chat:
+                hf_name += "-chat"
+            hf_name += "-hf"
+            
+            self.tokenizer = AutoTokenizer.from_pretrained(hf_name, device_map="auto")
+            self.model = AutoModelForCausalLM.from_pretrained(hf_name, device_map="auto", torch_dtype=torch.float16)
+        else:
+            self.tokenizer = LlamaTokenizer.from_pretrained(model_dir, device_map="auto")
+            self.model = LlamaForCausalLM.from_pretrained(model_dir, device_map="auto", torch_dtype=torch.float16)
 
     def predict(self, input_text, **kwargs):
         input_text = f"<s>[INST] <<SYS>>{self.system_prompt}<</SYS>>\n{input_text}[/INST]"
@@ -207,8 +218,6 @@ class VicunaModel(LMMBaseModel):
     """
     def __init__(self, model_name, max_new_tokens, temperature=0, system_prompt=None, model_dir=None):
         super(VicunaModel, self).__init__(model_name, max_new_tokens, temperature, system_prompt)
-
-        # TODO: implement system_prompt
 
         from transformers import AutoModelForCausalLM, AutoTokenizer
 
