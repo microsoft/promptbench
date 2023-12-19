@@ -7,7 +7,7 @@ from .models import *
 MODEL_LIST = {
     T5Model: ['google/flan-t5-large'],
     LlamaModel: ['llama2-7b', 'llama2-7b-chat', 'llama2-13b', 'llama2-13b-chat', 'llama2-70b', 'llama2-70b-chat',],
-    PhiModel: ['phi-1.5'],
+    PhiModel: ['phi-1.5', 'phi-2'],
     PaLMModel: ['palm'],
     OpenAIModel: ['gpt-3.5-turbo', 'gpt-4', 'gpt-4-1106-preview', 'gpt-3.5-turbo-1106'],
     VicunaModel: ['vicuna-7b', 'vicuna-13b', 'vicuna-13b-v1.3'],
