@@ -238,7 +238,7 @@ class GLUE(Dataset):
             mismatched = load_dataset("glue", "mnli")["validation_mismatched"]
             data = concatenate_datasets([matched, mismatched])
         else:
-            data = load_dataset("glue", task)["test"]
+            data = load_dataset("glue", task)["validation"]
         
         for d in data:
             if task == "sst2" or task == "cola":
