@@ -80,7 +80,7 @@ class LLMModel(object):
             elif model_class == PaLMModel:
                 return model_class(self.model, max_new_tokens, temperature, system_prompt, palm_key, sleep_time)
             else:
-                return model_class(self.model, max_new_tokens, temperature, system_prompt)
+                return model_class(self.model, max_new_tokens, temperature)
         else:
             raise ValueError("The model is not supported!")
 
