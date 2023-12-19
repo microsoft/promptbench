@@ -7,3 +7,5 @@ Examples
    basic
    dyval
    prompt_attack
+   prompt_engineering
+   add_new_modules
