@@ -1,3 +1,5 @@
+# Adding new modules
+
 Each module in promptbench can be easily extended. In the following, we provide basic guidelines for customizing your own datasets, models, prompt engineering methods, and evaluation metrics.
 
 ## Add new datasets
