@@ -62,6 +62,8 @@ class DatasetLoader:
             return GSM8K()
         elif dataset_name == 'csqa':
             return CSQA()
+        elif dataset_name == 'qasc':
+            return QASC()
         elif 'bigbench' in dataset_name:
             return BigBench(dataset_name)
         else:

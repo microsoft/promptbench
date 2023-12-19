@@ -269,17 +269,15 @@ class GLUE(Dataset):
 
 class GSM8K(Dataset):
     def __init__(self):
-        super().__init__("gsm8k")
+        # gsm8k dataset now is loaded from huggingface datasets: /gsm8k (test set).
+        # https://huggingface.co/datasets/gsm8k
         
+        data = load_dataset("gsm8k", "main")["test"]
         self.data = []
-        decoder = json.JSONDecoder()
-        with open(self.filepath, 'r') as f:
-            lines = f.readlines()
-            for l in lines:
-                d = decoder.raw_decode(l)[0]
-                content = d["question"].strip()
-                label = d["answer"].split("#### ")[-1]
-                self.data.append({"content": content, "label": label})
+        for d in data:
+            content = d["question"].strip()
+            label = d["answer"].split("#### ")[-1]
+            self.data.append({"content": content, "label": label})
     
     def extract_answer(self, output):
         answer = output.replace(",", "")
@@ -339,26 +337,24 @@ class BigBench(Dataset):
              
 class CSQA(Dataset):
     def __init__(self):
-        super().__init__("csqa")
+        # csqa dataset now is loaded from huggingface datasets: /commonsense_qa (val set).
+        # https://huggingface.co/datasets/commonsense_qa
+        data = load_dataset("commonsense_qa")["validation"]
         
         self.data = []
-        with open(self.filepath, 'r') as f:
-            json_data = json.load(f)
-            choice_index = ['A','B','C','D','E']
-            for line in json_data:
-                answer = line["answer"]
-                raw_q = line["query"].strip()
-                choice = "\nAnswer Choices:"
-                choice_list = line["cands"]
-                for i, c in enumerate(choice_list):
-                    choice += " ("
-                    choice += choice_index[i]
-                    choice += ") "
-                    choice += c
-                    if c == answer:
-                        a = choice_index[i]
-                q = raw_q + " " + choice
-                self.data.append({"content": q, "label": a})
+        choice_index = ['A','B','C','D','E']
+        for d in data:
+            raw_q = d["question"].strip()
+            choice = "\nAnswer Choices:"
+            choice_list = d["choices"]["text"]
+            for i, c in enumerate(choice_list):
+                choice += " ("
+                choice += choice_index[i]
+                choice += ") "
+                choice += c
+            q = raw_q + " " + choice
+            a = d["answerKey"]
+            self.data.append({"content": q, "label": a})
                 
     def extract_answer(self, output): 
         answer = re.findall(r'A|B|C|D|E', output)
@@ -396,26 +392,24 @@ class NumerSense(Dataset):
 
 class QASC(Dataset):
     def __init__(self):
-        super().__init__("qasc")
+        # qasc dataset now is loaded from huggingface datasets: /qasc (val set).
+        # https://huggingface.co/datasets/qasc
+        data = load_dataset("qasc")["validation"]
         
         self.data = []
-        with open(self.filepath, 'r') as f:
-            json_data = json.load(f)
-            choice_index = ['A','B','C','D','E','F','G','H']
-            for line in json_data:
-                answer = line["answer"]
-                raw_q = line["query"].strip()
-                choice = "\nAnswer Choices:"
-                choice_list = line["cands"]
-                for i, c in enumerate(choice_list):
-                    choice += " ("
-                    choice += choice_index[i]
-                    choice += ") "
-                    choice += c
-                    if c == answer:
-                        a = choice_index[i]
-                q = raw_q + " " + choice
-                self.data.append({"content": q, "label": a})
+        choice_index = ['A','B','C','D','E','F','G','H']
+        for d in data:
+            raw_q = d["question"].strip()
+            choice = "\nAnswer Choices:"
+            choice_list = d["choices"]["text"]
+            for i, c in enumerate(choice_list):
+                choice += " ("
+                choice += choice_index[i]
+                choice += ") "
+                choice += c
+            q = raw_q + " " + choice
+            a = d["answerKey"]
+            self.data.append({"content": q, "label": a})
                 
     def extract_answer(self, output): 
         answer = re.findall(r'A|B|C|D|E|F|G|H', output)
