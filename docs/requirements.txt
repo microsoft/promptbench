@@ -8,7 +8,7 @@ sentencepiece==0.1.99
 tokenizers==0.15.0
 torch==2.1.1
 tqdm==4.66.1
-transformers==4.35.2
+transformers==4.36.0
 Sphinx==7.1.2
 sphinx-autodoc-typehints==1.25.2
 sphinx-markdown-builder==0.6.5
