@@ -203,7 +203,7 @@ We support a range of datasets to facilitate comprehensive analysis, including:
 
 ## Benchmark Results
 
-Please refer to our [benchmark website](llm-eval.github.io) for benchmark results on Prompt Attacks, Prompt Engineering and Dynamic Evaluation DyVal.
+Please refer to our [benchmark website](https://llm-eval.github.io/) for benchmark results on Prompt Attacks, Prompt Engineering and Dynamic Evaluation DyVal.
 
 ## TODO
 - [ ] Add support for multi-modal models such as LlaVa and BLIP2.
