@@ -284,6 +284,8 @@ class OpenAIModel(LMMBaseModel):
         from openai import OpenAI
         client = OpenAI(api_key=self.openai_key)
         
+        system_messages = {'role': "system", 'content': "You are a helpful assistant."}
+        
         if isinstance(input_text, list):
             messages = input_text
         elif isinstance(input_text, dict):
@@ -291,6 +293,8 @@ class OpenAIModel(LMMBaseModel):
         else:
             messages = [{"role": "user", "content": input_text}]
         
+        messages.insert(0, system_messages)
+    
         # extra parameterss
         n = kwargs['n'] if 'n' in kwargs else 1
         temperature = kwargs['temperature'] if 'temperature' in kwargs else self.temperature

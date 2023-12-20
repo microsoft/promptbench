@@ -366,18 +366,25 @@ class GLUE(Dataset):
 
 
 class GSM8K(Dataset):
+    """
+    GSM8K is a dataset class that loads mathematical questions and answers from the Hugging Face datasets (main test set). The dataset is a collection of 8.5K high-quality, linguistically diverse grade school math word problems.
+    GSM8K dataset is loaded from huggingface datasets: /gsm8k (test set).
+    
+    Reference: https://huggingface.co/datasets/gsm8k/viewer/main/test
+    
+    Example data format:
+    [{'question': "A robe takes 2 bolts of blue fiber and half that much white fiber. How many bolts in total does it take?", 'answer': "It takes 2/2=<<2/2=1>>1 bolt of white fiber So the total amount of fabric is 2+1=<<2+1=3>>3 bolts of fabric #### 3"}, ...]
+    """
     def __init__(self):
-        super().__init__("gsm8k")
+        # gsm8k dataset now is loaded from huggingface datasets: /gsm8k (test set).
+        # https://huggingface.co/datasets/gsm8k
         
+        data = load_dataset("gsm8k", "main")["test"]
         self.data = []
-        decoder = json.JSONDecoder()
-        with open(self.filepath, 'r') as f:
-            lines = f.readlines()
-            for l in lines:
-                d = decoder.raw_decode(l)[0]
-                content = d["question"].strip()
-                label = d["answer"].split("#### ")[-1]
-                self.data.append({"content": content, "label": label})
+        for d in data:
+            content = d["question"].strip()
+            label = d["answer"].split("#### ")[-1]
+            self.data.append({"content": content, "label": label})
     
     def extract_answer(self, output):
         answer = output.replace(",", "")
@@ -387,6 +394,23 @@ class GSM8K(Dataset):
 
 
 class BigBench(Dataset):
+    """
+    BigBench is a dataset class that loads questions and answers from the BigBench benchmark (sub-dataset: date and object tracking). It includes various types of questions, such as date understanding, object tracking. The dataset is loaded from a JSON file containing questions and answers.
+    
+    date: https://github.com/google/BIG-bench/blob/main/bigbench/benchmark_tasks/date_understanding/task.json
+    object_tracking: https://github.com/google/BIG-bench/blob/main/bigbench/benchmark_tasks/logical_deduction/three_objects/task.json
+    
+    Example data format:
+    [
+        {
+            "input": "On a shelf, there are three books: a black book, an orange book, and a blue book. The blue book is to the right of the orange book. The orange book is to the right of the black book.",
+            "target_scores": {
+                "The black book is the leftmost.": 1,
+                "The orange book is the leftmost.": 0,
+                "The blue book is the leftmost.": 0
+            }
+        },
+    """
     def __init__(self, dataset_name):
         super().__init__(dataset_name)
         
@@ -436,27 +460,33 @@ class BigBench(Dataset):
 
              
 class CSQA(Dataset):
+    """
+    CSQA is a dataset class that loads questions and answers from the CommonsenseQA dataset. The dataset is a challenging commonsense question-answering dataset. It comprises 12,247 questions with 5 multiple-choice answers each. 
+    CSQA dataset now is loaded from huggingface datasets: /commonsense_qa (val set).
+    
+    Reference: https://huggingface.co/datasets/commonsense_qa/viewer/default/validation
+    
+    Example data format:
+    ['id': "1afa02df02c908a558b4036e80242fac", 'question': "A revolving door is convenient for two direction travel, but it also serves as a security measure at a what?", 'question_concept': "revolving door", 'choices': { "label": [ "A", "B", "C", "D", "E" ], "text": [ "bank", "library", "department store", "mall", "new york" ] }, 'answerKey': "A" ]
+    
+    """
     def __init__(self):
-        super().__init__("csqa")
+        data = load_dataset("commonsense_qa")["validation"]
         
         self.data = []
-        with open(self.filepath, 'r') as f:
-            json_data = json.load(f)
-            choice_index = ['A','B','C','D','E']
-            for line in json_data:
-                answer = line["answer"]
-                raw_q = line["query"].strip()
-                choice = "\nAnswer Choices:"
-                choice_list = line["cands"]
-                for i, c in enumerate(choice_list):
-                    choice += " ("
-                    choice += choice_index[i]
-                    choice += ") "
-                    choice += c
-                    if c == answer:
-                        a = choice_index[i]
-                q = raw_q + " " + choice
-                self.data.append({"content": q, "label": a})
+        choice_index = ['A','B','C','D','E']
+        for d in data:
+            raw_q = d["question"].strip()
+            choice = "\nAnswer Choices:"
+            choice_list = d["choices"]["text"]
+            for i, c in enumerate(choice_list):
+                choice += " ("
+                choice += choice_index[i]
+                choice += ") "
+                choice += c
+            q = raw_q + " " + choice
+            a = d["answerKey"]
+            self.data.append({"content": q, "label": a})
                 
     def extract_answer(self, output): 
         answer = re.findall(r'A|B|C|D|E', output)
@@ -467,6 +497,14 @@ class CSQA(Dataset):
     
 
 class LastLetterConcat(Dataset):
+    """
+    LastLetterConcat is a dataset class that loads questions and answers from the Last Letter Concat dataset. The dataset is initialized by reading from a JSON file, with each entry containing a query and a answer.
+    
+    Reference: https://arxiv.org/pdf/2201.11903.pdf (page 8)
+    
+    Example data format:
+    [{"question": "Take the last letters of each words in \"Whitney Erika Tj Benito\" and concatenate them.", "answer": "yajo"}, ...]
+    """
     def __init__(self):
         super().__init__("last_letter_concat")
         
@@ -480,6 +518,15 @@ class LastLetterConcat(Dataset):
     
 
 class NumerSense(Dataset):
+    """
+    NumerSense is a dataset class that loads questions and answers from the NumerSense dataset which is a unique numerical commonsense reasoning probing task. The dataset is initialized by reading from a JSON file, with each entry containing a query and a answer (English number).
+    
+    https://github.com/INK-USC/NumerSense/blob/main/data/validation.masked.tsv
+    
+    Example data format:
+    [{"query": "you may take the subway back and forth to work <mask> days a week.", "answer": "five"}, ...]
+    
+    """
     def __init__(self):
         super().__init__("numersense")
         
@@ -493,27 +540,34 @@ class NumerSense(Dataset):
                 
 
 class QASC(Dataset):
+    """
+    QASC is a dataset class that loads questions and answers from the Question Answering via QASC dataset. QASC is a question-answering dataset with a focus on sentence composition. It consists of 9,980 8-way multiple-choice questions about grade school science (8,134 train, 926 dev, 920 test), and comes with a corpus of 17M sentences.
+    QASC dataset now is loaded from huggingface datasets: /qasc (val set).
+    
+    Reference: https://huggingface.co/datasets/qasc/viewer/default/validation
+    
+    Example data format: 
+    ['id': "3NGI5ARFTT4HNGVWXAMLNBMFA0U1PG", 'question': "Climate is generally described in terms of what?", 'choices': { "text": [ "sand", "occurs over a wide range", "forests", "Global warming", "rapid changes occur", "local weather conditions", "measure of motion", "city life" ], "label": [ "A", "B", "C", "D", "E", "F", "G", "H" ] }, 'answerKey': "F", 'fact1': "Climate is generally described in terms of temperature and moisture.", 'fact2': "Fire behavior is driven by local weather conditions such as winds, temperature and moisture.", 'combinedfact':"Climate is generally described in terms of local weather conditions", 'formatted_question': "Climate is generally described in terms of what? (A) sand (B) occurs over a wide range (C) forests (D) Global warming (E) rapid changes occur (F) local weather conditions (G) measure of motion (H) city life"]
+    
+    """
+    
     def __init__(self):
-        super().__init__("qasc")
+        data = load_dataset("qasc")["validation"]
         
         self.data = []
-        with open(self.filepath, 'r') as f:
-            json_data = json.load(f)
-            choice_index = ['A','B','C','D','E','F','G','H']
-            for line in json_data:
-                answer = line["answer"]
-                raw_q = line["query"].strip()
-                choice = "\nAnswer Choices:"
-                choice_list = line["cands"]
-                for i, c in enumerate(choice_list):
-                    choice += " ("
-                    choice += choice_index[i]
-                    choice += ") "
-                    choice += c
-                    if c == answer:
-                        a = choice_index[i]
-                q = raw_q + " " + choice
-                self.data.append({"content": q, "label": a})
+        choice_index = ['A','B','C','D','E','F','G','H']
+        for d in data:
+            raw_q = d["question"].strip()
+            choice = "\nAnswer Choices:"
+            choice_list = d["choices"]["text"]
+            for i, c in enumerate(choice_list):
+                choice += " ("
+                choice += choice_index[i]
+                choice += ") "
+                choice += c
+            q = raw_q + " " + choice
+            a = d["answerKey"]
+            self.data.append({"content": q, "label": a})
                 
     def extract_answer(self, output): 
         answer = re.findall(r'A|B|C|D|E|F|G|H', output)
