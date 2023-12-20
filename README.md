@@ -135,9 +135,29 @@ Note that this only installed basic python packages. For Prompt Attacks, it requ
 
 promptbench is easy to use and extend. Going through the bellowing examples will help you familiar with promptbench for quick use, evaluate an existing datasets and LLMs, or creating your own datasets and models.
 
-<!-- TODO: add quick start example and refer lighting notebook -->
 
-Please see [Installation](#installation) to install promptbench first. We provide ipynb tutorials for:
+Please see [Installation](#installation) to install promptbench first. 
+
+If promptbench is installed via `pip`, you can simply do:
+
+```python
+import promptbench as pb
+```
+
+If you installed promptbench from `git` and want to use it in other projects:
+
+```python
+import sys
+
+# Add the directory of promptbench to the Python path
+sys.path.append('/home/xxx/promptbench')
+
+# Now you can import promptbench by name
+import promptbench as pb
+```
+
+
+We provide tutorials for:
 
 1. **evaluate models on existing benchmarks:** please refer to the [examples/basic.ipynb](examples/basic.ipynb) for constructing your evaluation pipeline.
 2. **test the effects of different prompting techniques:** 
@@ -171,7 +191,7 @@ We support a range of datasets to facilitate comprehensive analysis, including:
 
 - google/flan-t5-large
 - databricks/dolly-v1-6b
-- Llama2 (7b, 13b, 7b-chat, 13b-chat)
+- Llama2 series
 - vicuna-13b, vicuna-13b-v1.3
 - Cerebras/Cerebras-GPT-13B
 - EleutherAI/gpt-neox-20b
@@ -179,7 +199,7 @@ We support a range of datasets to facilitate comprehensive analysis, including:
 - PaLM 2
 - ChatGPT
 - GPT-4
-- Phi
+- phi-1.5, phi-2
 
 ## Benchmark Results
 
