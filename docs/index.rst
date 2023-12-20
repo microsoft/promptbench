@@ -26,6 +26,8 @@ Welcome to promptbench's documentation!
    examples/basic
    examples/dyval
    examples/prompt_attack
+   examples/prompt_engineering
+   examples/add_new_modules
 
 .. toctree::
    :maxdepth: 1

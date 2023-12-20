@@ -69,7 +69,8 @@
 <!-- News and Updates -->
 
 ## News and Updates
-- [15/12/2023] Add detailed instructions for users to add new modules (models, datasets, etc.) `examples/add_new_modules.md`. 
+- [16/12/2023] Fix bugs for dataset downloading.
+- [15/12/2023] Add detailed instructions for users to add new modules (models, datasets, etc.) [examples/add_new_modules.md](examples/add_new_modules.md). 
 - [05/12/2023] Published promptbench 0.0.1.
 
 
@@ -86,7 +87,7 @@
 ### What does promptbench currently provide?
 1. **Quick model performance assessment:** We offer a user-friendly interface that allows for quick model building, dataset loading, and evaluation of model performance.
 2. **Prompt Engineering:** We implemented several prompt engineering methods. For example: [Few-shot Chain-of-Thought](https://arxiv.org/abs/2201.11903) [1],  [Emotion Prompt](https://arxiv.org/abs/2307.11760) [2], [Expert Prompting](https://arxiv.org/abs/2305.14688) [3] and so on.
-3. **Evaluating adversarial prompts:** promptbench integrated [prompt attacks](https://arxiv.org/abs/2306.04528) [4], enabling researchers to simulate black-box adversarial prompt attacks on models and evaluate their robustness.
+3. **Evaluating adversarial prompts:** promptbench integrated [prompt attacks](https://arxiv.org/abs/2306.04528) [4], enabling researchers to simulate black-box adversarial prompt attacks on models and evaluate their robustness (see details [here](promptbench/prompt_attack/README.md)).
 4. **Dynamic evaluation to mitigate potential test data contamination:** we integrated the dynamic evaluation framework [DyVal](https://arxiv.org/pdf/2309.17167) [5], which generates evaluation samples on-the-fly with controlled complexity.
 
 
@@ -138,10 +139,10 @@ promptbench is easy to use and extend. Going through the bellowing examples will
 
 Please see [Installation](#installation) to install promptbench first. We provide ipynb tutorials for:
 
-1. **evaluate models on existing benchmarks:** please refer to the `examples/basic.ipynb` for constructing your evaluation pipeline.
+1. **evaluate models on existing benchmarks:** please refer to the [examples/basic.ipynb](examples/basic.ipynb) for constructing your evaluation pipeline.
 2. **test the effects of different prompting techniques:** 
-3. **examine the robustness for prompt attacks**, please refer to `examples/prompt_attack.ipynb` to construct the attacks.
-4. **use DyVal for evaluation:** please refer to `examples/dyval.ipynb` to construct DyVal datasets.
+3. **examine the robustness for prompt attacks**, please refer to [examples/prompt_attack.ipynb](examples/prompt_attack.ipynb) to construct the attacks.
+4. **use DyVal for evaluation:** please refer to [examples/dyval.ipynb](examples/dyval.ipynb) to construct DyVal datasets.
 
 
 ## Supported Datasets and Models
@@ -170,20 +171,22 @@ We support a range of datasets to facilitate comprehensive analysis, including:
 
 - google/flan-t5-large
 - databricks/dolly-v1-6b
-- llama2 (7b, 13b, 7b-chat, 13b-chat)
+- Llama2 (7b, 13b, 7b-chat, 13b-chat)
 - vicuna-13b, vicuna-13b-v1.3
-- cerebras/Cerebras-GPT-13B
+- Cerebras/Cerebras-GPT-13B
 - EleutherAI/gpt-neox-20b
-- google/flan-ul2
-- palm
-- chatgpt, gpt4
+- Google/flan-ul2
+- PaLM 2
+- ChatGPT
+- GPT-4
+- Phi
 
 ## Benchmark Results
 
 Please refer to our [benchmark website](llm-eval.github.io) for benchmark results on Prompt Attacks, Prompt Engineering and Dynamic Evaluation DyVal.
 
 ## TODO
-- [ ] Add prompt attacks and prompt engineering documents.
+- [ ] Add support for multi-modal models such as LlaVa and BLIP2.
 
 ## Acknowledgements
 
