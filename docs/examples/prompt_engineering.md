@@ -1,6 +1,6 @@
 # Prompt Engineering
 
-This example will walk you throught the basic usage of PromptBench. We hope that you can get familiar with the APIs and use it in your own projects later.
+This example will walk you through the basic usage of PromptBench. We hope that you can get familiar with the APIs and use it in your own projects later.
 
 First, there is a unified import of `import promptbench as pb` that easily imports the package.
 
