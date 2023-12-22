@@ -380,3 +380,68 @@ class PaLMModel(LMMBaseModel):
             result = completion.result
         
         return result
+        
+class GeminiModel(LMMBaseModel):
+    """
+    Language model class for interfacing with Google's Gemini models.
+
+    Inherits from LMMBaseModel and sets up a model interface for Gemini models.
+
+    Parameters:
+    -----------
+    model : str
+        The name of the PaLM model.
+    max_new_tokens : int
+        The maximum number of new tokens to be generated.
+    temperature : float, optional
+        The temperature for text generation (default is 0).
+    system_prompt : str, optional
+        The system prompt to be used (default is None).
+    model_dir : str, optional
+        The directory containing the model files (default is None).
+    """
+    def __init__(self, model, max_new_tokens, temperature=0, system_prompt=None, gemini_key=None):
+        super(GeminiModel, self).__init__(model, max_new_tokens, temperature)
+        self.gemini_key = gemini_key
+    
+    def predict(self, input_text, **kwargs):
+        import google.generativeai as genai 
+        
+        genai.configure(api_key=self.gemini_key)
+
+        # Set up the model
+        generation_config = {
+        "temperature": self.temperature,
+        "top_p": 1,
+        "top_k": 1,
+        "max_output_tokens": self.max_new_tokens,
+        }
+
+        safety_settings = [
+        {
+            "category": "HARM_CATEGORY_HARASSMENT",
+            "threshold": "BLOCK_MEDIUM_AND_ABOVE"
+        },
+        {
+            "category": "HARM_CATEGORY_HATE_SPEECH",
+            "threshold": "BLOCK_MEDIUM_AND_ABOVE"
+        },
+        {
+            "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+            "threshold": "BLOCK_MEDIUM_AND_ABOVE"
+        },
+        {
+            "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
+            "threshold": "BLOCK_MEDIUM_AND_ABOVE"
+        }
+        ]
+
+        model = genai.GenerativeModel(model_name="gemini-pro",
+                                    generation_config=generation_config,
+                                    safety_settings=safety_settings)
+
+        try:
+            response = model.generate_content(input_text).text
+        except:
+            response = "error!"
+        return response

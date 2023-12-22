@@ -12,6 +12,7 @@ MODEL_LIST = {
     OpenAIModel: ['gpt-3.5-turbo', 'gpt-4', 'gpt-4-1106-preview', 'gpt-3.5-turbo-1106'],
     VicunaModel: ['vicuna-7b', 'vicuna-13b', 'vicuna-13b-v1.3'],
     UL2Model: ['google/flan-ul2'],
+    GeminiModel: ['gemini-pro'],
 }
 
 SUPPORTED_MODELS = [model for model_class in MODEL_LIST.keys() for model in MODEL_LIST[model_class]]
@@ -60,11 +61,11 @@ class LLMModel(object):
     def model_list():
         return SUPPORTED_MODELS
 
-    def __init__(self, model, max_new_tokens=20, temperature=0, model_dir=None, system_prompt=None, openai_key=None, palm_key=None, sleep_time=3):
+    def __init__(self, model, max_new_tokens=20, temperature=0, model_dir=None, system_prompt=None, openai_key=None, palm_key=None, sleep_time=3, gemini_key=None):
         self.model = model
-        self.infer_model = self._create_model(max_new_tokens, temperature, model_dir, system_prompt, openai_key, palm_key, sleep_time)
+        self.infer_model = self._create_model(max_new_tokens, temperature, model_dir, system_prompt, openai_key, palm_key, sleep_time, gemini_key)
 
-    def _create_model(self, max_new_tokens=20, temperature=0, model_dir=None, system_prompt=None, openai_key=None, palm_key=None, sleep_time=3):
+    def _create_model(self, max_new_tokens=20, temperature=0, model_dir=None, system_prompt=None, openai_key=None, palm_key=None, sleep_time=3, gemini_key=None):
         """Creates and returns the appropriate model based on the model name."""
 
         # Dictionary mapping of model names to their respective classes
@@ -79,6 +80,8 @@ class LLMModel(object):
                 return model_class(self.model, max_new_tokens, temperature, system_prompt, openai_key, sleep_time)
             elif model_class == PaLMModel:
                 return model_class(self.model, max_new_tokens, temperature, system_prompt, palm_key, sleep_time)
+            elif model_class == GeminiModel:
+                return model_class(self.model, max_new_tokens, temperature, system_prompt, gemini_key)
             else:
                 return model_class(self.model, max_new_tokens, temperature)
         else:
@@ -153,3 +156,8 @@ class LLMModel(object):
     def __call__(self, input_text, **kwargs):
         """Predicts the output based on the given input text using the loaded model."""
         return self.infer_model.predict(input_text, **kwargs)
+
+
+if __name__ == "__main__":
+    model = LLMModel(model='gemini-pro', gemini_key="AIzaSyBvb3QX6u2ToRTm9NpWnZrXOkJHhj6gr0o")
+    print(model("Hello, my name is"))

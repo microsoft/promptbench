@@ -102,6 +102,7 @@ We provide a Python package *promptbench* for users who want to start evaluation
 pip install promptbench
 ```
 
+Note that the pip installation could be behind the recent updates. So, if you want to use the latest features or develop based on our code, you should intall via Github.
 
 ### Install via GitHub
 
@@ -200,6 +201,7 @@ We support a range of datasets to facilitate comprehensive analysis, including:
 - ChatGPT
 - GPT-4
 - phi-1.5, phi-2
+- Gemini Pro
 
 ## Benchmark Results
 
