@@ -159,5 +159,5 @@ class LLMModel(object):
 
 
 if __name__ == "__main__":
-    model = LLMModel(model='gemini-pro', gemini_key="AIzaSyBvb3QX6u2ToRTm9NpWnZrXOkJHhj6gr0o")
+    model = LLMModel(model='gemini-pro', gemini_key="xx")
     print(model("Hello, my name is"))
