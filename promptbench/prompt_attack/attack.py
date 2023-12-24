@@ -62,18 +62,17 @@ from .goal_function import AdvPromptGoalFunction
 
 
 class Attack(object):
-    def __init__(self, model, attack_name, dataset, prompt, input_process_func, output_process_func, eval_func, unmodifiable_words=None):
+    def __init__(self, model, attack_name, dataset, prompt, eval_func, unmodifiable_words=None, verbose=True):
         self.model = model
         self.attack_name = attack_name
         self.dataset = dataset
         self.prompt = prompt
         self.goal_function = AdvPromptGoalFunction(self.model, 
-                                                   self.dataset, 
-                                                   input_process_func, 
-                                                   output_process_func, 
+                                                   self.dataset,  
                                                    eval_func, 
                                                    query_budget=attack_config["goal_function"]["query_budget"], 
-                                                   model_wrapper=None)
+                                                   model_wrapper=None,
+                                                   verbose=verbose)
         if unmodifiable_words:
             self.unmodifiable_words = unmodifiable_words
         else:
@@ -81,18 +80,18 @@ class Attack(object):
             self.unmodifiable_words = LABEL_SET[dataset]
         
         print(f"These words (if they appear in the prompt) are not allowed to be attacked:\n{self.unmodifiable_words}")
-        self.prompt_attack = self._create_attack(attack_name, self.unmodifiable_words, self.goal_function)
+        self.prompt_attack = self._create_attack(attack_name)
 
     @staticmethod
     def attack_list():
         return ["textbugger", "deepwordbug", "textfooler", "bertattack", "checklist", "stresstest", "semantic"]
 
-    def _create_attack(self, attack, unmodifiable_words, goal_function):
+    def _create_attack(self, attack):
         if attack == "semantic":
             return None
         
         from promptbench.prompt_attack.label_constraint import LabelConstraint
-        label_constraint = LabelConstraint(unmodifiable_words)
+        label_constraint = LabelConstraint(self.unmodifiable_words)
         
         if attack == "textfooler":
 
@@ -195,8 +194,7 @@ class Attack(object):
         
         # Adding label constraint
         constraints.append(label_constraint)
-        goal_function = goal_function
-        attack = AdvPromptAttack(goal_function, constraints, transformation, search_method)
+        attack = AdvPromptAttack(self.goal_function, constraints, transformation, search_method)
         return attack
    
     def attack(self):
@@ -601,7 +599,13 @@ class AdvPromptAttack:
             )
         else:
             raise ValueError(f"Unrecognized goal status {final_result.goal_status}")
-        return  result.original_result.output, result.perturbed_result.attacked_text.text, result.perturbed_result.output, result.perturbed_result.score
+        return  {
+            "original prompt": result.original_result.attacked_text.text,
+            "original score": result.original_result.output, 
+            "attacked prompt": result.perturbed_result.attacked_text.text, 
+            "attacked score": result.perturbed_result.output, 
+            "PDR": (result.original_result.output-result.perturbed_result.output) / result.original_result.output
+        }
 
     def attack(self, example):
         """Attack a single example.

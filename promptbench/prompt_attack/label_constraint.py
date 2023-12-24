@@ -13,10 +13,14 @@ class LabelConstraint(PreTransformationConstraint):
 
     def _get_modifiable_indices(self, current_text):
         modifiable_indices = set()
+        modifiable_words = []
         for i, word in enumerate(current_text.words):
             if str(word).lower() not in self.labels:
+                modifiable_words.append(word)
                 modifiable_indices.add(i)
-        
+        print("--------------------------------------------------")
+        print("Modifiable words: ", modifiable_words)
+        print("--------------------------------------------------\n")
         return modifiable_indices
 
     def check_compatibility(self, transformation):
