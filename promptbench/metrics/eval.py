@@ -7,13 +7,6 @@ class Eval:
 
     This class provides static methods to compute metrics such as classification accuracy, SQuAD V2 F1 score, BLEU score, and math accuracy.
 
-    Attributes:
-    -----------
-    BLEU_NORMALIZATION_FACTOR : int
-        The normalization factor for the BLEU score.
-    SQUAD_V2_NORMALIZATION_FACTOR : int
-        The normalization factor for the SQuAD V2 F1 score.
-
     Methods:
     --------
     compute_cls_accuracy(preds, gts)
@@ -25,8 +18,6 @@ class Eval:
     compute_math_accuracy(dataset, preds, gts)
         Computes accuracy for math dataset.
     """
-    BLEU_NORMALIZATION_FACTOR = 100
-    SQUAD_V2_NORMALIZATION_FACTOR = 100
     
     @staticmethod
     def compute_cls_accuracy(preds, gts):
@@ -89,7 +80,7 @@ class Eval:
 
         score = metric.compute(predictions=model_output, references=references)
 
-        return score["f1"] / self.SQUAD_V2_NORMALIZATION_FACTOR
+        return score["f1"]
 
     @staticmethod
     def compute_bleu(preds, gts):
@@ -111,10 +102,10 @@ class Eval:
         from .bleu.bleu import Bleu
         metric = Bleu()
         results = metric.compute(predictions=preds, references=gts)
-        return results['bleu'] / self.BLEU_NORMALIZATION_FACTOR
+        return results['bleu']
 
     @staticmethod
-    def compute_math_accuracy(self, dataset, preds, gts):
+    def compute_math_accuracy(preds, gts):
         """
         Computes accuracy for the 'math' dataset.
 
