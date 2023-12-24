@@ -7,4 +7,4 @@ sentencepiece==0.1.99
 tokenizers==0.15.0
 torch==2.1.1
 tqdm==4.66.1
-transformers==4.36.0
+transformers==4.36.2
