@@ -13,6 +13,11 @@ MODEL_LIST = {
     VicunaModel: ['vicuna-7b', 'vicuna-13b', 'vicuna-13b-v1.3'],
     UL2Model: ['google/flan-ul2'],
     GeminiModel: ['gemini-pro'],
+    MistralModel: ['mistralai/Mistral-7B-v0.1', 'mistralai/Mistral-7B-Instruct-v0.1'],
+    MixtralModel: ['mistralai/Mixtral-8x7B-v0.1'],
+    YiModel: ['01-ai/Yi-6B', '01-ai/Yi-34B', '01-ai/Yi-6B-Chat', '01-ai/Yi-34B-Chat'],
+    BaichuanModel: ['baichuan-inc/Baichuan2-7B-Base', 'baichuan-inc/Baichuan2-13B-Base',
+                    'baichuan-inc/Baichuan2-7B-Chat', 'baichuan-inc/Baichuan2-13B-Chat'],
 }
 
 SUPPORTED_MODELS = [model for model_class in MODEL_LIST.keys() for model in MODEL_LIST[model_class]]

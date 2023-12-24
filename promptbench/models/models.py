@@ -40,6 +40,7 @@ class LMMBaseModel(ABC):
         outputs = self.model.generate(input_ids, 
                                      max_new_tokens=self.max_new_tokens, 
                                      temperature=self.temperature,
+                                     do_sample=True,
                                      **kwargs)
         
         out = self.tokenizer.decode(outputs[0])
@@ -47,6 +48,112 @@ class LMMBaseModel(ABC):
 
     def __call__(self, input_text, **kwargs):
         return self.predict(input_text, **kwargs)
+
+
+class BaichuanModel(LMMBaseModel):
+    """
+    Language model class for the Baichuan model.
+
+    Inherits from LMMBaseModel and sets up the Baichuan language model for use.
+
+    Parameters:
+    -----------
+    model : str
+        The name of the Baichuan model.
+    max_new_tokens : int
+        The maximum number of new tokens to be generated.
+    temperature : float, optional
+        The temperature for text generation (default is 0).
+    device: str
+        The device to use for inference (default is 'auto').
+
+    Methods:
+    --------
+    predict(input_text, **kwargs)
+        Generates a prediction based on the input text.
+    """
+    def __init__(self, model_name, max_new_tokens, temperature, device, dtype):
+        super(BaichuanModel, self).__init__(model_name, max_new_tokens, temperature, device)
+        from transformers import AutoTokenizer, AutoModelForCausalLM
+        self.tokenizer = AutoTokenizer.from_pretrained(self.model_name, torch_dtype=dtype, device_map=device, use_fast=False, trust_remote_code=True)
+        self.model = AutoModelForCausalLM.from_pretrained(self.model_name, torch_dtype=dtype, device_map=device, trust_remote_code=True)
+
+
+class YiModel(LMMBaseModel):
+    """
+    Language model class for the Yi model.
+
+    Inherits from LMMBaseModel and sets up the Yi language model for use.
+
+    Parameters:
+    -----------
+    model : str
+        The name of the Yi model.
+    max_new_tokens : int
+        The maximum number of new tokens to be generated.
+    temperature : float
+        The temperature for text generation (default is 0).
+    device: str
+        The device to use for inference (default is 'auto').
+    """
+    def __init__(self, model_name, max_new_tokens, temperature, device, dtype):
+        super(YiModel, self).__init__(model_name, max_new_tokens, temperature, device)
+        from transformers import AutoTokenizer, AutoModelForCausalLM
+        self.tokenizer = AutoTokenizer.from_pretrained(self.model_name, torch_dtype=dtype, device_map=device)
+        self.model = AutoModelForCausalLM.from_pretrained(self.model_name, torch_dtype=dtype, device_map=device)
+
+
+class MixtralModel(LMMBaseModel):
+    """
+    Language model class for the Mixtral model.
+
+    Inherits from LMMBaseModel and sets up the Mixtral language model for use.
+
+    Parameters:
+    -----------
+    model : str
+        The name of the Mixtral model.
+    max_new_tokens : int
+        The maximum number of new tokens to be generated.
+    temperature : float
+        The temperature for text generation (default is 0).
+    device: str
+        The device to use for inference (default is 'auto').
+    dtype: str
+        The dtype to use for inference (default is 'auto').
+    """
+    def __init__(self, model_name, max_new_tokens, temperature, device, dtype):
+        super(MixtralModel, self).__init__(model_name, max_new_tokens, temperature, device)
+        from transformers import AutoTokenizer, AutoModelForCausalLM
+        print(self.model_name)
+        self.tokenizer = AutoTokenizer.from_pretrained(self.model_name[:-len("-v0.1")], torch_dtype=dtype, device_map=device)
+        self.model = AutoModelForCausalLM.from_pretrained(self.model_name, torch_dtype=dtype, device_map=device)
+
+
+class MistralModel(LMMBaseModel):
+    """
+    Language model class for the Mistral model.
+
+    Inherits from LMMBaseModel and sets up the Mistral language model for use.
+
+    Parameters:
+    -----------
+    model : str
+        The name of the Mistral model.
+    max_new_tokens : int
+        The maximum number of new tokens to be generated.
+    temperature : float
+        The temperature for text generation (default is 0).
+    device: str
+        The device to use for inference (default is 'auto').
+    dtype: str
+        The dtype to use for inference (default is 'auto').
+    """
+    def __init__(self, model_name, max_new_tokens, temperature, device, dtype):
+        super(MistralModel, self).__init__(model_name, max_new_tokens, temperature, device)
+        from transformers import AutoTokenizer, AutoModelForCausalLM
+        self.tokenizer = AutoTokenizer.from_pretrained(self.model_name, torch_dtype=dtype, device_map=device)
+        self.model = AutoModelForCausalLM.from_pretrained(self.model_name, torch_dtype=dtype, device_map=device)
 
 
 class PhiModel(LMMBaseModel):
@@ -337,8 +444,8 @@ class PaLMModel(LMMBaseModel):
         The maximum number of new tokens to be generated.
     temperature : float, optional
         The temperature for text generation (default is 0).
-    model_dir : str, optional
-        The directory containing the model files (default is None).
+    api_key : str, optional
+        The PaLM API key (default is None).
     """
     def __init__(self, model, max_new_tokens, temperature=0, api_key=None):
         super(PaLMModel, self).__init__(model, max_new_tokens, temperature)
@@ -384,8 +491,8 @@ class GeminiModel(LMMBaseModel):
         The maximum number of new tokens to be generated.
     temperature : float, optional
         The temperature for text generation (default is 0).
-    model_dir : str, optional
-        The directory containing the model files (default is None).
+    gemini_key : str, optional
+        The Gemini API key (default is None).
     """
     def __init__(self, model, max_new_tokens, temperature=0, gemini_key=None):
         super(GeminiModel, self).__init__(model, max_new_tokens, temperature)
