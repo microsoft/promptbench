@@ -61,36 +61,32 @@ class LLMModel(object):
     def model_list():
         return SUPPORTED_MODELS
 
-    def __init__(self, model, max_new_tokens=20, temperature=0, model_dir=None, system_prompt=None, openai_key=None, palm_key=None, sleep_time=3, gemini_key=None):
-        self.model = model
-        self.infer_model = self._create_model(max_new_tokens, temperature, model_dir, system_prompt, openai_key, palm_key, sleep_time, gemini_key)
+    def __init__(self, model, max_new_tokens=20, temperature=0, device="cuda", dtype="auto", model_dir=None, system_prompt=None, api_key=None):
+        self.model_name = model
+        self.model = self._create_model(max_new_tokens, temperature, device, dtype, model_dir, system_prompt, api_key)
 
-    def _create_model(self, max_new_tokens=20, temperature=0, model_dir=None, system_prompt=None, openai_key=None, palm_key=None, sleep_time=3, gemini_key=None):
+    def _create_model(self, max_new_tokens, temperature, device, dtype, model_dir, system_prompt, api_key):
         """Creates and returns the appropriate model based on the model name."""
 
         # Dictionary mapping of model names to their respective classes
         model_mapping = {model: model_class for model_class in MODEL_LIST.keys() for model in MODEL_LIST[model_class]}
 
         # Get the model class based on the model name and instantiate it
-        model_class = model_mapping.get(self.model)
+        model_class = model_mapping.get(self.model_name)
         if model_class:
             if model_class == LlamaModel or model_class == VicunaModel:
-                return model_class(self.model, max_new_tokens, temperature, system_prompt, model_dir)
-            elif model_class == OpenAIModel:
-                return model_class(self.model, max_new_tokens, temperature, system_prompt, openai_key, sleep_time)
-            elif model_class == PaLMModel:
-                return model_class(self.model, max_new_tokens, temperature, system_prompt, palm_key, sleep_time)
-            elif model_class == GeminiModel:
-                return model_class(self.model, max_new_tokens, temperature, system_prompt, gemini_key)
+                return model_class(self.model_name, max_new_tokens, temperature, device, dtype, system_prompt, model_dir)
+            elif model_class in [OpenAIModel, PaLMModel, GeminiModel]:
+                return model_class(self.model_name, max_new_tokens, temperature, device, dtype, system_prompt, api_key)
             else:
-                return model_class(self.model, max_new_tokens, temperature)
+                return model_class(self.model_name, max_new_tokens, temperature, device, dtype)
         else:
             raise ValueError("The model is not supported!")
 
     
     def convert_text_to_prompt(self, text, role):
         """Constructs multi_turn conversation for complex methods in prompt engineering."""
-        if self.model == ['gpt4', 'gpt-3.5-turbo-16k', 'gpt-3.5-turbo-0301', 'gpt-3.5-turbo']:
+        if self.model_name == ['gpt4', 'gpt-3.5-turbo-16k', 'gpt-3.5-turbo-0301', 'gpt-3.5-turbo']:
             return {'role': role, 'content': text} 
         else:
             # return str(role) + ': ' + str(text) + '\n'
@@ -98,7 +94,7 @@ class LLMModel(object):
 
     def concat_prompts(self, prompt_list):
         """Concatenates the prompts into a single prompt."""
-        if self.model == ['gpt4', 'gpt-3.5-turbo-16k', 'gpt-3.5-turbo-0301', 'gpt-3.5-turbo']:
+        if self.model_name == ['gpt4', 'gpt-3.5-turbo-16k', 'gpt-3.5-turbo-0301', 'gpt-3.5-turbo']:
             return self._gpt_concat_prompts(prompt_list)
         else:
             return self._other_concat_prompts(prompt_list)
@@ -155,9 +151,4 @@ class LLMModel(object):
     
     def __call__(self, input_text, **kwargs):
         """Predicts the output based on the given input text using the loaded model."""
-        return self.infer_model.predict(input_text, **kwargs)
-
-
-if __name__ == "__main__":
-    model = LLMModel(model='gemini-pro', gemini_key="xx")
-    print(model("Hello, my name is"))
+        return self.model.predict(input_text, **kwargs)

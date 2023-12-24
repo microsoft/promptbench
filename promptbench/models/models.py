@@ -16,8 +16,10 @@ class LMMBaseModel(ABC):
         The name of the language model.
     max_new_tokens : int
         The maximum number of new tokens to be generated.
-    temperature : float, optional
+    temperature : float
         The temperature for text generation (default is 0).
+    device: str
+        The device to use for inference (default is 'auto').
 
     Methods:
     --------
@@ -26,13 +28,14 @@ class LMMBaseModel(ABC):
     __call__(input_text, **kwargs)
         Shortcut for predict method.
     """
-    def __init__(self, model_name, max_new_tokens, temperature=0):
+    def __init__(self, model_name, max_new_tokens, temperature, device='auto'):
         self.model_name = model_name
         self.max_new_tokens = max_new_tokens
         self.temperature = temperature
+        self.device = device
 
     def predict(self, input_text, **kwargs):
-        input_ids = self.tokenizer(input_text, return_tensors="pt").input_ids.to("cuda")
+        input_ids = self.tokenizer(input_text, return_tensors="pt").input_ids.to(self.device)
 
         outputs = self.model.generate(input_ids, 
                                      max_new_tokens=self.max_new_tokens, 
@@ -58,20 +61,24 @@ class PhiModel(LMMBaseModel):
         The name of the Phi model.
     max_new_tokens : int
         The maximum number of new tokens to be generated.
-    temperature : float, optional
+    temperature : float
         The temperature for text generation (default is 0).
-    system_prompt : str, optional
-        The system prompt to be used (default is None).
+    device: str
+        The device to use for inference (default is 'auto').
+    dtype: str
+        The dtype to use for inference (default is 'auto').
     """
-    def __init__(self, model_name, max_new_tokens, temperature=0):
-        super(PhiModel, self).__init__(model_name, max_new_tokens, temperature)
+    def __init__(self, model_name, max_new_tokens, temperature, device, dtype):
+        super(PhiModel, self).__init__(model_name, max_new_tokens, temperature, device)
         from transformers import AutoTokenizer, AutoModelForCausalLM
         model = "microsoft/phi-1_5" if model_name == "phi-1.5" else "microsoft/phi-2"
-        self.tokenizer = AutoTokenizer.from_pretrained(model, trust_remote_code=True, torch_dtype="auto", device_map="auto")
-        self.model = AutoModelForCausalLM.from_pretrained(model, trust_remote_code=True, torch_dtype="auto", device_map="auto")
+        
+        self.tokenizer = AutoTokenizer.from_pretrained(model, trust_remote_code=True, torch_dtype=dtype, device_map=device)
+        self.model = AutoModelForCausalLM.from_pretrained(model, trust_remote_code=True, torch_dtype=dtype, device_map=device)
+
     
     def predict(self, input_text, **kwargs):
-        input_ids = self.tokenizer(input_text, return_tensors="pt").input_ids.to("cuda")
+        input_ids = self.tokenizer(input_text, return_tensors="pt").input_ids.to(self.device)
 
         outputs = self.model.generate(input_ids, 
                                      max_new_tokens=self.max_new_tokens, 
@@ -93,20 +100,19 @@ class T5Model(LMMBaseModel):
         The name of the T5 model.
     max_new_tokens : int
         The maximum number of new tokens to be generated.
-    temperature : float, optional
+    temperature : float
         The temperature for text generation (default is 0).
-    system_prompt : str, optional
-        The system prompt to be used (default is None).
+    device: str
+        The device to use for inference (default is 'auto').
+    dtype: str
+        The dtype to use for inference (default is 'auto').
     """
-    def __init__(self, model_name, max_new_tokens, temperature=0, system_prompt=None):
-        super(T5Model, self).__init__(model_name, max_new_tokens, temperature)
+    def __init__(self, model_name, max_new_tokens, temperature, device, dtype):
+        super(T5Model, self).__init__(model_name, max_new_tokens, temperature, device)
         from transformers import T5Tokenizer, T5ForConditionalGeneration
         
-        # TODO: implement system_prompt
-        self.tokenizer = T5Tokenizer.from_pretrained(
-            self.model_name, device_map="auto")
-        self.model = T5ForConditionalGeneration.from_pretrained(
-            self.model_name, device_map="auto")
+        self.tokenizer = T5Tokenizer.from_pretrained(self.model_name, torch_dtype=dtype, device_map=device)
+        self.model = T5ForConditionalGeneration.from_pretrained(self.model_name, torch_dtype=dtype, device_map=device)
 
 
 class UL2Model(LMMBaseModel):
@@ -121,21 +127,19 @@ class UL2Model(LMMBaseModel):
         The name of the UL2 model.
     max_new_tokens : int
         The maximum number of new tokens to be generated.
-    temperature : float, optional
+    temperature : float
         The temperature for text generation (default is 0).
-    system_prompt : str, optional
-        The system prompt to be used (default is None).
+    device: str
+        The device to use for inference (default is 'auto').
+    dtype: str
+        The dtype to use for inference (default is 'auto').
     """
-    def __init__(self, model_name, max_new_tokens, temperature=0, system_prompt=None):
-        super(UL2Model, self).__init__(model_name, max_new_tokens, temperature)
+    def __init__(self, model_name, max_new_tokens, temperature, device, dtype):
+        super(UL2Model, self).__init__(model_name, max_new_tokens, temperature, device)
         from transformers import AutoTokenizer, T5ForConditionalGeneration
 
-        # TODO: implement system_prompt
-
-        self.tokenizer = AutoTokenizer.from_pretrained(
-            self.model_name, device_map="auto")
-        self.model = T5ForConditionalGeneration.from_pretrained(
-            self.model_name, device_map="auto", torch_dtype=torch.bfloat16)
+        self.tokenizer = AutoTokenizer.from_pretrained(self.model_name, torch_dtype=dtype, device_map=device)
+        self.model = T5ForConditionalGeneration.from_pretrained(self.model_name, torch_dtype=dtype, device_map=device)
 
 
 class LlamaModel(LMMBaseModel):
@@ -150,40 +154,41 @@ class LlamaModel(LMMBaseModel):
         The name of the Llama model.
     max_new_tokens : int
         The maximum number of new tokens to be generated.
-    temperature : float, optional
+    temperature : float
         The temperature for text generation (default is 0).
-    system_prompt : str, optional
+    device: str
+        The device to use for inference (default is 'auto').
+    dtype: str
+        The dtype to use for inference (default is 'auto').
+    system_prompt : str
         The system prompt to be used (default is None).
-    model_dir : str, optional
+    model_dir : str
         The directory containing the model files (default is None). If not provided, it will be downloaded from the HuggingFace model hub.
     """
-    def __init__(self, model_name, max_new_tokens, temperature=0, system_prompt=None, model_dir=None):
-        super(LlamaModel, self).__init__(model_name, max_new_tokens, temperature)
+    def __init__(self, model_name, max_new_tokens, temperature, device, dtype, system_prompt, model_dir):
+        super(LlamaModel, self).__init__(model_name, max_new_tokens, temperature, device)
         if system_prompt is None:
             self.system_prompt = "You are a helpful, respectful and honest assistant. Always answer as helpfully as possible, while being safe.  Your answers should not include any harmful, unethical, racist, sexist, toxic, dangerous, or illegal content. Please ensure that your responses are socially unbiased and positive in nature.\nIf a question does not make any sense, or is not factually coherent, explain why instead of answering something not correct. If you don't know the answer to a question, please don't share false information."
         else:
             self.system_prompt = system_prompt
-        from transformers import LlamaForCausalLM, LlamaTokenizer, AutoTokenizer, AutoModelForCausalLM
+        from transformers import AutoTokenizer, AutoModelForCausalLM
         
         if model_dir is None:
             parts = model_name.split('-')
             number = parts[1]
             is_chat = 'chat' in parts
 
-            hf_name = f"meta-llama/Llama-2-{number}"
+            model_dir = f"meta-llama/Llama-2-{number}"
             if is_chat:
-                hf_name += "-chat"
-            hf_name += "-hf"
+                model_dir += "-chat"
+            model_dir += "-hf"
             
-            self.tokenizer = AutoTokenizer.from_pretrained(hf_name, device_map="auto")
-            self.model = AutoModelForCausalLM.from_pretrained(hf_name, device_map="auto", torch_dtype=torch.float16)
-        else:
-            self.tokenizer = LlamaTokenizer.from_pretrained(model_dir, device_map="auto")
-            self.model = LlamaForCausalLM.from_pretrained(model_dir, device_map="auto", torch_dtype=torch.float16)
+        self.tokenizer = AutoTokenizer.from_pretrained(model_dir, device_map=device, torch_dtype=dtype)
+        self.model = AutoModelForCausalLM.from_pretrained(model_dir, device_map=device, torch_dtype=dtype)
 
     def predict(self, input_text, **kwargs):
         input_text = f"<s>[INST] <<SYS>>{self.system_prompt}<</SYS>>\n{input_text}[/INST]"
-        input_ids = self.tokenizer(input_text, return_tensors="pt").input_ids.to("cuda")
+        input_ids = self.tokenizer(input_text, return_tensors="pt").input_ids.to(self.device)
         
         outputs = self.model.generate(input_ids, 
                                      max_new_tokens=self.max_new_tokens, 
@@ -211,21 +216,23 @@ class VicunaModel(LMMBaseModel):
         The maximum number of new tokens to be generated.
     temperature : float, optional
         The temperature for text generation (default is 0).
-    system_prompt : str, optional
-        The system prompt to be used (default is None).
+    device: str
+        The device to use for inference (default is 'auto').
+    dtype: str
+        The dtype to use for inference (default is 'auto').
     model_dir : str, optional
         The directory containing the model files (default is None).
     """
-    def __init__(self, model_name, max_new_tokens, temperature=0, system_prompt=None, model_dir=None):
-        super(VicunaModel, self).__init__(model_name, max_new_tokens, temperature, system_prompt)
+    def __init__(self, model_name, max_new_tokens, temperature, device, dtype, model_dir):
+        super(VicunaModel, self).__init__(model_name, max_new_tokens, temperature, device)
 
         from transformers import AutoModelForCausalLM, AutoTokenizer
 
-        self.tokenizer = AutoTokenizer.from_pretrained(model_dir, device_map="auto", use_fast=False)
-        self.model = AutoModelForCausalLM.from_pretrained(model_dir, device_map="auto", torch_dtype=torch.float16)
+        self.tokenizer = AutoTokenizer.from_pretrained(model_dir, device_map=device, torch_dtype=dtype, use_fast=False)
+        self.model = AutoModelForCausalLM.from_pretrained(model_dir, device_map=device, torch_dtype=dtype)
 
     def predict(self, input_text, **kwargs):
-        input_ids = self.tokenizer(input_text, return_tensors="pt").input_ids.to("cuda")
+        input_ids = self.tokenizer(input_text, return_tensors="pt").input_ids.to(self.device)
         outputs = self.model.generate(input_ids, 
                                      max_new_tokens=self.max_new_tokens,
                                      temperature=self.temperature,
@@ -248,14 +255,12 @@ class OpenAIModel(LMMBaseModel):
         The name of the OpenAI model.
     max_new_tokens : int
         The maximum number of new tokens to be generated.
-    temperature : float, optional
+    temperature : float
         The temperature for text generation (default is 0).
-    system_prompt : str, optional
+    system_prompt : str
         The system prompt to be used (default is None).
-    openai_key : str, optional
+    openai_key : str
         The OpenAI API key (default is None).
-    sleep_time : int, optional
-        The sleep time between inference calls (default is 3).
 
     Methods:
     --------
@@ -264,17 +269,13 @@ class OpenAIModel(LMMBaseModel):
     predict(input_text)
         Predicts the output based on the given input text using the OpenAI model.
     """
-    def __init__(self, model_name, max_new_tokens, temperature=0, system_prompt=None, openai_key=None, sleep_time=3):
+    def __init__(self, model_name, max_new_tokens, temperature, system_prompt, openai_key):
         super(OpenAIModel, self).__init__(model_name, max_new_tokens, temperature)
         self.openai_key = openai_key
-        self.sleep_time = sleep_time
         self.system_prompt = system_prompt
 
         if self.temperature > 0:
             raise Warning("Temperature is not 0, so that the results may not be reproducable!")
-
-        if self.sleep_time == 0:
-            raise Warning("We suggest to set sleep time > 0 (i.e., 5).")
 
     def sleep(self, seconds):
         import time
@@ -304,31 +305,22 @@ class OpenAIModel(LMMBaseModel):
         temperature = kwargs['temperature'] if 'temperature' in kwargs else self.temperature
         max_new_tokens = kwargs['max_new_tokens'] if 'max_new_tokens' in kwargs else self.max_new_tokens
         
-        retry_count = 0
-        while retry_count < 3:
-            try:
-                response = client.chat.completions.create(
-                    model=self.model_name,
-                    messages=messages,
-                    temperature=temperature,
-                    max_tokens=max_new_tokens,
-                    n=n,
-                )
-                # for i, choice in enumerate(response.choices):
-                #     print(str(i) + ':' + choice.message.content)
-                
-                if n > 1:
-                    result = [choice.message.content for choice in response.choices]
-                else:
-                    result = response.choices[0].message.content
-                    
-                return result
-                
-            except Exception as e:
-                print(e)
-                print("Retrying...")
-                self.sleep(self.sleep_time)
-                retry_count += 1
+        response = client.chat.completions.create(
+            model=self.model_name,
+            messages=messages,
+            temperature=temperature,
+            max_tokens=max_new_tokens,
+            n=n,
+        )
+        # for i, choice in enumerate(response.choices):
+        #     print(str(i) + ':' + choice.message.content)
+        
+        if n > 1:
+            result = [choice.message.content for choice in response.choices]
+        else:
+            result = response.choices[0].message.content
+            
+        return result
                 
 
 class PaLMModel(LMMBaseModel):
@@ -345,15 +337,12 @@ class PaLMModel(LMMBaseModel):
         The maximum number of new tokens to be generated.
     temperature : float, optional
         The temperature for text generation (default is 0).
-    system_prompt : str, optional
-        The system prompt to be used (default is None).
     model_dir : str, optional
         The directory containing the model files (default is None).
     """
-    def __init__(self, model, max_new_tokens, temperature=0, system_prompt=None, api_key=None, sleep_time=3):
+    def __init__(self, model, max_new_tokens, temperature=0, api_key=None):
         super(PaLMModel, self).__init__(model, max_new_tokens, temperature)
         self.api_key = api_key
-        self.sleep_time = sleep_time
     
     def predict(self, input_text, **kwargs):
         import google.generativeai as palm 
@@ -395,12 +384,10 @@ class GeminiModel(LMMBaseModel):
         The maximum number of new tokens to be generated.
     temperature : float, optional
         The temperature for text generation (default is 0).
-    system_prompt : str, optional
-        The system prompt to be used (default is None).
     model_dir : str, optional
         The directory containing the model files (default is None).
     """
-    def __init__(self, model, max_new_tokens, temperature=0, system_prompt=None, gemini_key=None):
+    def __init__(self, model, max_new_tokens, temperature=0, gemini_key=None):
         super(GeminiModel, self).__init__(model, max_new_tokens, temperature)
         self.gemini_key = gemini_key
     
