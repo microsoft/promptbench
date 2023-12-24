@@ -9,6 +9,10 @@ First, there is a unified import of `import promptbench as pb` that easily impor
 import promptbench as pb
 ```
 
+    /home/v-zhukaijie/anaconda3/envs/promptbench/lib/python3.9/site-packages/tqdm/auto.py:21: TqdmWarning: IProgress not found. Please update jupyter and ipywidgets. See https://ipywidgets.readthedocs.io/en/stable/user_install.html
+      from .autonotebook import tqdm as notebook_tqdm
+
+
 ## Load dataset
 
 First, PromptBench supports easy load of datasets.
@@ -22,13 +26,23 @@ print(pb.SUPPORTED_DATASETS)
 # load a dataset, sst2, for instance.
 # if the dataset is not available locally, it will be downloaded automatically.
 dataset = pb.DatasetLoader.load_dataset("sst2")
+# dataset = pb.DatasetLoader.load_dataset("mmlu")
+# dataset = pb.DatasetLoader.load_dataset("un_multi")
+# dataset = pb.DatasetLoader.load_dataset("iwslt2017", ["ar-en", "de-en", "en-ar"])
+# dataset = pb.DatasetLoader.load_dataset("math", "algebra__linear_1d")
+# dataset = pb.DatasetLoader.load_dataset("bool_logic")
+# dataset = pb.DatasetLoader.load_dataset("valid_parenthesesss")
 
 # print the first 5 examples
 dataset[:5]
 ```
 
     All supported datasets: 
-    ['cola', 'sst2', 'qqp', 'mnli', 'mnli_matched', 'mnli_mismatched', 'qnli', 'wnli', 'rte', 'mrpc', 'mmlu', 'squad_v2', 'un_multi', 'iwslt', 'math', 'bool_logic', 'valid_parentheses', 'gsm8k', 'csqa', 'bigbench_date', 'bigbench_object_tracking']
+    ['sst2', 'cola', 'qqp', 'mnli', 'mnli_matched', 'mnli_mismatched', 'qnli', 'wnli', 'rte', 'mrpc', 'mmlu', 'squad_v2', 'un_multi', 'iwslt2017', 'math', 'bool_logic', 'valid_parentheses', 'gsm8k', 'csqa', 'bigbench_date', 'bigbench_object_tracking', 'last_letter_concat', 'numersense', 'qasc']
+
+
+
+
 
     [{'content': "it 's a charming and often affecting journey . ", 'label': 1},
      {'content': 'unflinchingly bleak and desperate ', 'label': 0},
@@ -51,11 +65,13 @@ print('All supported models: ')
 print(pb.SUPPORTED_MODELS)
 
 # load a model, flan-t5-large, for instance.
-model = pb.LLMModel(model='google/flan-t5-large', max_new_tokens=10)
+model = pb.LLMModel(model='google/flan-t5-large', max_new_tokens=10, temperature=0.0001, device='cuda')
+# model = pb.LLMModel(model='llama2-13b-chat', max_new_tokens=10, temperature=0.0001)
 ```
 
     All supported models: 
-    ['google/flan-t5-large', 'llama2-7b', 'llama2-7b-chat', 'llama2-13b', 'llama2-13b-chat', 'llama2-70b', 'llama2-70b-chat', 'phi-1.5', 'gpt-3.5-turbo', 'gpt-4', 'gpt-4-1106-preview', 'gpt-3.5-turbo-1106', 'vicuna-7b', 'vicuna-13b', 'vicuna-13b-v1.3', 'google/flan-ul2']
+    ['google/flan-t5-large', 'llama2-7b', 'llama2-7b-chat', 'llama2-13b', 'llama2-13b-chat', 'llama2-70b', 'llama2-70b-chat', 'phi-1.5', 'phi-2', 'palm', 'gpt-3.5-turbo', 'gpt-4', 'gpt-4-1106-preview', 'gpt-3.5-turbo-1106', 'vicuna-7b', 'vicuna-13b', 'vicuna-13b-v1.3', 'google/flan-ul2', 'gemini-pro']
+
 
     You are using the default legacy behaviour of the <class 'transformers.models.t5.tokenization_t5.T5Tokenizer'>. This is expected, and simply means that the `legacy` (previous) behavior will be used so nothing changes for you. If you want to use the new behaviour, set `legacy=False`. This should only be set if you understand what it means, and thouroughly read the reason why this was added as explained in https://github.com/huggingface/transformers/pull/24565
     Special tokens have been added in the vocabulary, make sure the associated word embeddings are fine-tuned or trained.
@@ -114,16 +130,31 @@ for prompt in prompts:
     print(f"{score:.3f}, {prompt}")
 ```
 
-    100%|██████████| 872/872 [02:16<00:00,  6.37it/s]
+      0%|          | 0/872 [00:00<?, ?it/s]/home/v-zhukaijie/anaconda3/envs/promptbench/lib/python3.9/site-packages/transformers/generation/configuration_utils.py:381: UserWarning: `do_sample` is set to `False`. However, `temperature` is set to `0.0001` -- this flag is only used in sample-based generation modes. You should set `do_sample=True` or unset `temperature`.
+      warnings.warn(
+    2023-12-24 05:02:56.792134: E external/local_xla/xla/stream_executor/cuda/cuda_dnn.cc:9261] Unable to register cuDNN factory: Attempting to register factory for plugin cuDNN when one has already been registered
+    2023-12-24 05:02:56.792188: E external/local_xla/xla/stream_executor/cuda/cuda_fft.cc:607] Unable to register cuFFT factory: Attempting to register factory for plugin cuFFT when one has already been registered
+    2023-12-24 05:02:56.793225: E external/local_xla/xla/stream_executor/cuda/cuda_blas.cc:1515] Unable to register cuBLAS factory: Attempting to register factory for plugin cuBLAS when one has already been registered
+    2023-12-24 05:02:56.799581: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+    To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+    2023-12-24 05:02:57.481660: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+      0%|          | 1/872 [00:02<29:19,  2.02s/it]/home/v-zhukaijie/anaconda3/envs/promptbench/lib/python3.9/site-packages/transformers/generation/configuration_utils.py:381: UserWarning: `do_sample` is set to `False`. However, `temperature` is set to `0.0001` -- this flag is only used in sample-based generation modes. You should set `do_sample=True` or unset `temperature`.
+      warnings.warn(
+    100%|██████████| 872/872 [00:58<00:00, 14.88it/s]
 
 
     0.947, Classify the sentence as positive or negative: {content}
 
 
-    100%|██████████| 872/872 [02:18<00:00,  6.29it/s]
+    100%|██████████| 872/872 [00:56<00:00, 15.47it/s]
 
     0.947, Determine the emotion of the following sentence as positive or negative: {content}
 
 
     
 
+
+
+```python
+
+```
