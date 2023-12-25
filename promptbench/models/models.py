@@ -371,8 +371,6 @@ class OpenAIModel(LMMBaseModel):
 
     Methods:
     --------
-    sleep(seconds)
-        Sleep for the specified number of seconds.
     predict(input_text)
         Predicts the output based on the given input text using the OpenAI model.
     """
@@ -380,13 +378,6 @@ class OpenAIModel(LMMBaseModel):
         super(OpenAIModel, self).__init__(model_name, max_new_tokens, temperature)
         self.openai_key = openai_key
         self.system_prompt = system_prompt
-
-        if self.temperature > 0:
-            raise Warning("Temperature is not 0, so that the results may not be reproducable!")
-
-    def sleep(self, seconds):
-        import time
-        time.sleep(seconds)
 
     def predict(self, input_text, **kwargs):
         
@@ -419,8 +410,6 @@ class OpenAIModel(LMMBaseModel):
             max_tokens=max_new_tokens,
             n=n,
         )
-        # for i, choice in enumerate(response.choices):
-        #     print(str(i) + ':' + choice.message.content)
         
         if n > 1:
             result = [choice.message.content for choice in response.choices]
