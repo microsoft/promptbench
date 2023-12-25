@@ -97,7 +97,7 @@
 ## Installation
 
 ### Install via `pip`
-We provide a Python package *promptbench* for users who want to start evaluation quickly. Simply run 
+We provide a Python package *promptbench* for users who want to start evaluation quickly. Simply run:
 ```sh
 pip install promptbench
 ```
@@ -129,12 +129,12 @@ then use pip to install required packages:
 pip install -r requirements.txt
 ```
 
-Note that this only installed basic python packages. For Prompt Attacks, it requires to install textattacks.
+Note that this only installed basic python packages. For Prompt Attacks, it is required to install TextAttack.
 
 
 ## Usage
 
-promptbench is easy to use and extend. Going through the bellowing examples will help you familiar with promptbench for quick use, evaluate an existing datasets and LLMs, or creating your own datasets and models.
+promptbench is easy to use and extend. Going through the below examples will help you get familiar with promptbench for quick use, evaluate existing datasets and LLMs, or create your own datasets and models.
 
 
 Please see [Installation](#installation) to install promptbench first. 
@@ -212,7 +212,7 @@ Please refer to our [benchmark website](https://llm-eval.github.io/) for benchma
 
 ## Acknowledgements
 
-- [textattacks](https://github.com/textattacks)
+- [TextAttack](https://github.com/QData/TextAttack)
 - [README Template](https://github.com/othneildrew/Best-README-Template)
 - We thank the volunteers: Hanyuan Zhang, Lingrui Li, Yating Zhou for conducting the semantic preserving experiment in Prompt Attack benchmark.
 
@@ -232,7 +232,7 @@ Please refer to our [benchmark website](https://llm-eval.github.io/) for benchma
 
 ## Citing promptbench and other research papers
 
-Please cite us if you fine this project helpful for your project/paper:
+Please cite us if you find this project helpful for your project/paper:
 
 ```
 @article{zhu2023promptbench2,
