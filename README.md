@@ -102,7 +102,7 @@ We provide a Python package *promptbench* for users who want to start evaluation
 pip install promptbench
 ```
 
-Note that the pip installation could be behind the recent updates. So, if you want to use the latest features or develop based on our code, you should intall via Github.
+Note that the pip installation could be behind the recent updates. So, if you want to use the latest features or develop based on our code, you should install via GitHub.
 
 ### Install via GitHub
 
@@ -129,12 +129,12 @@ then use pip to install required packages:
 pip install -r requirements.txt
 ```
 
-Note that this only installed basic python packages. For Prompt Attacks, it is required to install TextAttack.
+Note that this only installed basic python packages. For Prompt Attacks, you will also need to install [TextAttack](https://github.com/QData/TextAttack).
 
 
 ## Usage
 
-promptbench is easy to use and extend. Going through the below examples will help you get familiar with promptbench for quick use, evaluate existing datasets and LLMs, or create your own datasets and models.
+promptbench is easy to use and extend. Going through the examples below will help you get familiar with promptbench for quick use, evaluate existing datasets and LLMs, or create your own datasets and models.
 
 
 Please see [Installation](#installation) to install promptbench first. 
