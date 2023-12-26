@@ -1,4 +1,4 @@
-# Dynamic Evaluation Benchmakk
+# Dynamic Evaluation Benchmark
 
 DyVal is a new dynamic evaluation protocol for LLMs. More information can be found at [DyVal: Graph-informed Dynamic Evaluation of Large Language Models](https://arxiv.org/abs/2309.17167).
 
