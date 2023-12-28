@@ -10,13 +10,13 @@ Adding new datasets involves two steps:
 
 ## Add new models
 Similar to adding new datasets, the addition of new models also consists of two steps.
-- Implementing a New Model Class: Models should be implemented in `dataload/model.py`, inheriting from the `LLMModel` class. In your customized model, you should implement `self.tokenizer` and `self.model`. You may also customize your own `predict` function for inference. If the `predict` function is not customized, the default `predict` function inherited from `LLMModel` will be used.
-- Adding an Interface: After customizing the model class, register it in the `_create_model` function within the `class LLMModel` in `__init__.py`.
+- Implementing a New Model Class: Models should be implemented in `models/model.py`, inheriting from the `LLMModel` class. In your customized model, you should implement `self.tokenizer` and `self.model`. You may also customize your own `predict` function for inference. If the `predict` function is not customized, the default `predict` function inherited from `LLMModel` will be used.
+- Adding an Interface: After customizing the model class, register it in the `_create_model` function within the `class LLMModel` and `MODEL_LIST` dictionary in `__init__.py`.
 
 
 
 ## Add new prompt engineering methods
-Adding new methods in prompt engineering is similar to steps of C.1 and C.2.
+Adding new methods in prompt engineering is similar to steps of adding new datasets and models.
 
 - Implementing a New Methods Class: Methods should be implemented in \\ `prompt\_engineering` Module. Firstly, create a new `.py` file for your methods.
     Then implement two functions: `\_\_init\_\_` and `query`. For unified management, two points need be noticed: 1. all methods should inherits from `Base` class that has common code for prompt engineering methods. 2. prompts used in methods should be stored in `prompts/method\_oriented.py`.
