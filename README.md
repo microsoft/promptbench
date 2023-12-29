@@ -166,23 +166,20 @@ We provide tutorials for:
 4. **use DyVal for evaluation:** please refer to [examples/dyval.ipynb](examples/dyval.ipynb) to construct DyVal datasets.
 
 
-## Supported Datasets and Models
+## Implemented Components
+
+PromptBench currently supports different datasets, models, prompt engineering methods, adversarial attacks, and more. You are welcome to add more.
 
 ### Datasets
 
-We support a range of datasets to facilitate comprehensive analysis, including:
-
 - GLUE: SST-2, CoLA, QQP, MRPC, MNLI, QNLI, RTE, WNLI
 - MMLU
+- BIG-Bench Hard (Bool logic, valid parentheses, date...)
+- Math
+- GSM8K
 - SQuAD V2
 - IWSLT 2017
 - UN Multi
-- Math
-- Bool Logic (BigBench)
-- Valid Parentheses (BigBench)
-- Object Tracking (BigBench)
-- Date (BigBench)
-- GSM8K
 - CSQA (CommonSense QA)
 - Numersense
 - QASC
@@ -190,24 +187,59 @@ We support a range of datasets to facilitate comprehensive analysis, including:
 
 ### Models
 
-- google/flan-t5-large
-- databricks/dolly-v1-6b
-- Llama2 series
-- vicuna-13b, vicuna-13b-v1.3
-- Cerebras/Cerebras-GPT-13B
-- EleutherAI/gpt-neox-20b
-- Google/flan-ul2
-- PaLM 2
-- ChatGPT
-- GPT-4
-- phi-1.5, phi-2
-- Gemini Pro
+- Open-source models:
+  - google/flan-t5-large
+  - databricks/dolly-v1-6b
+  - Llama2 series
+  - vicuna-13b, vicuna-13b-v1.3
+  - Cerebras/Cerebras-GPT-13B
+  - EleutherAI/gpt-neox-20b
+  - Google/flan-ul2
+  - phi-1.5 and phi-2
+- Proprietary models
+  - PaLM 2
+  - GPT-3.5
+  - GPT-4
+  - Gemini Pro
+
+### Prompt Engineering
+
+- Chain-of-thought (COT) [7]
+- EmotionPrompt [2]
+- Expert prompting [3]
+- Zero-shot chain-of-thought [1]
+- Generated knowledge [6]
+- Least to most [8]
+
+### Adversarial Attacks
+
+- Character-level attack
+  - DeepWordBug
+  - TextBugger
+- Word-level attack
+  - TextFooler
+  - BertAttack
+- Sentence-level attack
+  - CheckList
+  - StressTest
+- Semantic-level attack
+  - Human-crafted attack
+
+### Protocols and Analysis
+- Standard evaluation
+- Dynamic evaluation
+- Semantic evaluation
+- Benchmark results
+- Visualization analysis
+- Transferability analysis
+- Word frequency analysis
 
 ## Benchmark Results
 
 Please refer to our [benchmark website](https://llm-eval.github.io/) for benchmark results on Prompt Attacks, Prompt Engineering and Dynamic Evaluation DyVal.
 
 ## TODO
+
 - [ ] Add support for multi-modal models such as LlaVa and BLIP2.
 
 ## Acknowledgements
@@ -227,6 +259,12 @@ Please refer to our [benchmark website](https://llm-eval.github.io/) for benchma
 [4] Zhu, Kaijie, et al. "PromptBench: Towards Evaluating the Robustness of Large Language Models on Adversarial Prompts." arXiv preprint arXiv:2306.04528 (2023).
 
 [5] Zhu, Kaijie, et al. "DyVal: Graph-informed Dynamic Evaluation of Large Language Models." arXiv preprint arXiv:2309.17167 (2023).
+
+[6] Liu J, Liu A, Lu X, et al. Generated knowledge prompting for commonsense reasoning[J]. arXiv preprint arXiv:2110.08387, 2021.
+
+[7] Wei J, Wang X, Schuurmans D, et al. Chain-of-thought prompting elicits reasoning in large language models[J]. Advances in Neural Information Processing Systems, 2022, 35: 24824-24837.
+
+[8] Zhou D, Schärli N, Hou L, et al. Least-to-most prompting enables complex reasoning in large language models[J]. arXiv preprint arXiv:2205.10625, 2022.
 
 <!-- CITE -->
 
