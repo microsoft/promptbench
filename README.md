@@ -204,12 +204,12 @@ PromptBench currently supports different datasets, models, prompt engineering me
 
 ### Prompt Engineering
 
-- Chain-of-thought (COT) [7]
+- Chain-of-thought (COT) [1]
 - EmotionPrompt [2]
 - Expert prompting [3]
-- Zero-shot chain-of-thought [1]
+- Zero-shot chain-of-thought
 - Generated knowledge [6]
-- Least to most [8]
+- Least to most [7]
 
 ### Adversarial Attacks
 
@@ -262,9 +262,7 @@ Please refer to our [benchmark website](https://llm-eval.github.io/) for benchma
 
 [6] Liu J, Liu A, Lu X, et al. Generated knowledge prompting for commonsense reasoning[J]. arXiv preprint arXiv:2110.08387, 2021.
 
-[7] Wei J, Wang X, Schuurmans D, et al. Chain-of-thought prompting elicits reasoning in large language models[J]. Advances in Neural Information Processing Systems, 2022, 35: 24824-24837.
-
-[8] Zhou D, Schärli N, Hou L, et al. Least-to-most prompting enables complex reasoning in large language models[J]. arXiv preprint arXiv:2205.10625, 2022.
+[7] Zhou D, Schärli N, Hou L, et al. Least-to-most prompting enables complex reasoning in large language models[J]. arXiv preprint arXiv:2205.10625, 2022.
 
 <!-- CITE -->
 
