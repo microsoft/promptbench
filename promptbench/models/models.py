@@ -523,8 +523,7 @@ class GeminiModel(LMMBaseModel):
                                     generation_config=generation_config,
                                     safety_settings=safety_settings)
 
-        try:
-            response = model.generate_content(input_text).text
-        except:
-            response = "error!"
+
+        response = model.generate_content(input_text).text
+
         return response
