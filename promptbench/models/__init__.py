@@ -81,8 +81,10 @@ class LLMModel(object):
         if model_class:
             if model_class == LlamaModel or model_class == VicunaModel:
                 return model_class(self.model_name, max_new_tokens, temperature, device, dtype, system_prompt, model_dir)
-            elif model_class in [OpenAIModel, PaLMModel, GeminiModel]:
-                return model_class(self.model_name, max_new_tokens, temperature, device, dtype, system_prompt, api_key)
+            elif model_class in [OpenAIModel]:
+                return model_class(self.model_name, max_new_tokens, temperature, system_prompt, api_key)
+            elif model_class in [PaLMModel, GeminiModel]:
+                return model_class(self.model_name, max_new_tokens, temperature, api_key)
             else:
                 return model_class(self.model_name, max_new_tokens, temperature, device, dtype)
         else:
