@@ -35,7 +35,11 @@ class LMMBaseModel(ABC):
         self.device = device
 
     def predict(self, input_text, **kwargs):
-        input_ids = self.tokenizer(input_text, return_tensors="pt").input_ids.to(self.device)
+        if self.device == 'auto':
+            device = 'cuda' if torch.cuda.is_available() else 'cpu'
+        else:
+            device = self.device
+        input_ids = self.tokenizer(input_text, return_tensors="pt").input_ids.to(device)
 
         outputs = self.model.generate(input_ids, 
                                      max_new_tokens=self.max_new_tokens, 
@@ -125,8 +129,8 @@ class MixtralModel(LMMBaseModel):
     def __init__(self, model_name, max_new_tokens, temperature, device, dtype):
         super(MixtralModel, self).__init__(model_name, max_new_tokens, temperature, device)
         from transformers import AutoTokenizer, AutoModelForCausalLM
-        print(self.model_name)
-        self.tokenizer = AutoTokenizer.from_pretrained(self.model_name[:-len("-v0.1")], torch_dtype=dtype, device_map=device)
+
+        self.tokenizer = AutoTokenizer.from_pretrained(self.model_name, torch_dtype=dtype, device_map=device)
         self.model = AutoModelForCausalLM.from_pretrained(self.model_name, torch_dtype=dtype, device_map=device)
 
 
@@ -185,7 +189,11 @@ class PhiModel(LMMBaseModel):
 
     
     def predict(self, input_text, **kwargs):
-        input_ids = self.tokenizer(input_text, return_tensors="pt").input_ids.to(self.device)
+        if self.device == 'auto':
+            device = 'cuda' if torch.cuda.is_available() else 'cpu'
+        else:
+            device = self.device
+        input_ids = self.tokenizer(input_text, return_tensors="pt").input_ids.to(device)
 
         outputs = self.model.generate(input_ids, 
                                      max_new_tokens=self.max_new_tokens, 
@@ -294,8 +302,13 @@ class LlamaModel(LMMBaseModel):
         self.model = AutoModelForCausalLM.from_pretrained(model_dir, device_map=device, torch_dtype=dtype)
 
     def predict(self, input_text, **kwargs):
+        if self.device == 'auto':
+            device = 'cuda' if torch.cuda.is_available() else 'cpu'
+        else:
+            device = self.device
+
         input_text = f"<s>[INST] <<SYS>>{self.system_prompt}<</SYS>>\n{input_text}[/INST]"
-        input_ids = self.tokenizer(input_text, return_tensors="pt").input_ids.to(self.device)
+        input_ids = self.tokenizer(input_text, return_tensors="pt").input_ids.to(device)
         
         outputs = self.model.generate(input_ids, 
                                      max_new_tokens=self.max_new_tokens, 
@@ -339,7 +352,12 @@ class VicunaModel(LMMBaseModel):
         self.model = AutoModelForCausalLM.from_pretrained(model_dir, device_map=device, torch_dtype=dtype)
 
     def predict(self, input_text, **kwargs):
-        input_ids = self.tokenizer(input_text, return_tensors="pt").input_ids.to(self.device)
+        if self.device == 'auto':
+            device = 'cuda' if torch.cuda.is_available() else 'cpu'
+        else:
+            device = self.device
+
+        input_ids = self.tokenizer(input_text, return_tensors="pt").input_ids.to(device)
         outputs = self.model.generate(input_ids, 
                                      max_new_tokens=self.max_new_tokens,
                                      temperature=self.temperature,
@@ -522,7 +540,6 @@ class GeminiModel(LMMBaseModel):
         model = genai.GenerativeModel(model_name="gemini-pro",
                                     generation_config=generation_config,
                                     safety_settings=safety_settings)
-
 
         response = model.generate_content(input_text).text
 
