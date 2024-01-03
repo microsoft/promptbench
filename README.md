@@ -30,7 +30,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/microsoft/promptbench">
-    <img src="imgs/promptbench_logo.png" alt="Logo" width="300">
+    <img src="https://files.catbox.moe/0kw21g.png" alt="Logo" width="300">
   </a>
 
 <!-- <h3 align="center">USB</h3> -->
