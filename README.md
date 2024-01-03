@@ -30,7 +30,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/microsoft/promptbench">
-    <img src="https://files.catbox.moe/0kw21g.png" alt="Logo" width="300">
+    <img src="imgs/promptbench_logo.png" alt="Logo" width="300">
   </a>
 
 <!-- <h3 align="center">USB</h3> -->
@@ -80,7 +80,7 @@
 
 **PromptBench** is a Pytorch-based Python package for Evaluation of Large Language Models (LLMs). It provides user-friendly APIs for researchers to conduct evaluation on LLMs. Check the technical report: https://arxiv.org/abs/2312.07910.
 
-![Code Structure](./imgs/promptbench.png)
+![Code Structure](https://files.catbox.moe/0kw21g.png)
 
 
 
