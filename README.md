@@ -81,7 +81,7 @@
 
 **PromptBench** is a Pytorch-based Python package for Evaluation of Large Language Models (LLMs). It provides user-friendly APIs for researchers to conduct evaluation on LLMs. Check the technical report: https://arxiv.org/abs/2312.07910.
 
-![Code Structure](./imgs/promptbench.png)
+![Code Structure](https://files.catbox.moe/0kw21g.png)
 
 
 
