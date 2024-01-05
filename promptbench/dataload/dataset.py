@@ -294,8 +294,7 @@ class MMLU(Dataset):
     Example data format:
     [{'input': "This question refers to the following information.\nRead the the following quotation to answer questions.\nThe various modes of worship which prevailed in the Roman world were all considered by the people as equally true; by the philosopher as equally false; and by the magistrate as equally useful.\nEdward Gibbon, The Decline and Fall of the Roman Empire, 1776–1788\nGibbon's interpretation of the state of religious worship in ancient Rome could be summarized as", 'A': "In ancient Rome, religious worship was decentralized and tended to vary with one's social position.", 'B': 'In ancient Rome, religious worship was the source of much social tension and turmoil.', 'C': 'In ancient Rome, religious worship was homogeneous and highly centralized.', 'D': 'In ancient Rome, religious worship was revolutionized by the introduction of Christianity.', 'target': 'A', 'task': 'high_school_european_history'}, ...]
     """
-    def __init__(self):
-        #         
+    def __init__(self):       
         self.data = []
         self.tasks = ['high_school_european_history', 'business_ethics', 'clinical_knowledge', 'medical_genetics',
                     'high_school_us_history', 'high_school_physics', 'high_school_world_history', 'virology',
@@ -575,3 +574,56 @@ class QASC(Dataset):
         
         # print(answer)
         return answer
+
+class BBH(Dataset):
+    """
+    BBH is a dataset class for the BigBench Hard dataset. This dataset is loaded from huggingface datasets: lukaemon/bbh (test set).
+    
+    Reference: 
+    https://huggingface.co/datasets/lukaemon/bbh
+    https://github.com/suzgunmirac/BIG-Bench-Hard
+
+    Example data format:
+    {'input': 'not ( True ) and ( True ) is', 'target': 'False', 'task': 'boolean_expressions'}
+    """
+    def __init__(self):       
+        self.data = []
+        self.tasks = ['boolean_expressions', 'causal_judgement', 'date_understanding', 'disambiguation_qa', 
+                      'dyck_languages', 'formal_fallacies', 'geometric_shapes', 'hyperbaton', 'logical_deduction_five_objects', 
+                      'logical_deduction_seven_objects', 'logical_deduction_three_objects', 'movie_recommendation', 
+                      'multistep_arithmetic_two', 'navigate', 'object_counting', 'penguins_in_a_table', 'reasoning_about_colored_objects', 
+                      'ruin_names', 'salient_translation_error_detection', 'snarks', 'sports_understanding', 'temporal_sequences', 
+                      'tracking_shuffled_objects_five_objects', 'tracking_shuffled_objects_seven_objects', 
+                      'tracking_shuffled_objects_three_objects', 'web_of_lies', 'word_sorting']
+
+        for task in self.tasks:
+            data = load_dataset("lukaemon/bbh", task)["test"]
+            for d in data:
+                d["task"] = task
+                self.data.append(d)
+
+
+class DROP(Dataset):
+    """
+    DROP is a dataset class for the DROP dataset. 
+    This dataset is loaded from huggingface datasets: drop (validation set).
+
+    Reference:
+    https://huggingface.co/datasets/drop
+    DROP: A Reading Comprehension Benchmark Requiring Discrete Reasoning Over Paragraphs (https://arxiv.org/abs/1903.00161)
+
+    Example data format:
+    {
+        'section_id': 'nfl_1184', 
+        'query_id': 'f37e81fa-ef7b-4583-b671-762fc433faa9', 
+        'passage': " Hoping to rebound from their loss to the Patriots, the Raiders stayed at home for a Week 16 duel with the Houston Texans.  Oakland would get the early lead in the first quarter as quarterback JaMarcus Russell completed a 20-yard touchdown pass to rookie wide receiver Chaz Schilens.  The Texans would respond with fullback Vonta Leach getting a 1-yard touchdown run, yet the Raiders would answer with kicker Sebastian Janikowski getting a 33-yard and a 30-yard field goal.  Houston would tie the game in the second quarter with kicker Kris Brown getting a 53-yard and a 24-yard field goal. Oakland would take the lead in the third quarter with wide receiver Johnnie Lee Higgins catching a 29-yard touchdown pass from Russell, followed up by an 80-yard punt return for a touchdown.  The Texans tried to rally in the fourth quarter as Brown nailed a 40-yard field goal, yet the Raiders' defense would shut down any possible attempt.", 
+        'question': 'Who scored the first touchdown of the game?', 
+        'answers_spans': {'spans': ['Chaz Schilens', 'JaMarcus Russell'], 'types': ['span', 'span']}
+    }
+    """
+    def __init__(self):
+        data = load_dataset("drop")["validation"]
+        self.data = []
+
+        for d in data:
+            self.data.append(d)

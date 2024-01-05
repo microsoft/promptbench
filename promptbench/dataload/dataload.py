@@ -10,7 +10,8 @@ SUPPORTED_DATASETS = [
     "mmlu", "squad_v2", "un_multi", "iwslt2017", "math",
     "bool_logic", "valid_parentheses",
     "gsm8k", "csqa", "bigbench_date", "bigbench_object_tracking",
-    'last_letter_concat', 'numersense', 'qasc'
+    "last_letter_concat", "numersense", "qasc",
+    "bbh", "drop",
 ]
 
 class DatasetLoader:
@@ -64,6 +65,10 @@ class DatasetLoader:
             return QASC()
         elif 'bigbench' in dataset_name:
             return BigBench(dataset_name)
+        elif dataset_name == 'bbh':
+            return BBH()
+        elif dataset_name == 'drop':
+            return DROP()
         else:
             # If the dataset name doesn't match any known datasets, raise an error
             raise NotImplementedError(f"Dataset '{dataset_name}' is not supported.")

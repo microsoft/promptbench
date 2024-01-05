@@ -69,6 +69,7 @@
 <!-- News and Updates -->
 
 ## News and Updates
+- [05/01/2024] Add support for BigBench Hard, DROP datasets.
 - [16/12/2023] Add support for Gemini, Mistral, Mixtral, Baichuan, Yi models.
 - [15/12/2023] Add detailed instructions for users to add new modules (models, datasets, etc.) [examples/add_new_modules.md](examples/add_new_modules.md). 
 - [05/12/2023] Published promptbench 0.0.1.
