@@ -37,18 +37,20 @@ class LLMModel(object):
         The maximum number of new tokens to be generated (default is 20).
     temperature : float, optional
         The temperature for text generation (default is 0).
+    device : str, optional
+        The device to be used for inference (default is "cuda").
+    dtype : str, optional
+        The loaded data type of the language model (default is "auto").
     model_dir : str or None, optional
         The directory containing the model files (default is None).
     system_prompt : str or None, optional
         The system prompt to be used (default is None).
-    openai_key : str or None, optional
-        The OpenAI API key, if required (default is None).
-    sleep_time : int, optional
-        The sleep time between inference calls (default is 3).
+    api_key : str or None, optional
+        The API key for API-based models (GPT series and Gemini series), if required (default is None).
 
     Methods:
     --------
-    _create_model(max_new_tokens, temperature, model_dir, system_prompt, openai_key, sleep_time)
+    _create_model(max_new_tokens, temperature, device, dtype, model_dir, system_prompt, api_key)
         Creates and returns the appropriate model instance.
     convert_text_to_prompt(text, role)
         Constructs a prompt based on the text and role.
