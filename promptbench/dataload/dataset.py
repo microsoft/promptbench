@@ -627,3 +627,27 @@ class DROP(Dataset):
 
         for d in data:
             self.data.append(d)
+
+class ARC(Dataset):
+    """
+    ARC is a dataset class for the AI2 Reasoning Challenge dataset. 
+    This dataset is loaded from huggingface datasets: arc (test set).
+
+    Reference:
+    https://huggingface.co/datasets/ai2_arc
+    AI2 Reasoning Challenge (ARC) (https://arxiv.org/abs/1803.05457)
+
+    Example data format:
+    {
+        'id': 'Mercury_7175875', 
+        'question': 'An astronomer observes that a planet rotates faster after a meteorite impact. Which is the most likely effect of this increase in rotation?', 
+        'choices': {'text': ['Planetary density will decrease.', 'Planetary years will become longer.', 'Planetary days will become shorter.', 'Planetary gravity will become stronger.'], 'label': ['A', 'B', 'C', 'D']}, 
+        'answerKey': 'C'
+    }
+    """
+    def __init__(self, name):
+        data = load_dataset("ai2_arc", name)["test"]
+        self.data = []
+
+        for d in data:
+            self.data.append(d)

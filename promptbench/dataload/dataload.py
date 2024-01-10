@@ -11,7 +11,7 @@ SUPPORTED_DATASETS = [
     "bool_logic", "valid_parentheses",
     "gsm8k", "csqa", "bigbench_date", "bigbench_object_tracking",
     "last_letter_concat", "numersense", "qasc",
-    "bbh", "drop",
+    "bbh", "drop", "arc-easy", "arc-challenge",
 ]
 
 class DatasetLoader:
@@ -69,6 +69,10 @@ class DatasetLoader:
             return BBH()
         elif dataset_name == 'drop':
             return DROP()
+        elif dataset_name == 'arc-easy':
+            return ARC('ARC-Easy')
+        elif dataset_name == 'arc-challenge':
+            return ARC('ARC-Challenge')
         else:
             # If the dataset name doesn't match any known datasets, raise an error
             raise NotImplementedError(f"Dataset '{dataset_name}' is not supported.")
