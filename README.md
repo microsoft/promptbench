@@ -174,27 +174,31 @@ PromptBench currently supports different datasets, models, prompt engineering me
 
 ### Datasets
 
-- GLUE: SST-2, CoLA, QQP, MRPC, MNLI, QNLI, RTE, WNLI
-- MMLU
-- BIG-Bench Hard (Bool logic, valid parentheses, date...)
-- Math
-- GSM8K
-- SQuAD V2
-- IWSLT 2017
-- UN Multi
-- CSQA (CommonSense QA)
-- Numersense
-- QASC
-- Last Letter Concatenate
-- VQAv2
-- NoCaps
-- MMMU
-- MathVista
-- AI2D
-- ChartQA
-- ScienceQA
+- Language datasets:
+  - GLUE: SST-2, CoLA, QQP, MRPC, MNLI, QNLI, RTE, WNLI
+  - MMLU
+  - BIG-Bench Hard (Bool logic, valid parentheses, date...)
+  - Math
+  - GSM8K
+  - SQuAD V2
+  - IWSLT 2017
+  - UN Multi
+  - CSQA (CommonSense QA)
+  - Numersense
+  - QASC
+  - Last Letter Concatenate
+- Multi-modal datasets:
+  - VQAv2
+  - NoCaps
+  - MMMU
+  - MathVista
+  - AI2D
+  - ChartQA
+  - ScienceQA
 
 ### Models
+
+Language models:
 
 - Open-source models:
   - google/flan-t5-large
@@ -211,7 +215,7 @@ PromptBench currently supports different datasets, models, prompt engineering me
   - GPT-4
   - Gemini Pro
 
-### Models (Multi-Modal)
+Multi-modal models:
 
 - Open-source models:
   - BLIP2
@@ -220,7 +224,7 @@ PromptBench currently supports different datasets, models, prompt engineering me
   - InternLM-XComposer2-VL
 - Proprietary models
   - GPT-4v
-  - GeminiProVision
+  - Gemini Pro Vision
   - Qwen-VL-Max, Qwen-VL-Plus
 
 ### Prompt Engineering
