@@ -69,6 +69,7 @@
 <!-- News and Updates -->
 
 ## News and Updates
+- [13/03/2024] Add support for multi-modal models and datasets.
 - [05/01/2024] Add support for BigBench Hard, DROP, ARC datasets.
 - [16/12/2023] Add support for Gemini, Mistral, Mixtral, Baichuan, Yi models.
 - [15/12/2023] Add detailed instructions for users to add new modules (models, datasets, etc.) [examples/add_new_modules.md](examples/add_new_modules.md). 
@@ -161,7 +162,7 @@ import promptbench as pb
 
 We provide tutorials for:
 
-1. **evaluate models on existing benchmarks:** please refer to the [examples/basic.ipynb](examples/basic.ipynb) for constructing your evaluation pipeline.
+1. **evaluate models on existing benchmarks:** please refer to the [examples/basic.ipynb](examples/basic.ipynb) for constructing your evaluation pipeline. For a multi-modal evaluation pipeline, please refer to [examples/multimodal.ipynb](examples/multimodal.ipynb)
 2. **test the effects of different prompting techniques:** 
 3. **examine the robustness for prompt attacks**, please refer to [examples/prompt_attack.ipynb](examples/prompt_attack.ipynb) to construct the attacks.
 4. **use DyVal for evaluation:** please refer to [examples/dyval.ipynb](examples/dyval.ipynb) to construct DyVal datasets.
@@ -185,6 +186,13 @@ PromptBench currently supports different datasets, models, prompt engineering me
 - Numersense
 - QASC
 - Last Letter Concatenate
+- VQAv2
+- NoCaps
+- MMMU
+- MathVista
+- AI2D
+- ChartQA
+- ScienceQA
 
 ### Models
 
@@ -202,6 +210,18 @@ PromptBench currently supports different datasets, models, prompt engineering me
   - GPT-3.5
   - GPT-4
   - Gemini Pro
+
+### Models (Multi-Modal)
+
+- Open-source models:
+  - BLIP2
+  - LLaVA
+  - Qwen-VL, Qwen-VL-Chat
+  - InternLM-XComposer2-VL
+- Proprietary models
+  - GPT-4v
+  - GeminiProVision
+  - Qwen-VL-Max, Qwen-VL-Plus
 
 ### Prompt Engineering
 
@@ -238,10 +258,6 @@ PromptBench currently supports different datasets, models, prompt engineering me
 ## Benchmark Results
 
 Please refer to our [benchmark website](https://llm-eval.github.io/) for benchmark results on Prompt Attacks, Prompt Engineering and Dynamic Evaluation DyVal.
-
-## TODO
-
-- [ ] Add support for multi-modal models such as LlaVa and BLIP2.
 
 ## Acknowledgements
 
