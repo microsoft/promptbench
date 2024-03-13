@@ -11,7 +11,7 @@
 
 ## Where should I get started?
 If you want to
-1. **evaluate my model on existing benchmarks:** please refer to the `examples/basic.ipynb` for constructing your evaluation pipeline.
+1. **evaluate my model on existing benchmarks:** please refer to the `examples/basic.ipynb` for constructing your evaluation pipeline. For a multi-modal evaluation pipeline, please refer to `examples/multimodal.ipynb`.
 2. **test the effects of different prompting techniques:** 
 3. **examine the robustness for prompt attacks**, please refer to `examples/prompt_attack.ipynb` to construct the attacks.
 4. **use DyVal for evaluation:** please refer to `examples/dyval.ipynb` to construct DyVal datasets.

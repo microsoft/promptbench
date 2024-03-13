@@ -14,6 +14,11 @@ SUPPORTED_DATASETS = [
     "bbh", "drop", "arc-easy", "arc-challenge",
 ]
 
+SUPPORTED_DATASETS_VLM = [
+    "vqav2", "nocaps", "science_qa", 
+    "math_vista", "ai2d", "mmmu", "chart_qa"
+]
+
 class DatasetLoader:
     
     @staticmethod
@@ -73,6 +78,20 @@ class DatasetLoader:
             return ARC('ARC-Easy')
         elif dataset_name == 'arc-challenge':
             return ARC('ARC-Challenge')
+        elif dataset_name == 'vqav2':
+            return VQAv2()
+        elif dataset_name =='nocaps':
+            return NoCaps()
+        elif dataset_name =='math_vista':
+            return MathVista()
+        elif dataset_name == 'ai2d':
+            return AI2D()
+        elif dataset_name == 'mmmu':
+            return MMMU()
+        elif dataset_name == 'chart_qa':
+            return ChartQA()
+        elif dataset_name == 'science_qa':
+            return ScienceQA()
         else:
             # If the dataset name doesn't match any known datasets, raise an error
             raise NotImplementedError(f"Dataset '{dataset_name}' is not supported.")
