@@ -24,6 +24,7 @@ Welcome to promptbench's documentation!
    :caption: Examples
 
    examples/basic
+   examples/multimodal
    examples/dyval
    examples/prompt_attack
    examples/prompt_engineering

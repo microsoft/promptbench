@@ -544,3 +544,459 @@ class GeminiModel(LMMBaseModel):
         response = model.generate_content(input_text).text
 
         return response
+
+
+class VLMBaseModel(ABC):
+    """
+    Abstract base class for vision language model interfaces.
+
+    This class provides a common interface for various vision language models and includes methods for prediction.
+
+    Parameters:
+    -----------
+    model : str
+        The name of the vision language model.
+    max_new_tokens : int
+        The maximum number of new tokens to be generated.
+    temperature : float
+        The temperature for text generation (default is 0).
+    device: str
+        The device to use for inference (default is 'auto').
+
+    Methods:
+    --------
+    predict(input_images, input_text, **kwargs)
+        Generates a prediction based on the input images and text.
+    __call__(input_image, input_text, **kwargs)
+        Shortcut for predict method.
+    """
+    def __init__(self, model_name, max_new_tokens, temperature, device='auto'):
+        self.model_name = model_name
+        self.max_new_tokens = max_new_tokens
+        self.temperature = temperature
+        self.device = device
+        self.placeholder = ""
+
+    def predict(self, input_images, input_text, **kwargs):
+        if self.device == 'auto':
+            device = 'cuda' if torch.cuda.is_available() else 'cpu'
+        else:
+            device = self.device
+                    
+        for i in range(len(input_images)):
+            input_text = self.placeholder + input_text
+        
+        if self.enable_multiple_images:
+            input_ids = self.processor(text=input_text, images=input_images, return_tensors="pt").to(device)
+        else:
+            input_ids = self.processor(text=input_text, images=input_images[0], return_tensors="pt").to(device)
+
+        outputs = self.model.generate(**input_ids, 
+                                     max_new_tokens=self.max_new_tokens, 
+                                     temperature=self.temperature,
+                                     do_sample=True,
+                                     **kwargs)
+        
+        out = self.processor.batch_decode(outputs, skip_special_tokens=True)[0]
+        return out
+
+    def __call__(self, input_images, input_text, **kwargs):
+        return self.predict(input_images, input_text, **kwargs)
+
+class BLIP2Model(VLMBaseModel):
+    """
+    Vision Language model class for the BLIP2 model.
+
+    Inherits from VLMBaseModel and sets up the BLIP2 vision language model for use.
+
+    Parameters:
+    -----------
+    model : str
+        The name of the BLIP2 model.
+    max_new_tokens : int
+        The maximum number of new tokens to be generated.
+    temperature : float, optional
+        The temperature for text generation (default is 0).
+    device: str
+        The device to use for inference (default is 'auto').
+    dtype: str
+        The dtype to use for inference (default is 'auto').
+
+    Parameters of predict method:
+    ----------------
+    input_images: list of PIL.Image
+        The input images.
+    input_text: str
+        The input text.
+    """
+    def __init__(self, model_name, max_new_tokens, temperature, device, dtype):
+        super(BLIP2Model, self).__init__(model_name, max_new_tokens, temperature, device)
+        from transformers import Blip2Processor, Blip2ForConditionalGeneration
+        self.processor = Blip2Processor.from_pretrained(self.model_name, torch_dtype=dtype, device_map=device, use_fast=False)
+        self.model = Blip2ForConditionalGeneration.from_pretrained(self.model_name, torch_dtype=dtype, device_map=device)
+        self.enable_multiple_images = False
+
+class LLaVAModel(VLMBaseModel):
+    """
+    Vision Language model class for the LLaVA model.
+
+    Inherits from VLMBaseModel and sets up the LLaVA vision language model for use.
+
+    Parameters:
+    -----------
+    model : str
+        The name of the LLaVA model.
+    max_new_tokens : int
+        The maximum number of new tokens to be generated.
+    temperature : float
+        The temperature for text generation (default is 0).
+    device: str
+        The device to use for inference (default is 'auto').
+    dtype: str
+        The dtype to use for inference (default is 'auto').
+    
+    Parameters of predict method:
+    ----------------
+    input_image: list of PIL.Image
+        The input images.
+    input_text: str
+        The input text. Using <image> as the placeholder for the image.
+    """
+    def __init__(self, model_name, max_new_tokens, temperature, device, dtype):
+        super(LLaVAModel, self).__init__(model_name, max_new_tokens, temperature, device)
+        from transformers import AutoProcessor, LlavaForConditionalGeneration
+        self.processor = AutoProcessor.from_pretrained(self.model_name, device_map=device, trust_remote_code=True)
+        self.model = LlavaForConditionalGeneration.from_pretrained(self.model_name, device_map=device)
+        self.enable_multiple_images = True
+        self.placeholder = "<image>"  # a specialized placeholder of LLaVA model
+
+class GeminiVisionModel(VLMBaseModel):
+    """
+    Vision Language model class for interfacing with Google's Gemini models.
+
+    Inherits from VLMBaseModel and sets up a model interface for Gemini models.
+
+    Parameters:
+    -----------
+    model : str
+        The name of the PaLM model.
+    max_new_tokens : int
+        The maximum number of new tokens to be generated.
+    temperature : float, optional
+        The temperature for text generation (default is 0).
+    gemini_key : str, optional
+        The Gemini API key (default is None).
+    
+    Parameters of predict method:
+    ----------------
+    input_image: list of PIL.Image
+        The input images.
+    input_text: str
+        The input text.
+    """
+    def __init__(self, model, max_new_tokens, temperature, gemini_key=None):
+        super(GeminiVisionModel, self).__init__(model, max_new_tokens, temperature)
+        self.gemini_key = gemini_key
+        self.enable_multiple_images = True
+    
+    def predict(self, input_images, input_text, **kwargs):
+        import google.generativeai as genai 
+        
+        genai.configure(api_key=self.gemini_key)
+
+        # Set up the model
+        generation_config = {
+            "temperature": self.temperature,
+            "top_p": 1,
+            "top_k": 1,
+            "max_output_tokens": self.max_new_tokens,
+        }
+
+        safety_settings = [
+            {
+                "category": "HARM_CATEGORY_HARASSMENT",
+                "threshold": "BLOCK_MEDIUM_AND_ABOVE"
+            },
+            {
+                "category": "HARM_CATEGORY_HATE_SPEECH",
+                "threshold": "BLOCK_MEDIUM_AND_ABOVE"
+            },
+            {
+                "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+                "threshold": "BLOCK_MEDIUM_AND_ABOVE"
+            },
+            {
+                "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
+                "threshold": "BLOCK_MEDIUM_AND_ABOVE"
+            }
+        ]
+
+        model = genai.GenerativeModel(model_name="gemini-pro-vision",
+                                      generation_config=generation_config,
+                                      safety_settings=safety_settings)
+
+        response = model.generate_content(input_images + [input_text])
+
+        try:
+            return response.text
+        except:
+            print('Error when generating the response using Gemini model')
+            return ""
+
+class OpenAIVisionModel(VLMBaseModel):
+    """
+    Vision Language model class for interfacing with OpenAI's GPT models.
+
+    Inherits from VLMBaseModel and sets up a model interface for OpenAI GPT models.
+
+    Parameters:
+    -----------
+    model : str
+        The name of the OpenAI model.
+    max_new_tokens : int
+        The maximum number of new tokens to be generated.
+    temperature : float
+        The temperature for text generation (default is 0).
+    system_prompt : str
+        The system prompt to be used (default is None).
+    openai_key : str
+        The OpenAI API key (default is None).
+
+    Parameters of predict method:
+    ----------------
+    input_image: list of str
+        The url / local path of the input images.
+    input_text: str
+        The input text.
+    """
+    def __init__(self, model_name, max_new_tokens, temperature, system_prompt, openai_key):
+        super(OpenAIVisionModel, self).__init__(model_name, max_new_tokens, temperature)
+        self.openai_key = openai_key
+        self.system_prompt = system_prompt
+        self.enable_multiple_images = True
+
+    def predict(self, input_images, input_text, **kwargs):
+
+        if self.system_prompt is None:
+            system_messages = {'role': "system", 'content': "You are a helpful assistant."}
+        else:
+            system_messages = {'role': "system", 'content': self.system_prompt}
+        # extra parameterss
+        n = kwargs['n'] if 'n' in kwargs else 1
+        temperature = kwargs['temperature'] if 'temperature' in kwargs else self.temperature
+        max_new_tokens = kwargs['max_new_tokens'] if 'max_new_tokens' in kwargs else self.max_new_tokens
+        
+        # for input image with url
+        if "http://" in input_images[0] or "https://" in input_images[0]:
+        
+            from openai import OpenAI
+            client = OpenAI(api_key=self.openai_key)
+
+            messages = [{"role": "user", 
+                         "content": [
+                             {"type": "text", "text": input_text},
+                         ]}]
+            messages.insert(0, system_messages)
+            for input_image in input_images:
+                messages[1]['content'].append({
+                                 "type": "image_url",
+                                 "image_url": {"url": input_image},
+                             })
+                
+            response = client.chat.completions.create(
+                model=self.model_name,
+                messages=messages,
+                temperature=temperature,
+                max_tokens=max_new_tokens,
+                n=n,
+            )
+            
+            if n > 1:
+                result = [choice.message.content for choice in response.choices]
+            else:
+                result = response.choices[0].message.content
+                
+            return result
+        
+        # for input image with local path
+        else:
+            import base64
+            import requests
+
+            api_key = self.openai_key
+
+            def encode_image(image_path):
+                with open(image_path, "rb") as image_file:
+                    return base64.b64encode(image_file.read()).decode('utf-8')
+
+            headers = {
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {api_key}"
+            }
+
+            payload = {
+                "model": "gpt-4-vision-preview",
+                "messages": [
+                    system_messages, 
+                    {
+                        "role": "user",
+                        "content": [
+                            {
+                                "type": "text",
+                                "text": input_text
+                            },
+                        ]
+                    }
+                ],
+                "temperature": temperature,
+                "max_tokens": max_new_tokens,
+                "n": n,
+            }
+            base64_images = []
+            for input_image in input_images:
+                base64_image = encode_image(input_image)  # Getting the base64 string
+                base64_images.append(base64_image)
+            for base64_img in base64_images:
+                payload['messages'][1]['content'].append({
+                    "type": "image_url",
+                    "image_url": {
+                        "url": f"data:image/jpeg;base64, {base64_img}"
+                    }
+                })
+
+            response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload)
+
+            if n > 1:
+                result = [choice['message']['content'] for choice in response.json()['choices']]
+            else:
+                result = response.json()['choices'][0]['message']['content']
+
+            return result
+    
+class QwenVLModel(VLMBaseModel):
+    """
+    Vision Language model class for the Qwen model.
+
+    Inherits from VLMBaseModel and sets up the Qwen vision language model for use.
+
+    Parameters:
+    -----------
+    model : str
+        The name of the Qwen model.
+    max_new_tokens : int
+        The maximum number of new tokens to be generated.
+    temperature : float
+        The temperature for text generation (default is 0).
+    device: str
+        The device to use for inference (default is 'auto').
+    dtype: str
+        The dtype to use for inference (default is 'auto').
+    system_prompt : str
+        The system prompt to be used (default is None).
+    api_key : str
+        The api key for the Qwen model (default is None).
+    
+    Parameters of predict method:
+    ----------------
+    input_image: list of str
+        The url / local path of the input images.
+        (Add "file://" prefix for local path when using 'qwen-vl-plus' and 'qwen-vl-max')  
+    input_text: str
+        The input text.
+    """
+    def __init__(self, model_name, max_new_tokens, temperature, device, dtype, system_prompt, api_key):
+        if model_name in ['qwen-vl-plus', 'qwen-vl-max']:
+            super(QwenVLModel, self).__init__(model_name, max_new_tokens, temperature)
+            assert api_key is not None, f"API key is required for {model_name}"
+            self.api_key = api_key
+            self.system_prompt = system_prompt
+        else:
+            super(QwenVLModel, self).__init__(model_name, max_new_tokens, temperature, device)
+            from transformers import AutoModelForCausalLM, AutoTokenizer
+            self.model = AutoModelForCausalLM.from_pretrained(model_name, torch_dtype=dtype, device_map=device, trust_remote_code=True).eval()
+            self.tokenizer = AutoTokenizer.from_pretrained(model_name, torch_dtype=dtype, device_map=device, trust_remote_code=True)
+        self.enable_multiple_images = True
+
+    def predict(self, input_images, input_text, **kwargs):
+
+        if self.model_name in ['qwen-vl-plus', 'qwen-vl-max']:
+            from http import HTTPStatus
+            import dashscope
+            dashscope.api_key = self.api_key
+            if self.system_prompt is None:
+                system_messages = {
+                    'role': 'system',
+                    'content': [{
+                        'text': 'You are a helpful assistant.'
+                    }]
+                }
+            else:
+                system_messages = {
+                    'role': 'system',
+                    'content': [{
+                        'text': self.system_prompt
+                    }]
+                }
+            messages = [{
+                'role': 'user',
+                'content': [{'image': input_image} for input_image in input_images] + [{'text': input_text}]
+            }]
+            messages.insert(0, system_messages)
+            response = dashscope.MultiModalConversation.call(model=self.model_name,
+                                                            messages=messages)
+
+            if response.status_code == HTTPStatus.OK:
+                return response['output']['choices'][0]['message']['content'][0]['text']
+            else:
+                print(response.code)  # The error code.
+                print(response.message)  # The error message.
+                return ""
+
+        else:
+            query = self.tokenizer.from_list_format(
+                [{'image': input_image} for input_image in input_images] + [{'text': input_text}]
+            )
+            response, _ = self.model.chat(self.tokenizer, query=query, history=None,
+                                          max_new_tokens=self.max_new_tokens, temperature=self.temperature)
+            return response
+
+class InternLMVisionModel(VLMBaseModel):
+    """
+    Vision Language model class for interfacing with InternLM's vision language models.
+
+    Inherits from VLMBaseModel and sets up a model interface for InternLM's vision language models.
+
+    Parameters:
+    -----------
+    model_name : str
+        The name of the InternLM model.
+    max_new_tokens : int
+        The maximum number of new tokens to be generated.
+    temperature : float, optional
+        The temperature for text generation (default is 0).
+    device: str
+        The device to use for inference (default is 'auto').
+    dtype: str
+        The dtype to use for inference (default is 'auto').
+    
+    Parameters of predict method:
+    ----------------
+    input_image: list of str
+        The url / local path of the input images.
+    input_text: str
+        The input text.
+    """
+    def __init__(self, model_name, max_new_tokens, temperature, device, dtype):
+        super(InternLMVisionModel, self).__init__(model_name, max_new_tokens, temperature, device)
+        from transformers import AutoModel, AutoTokenizer
+        self.model = AutoModel.from_pretrained(model_name, torch_dtype=dtype, device_map=device, trust_remote_code=True).eval()
+        self.tokenizer = AutoTokenizer.from_pretrained(model_name, torch_dtype=dtype, device_map=device, trust_remote_code=True)
+        self.enable_multiple_images = False
+        self.placeholder = "<ImageHere>"  # a specialized placeholder of InternLM model
+    
+    def predict(self, input_images, input_text, **kwargs):
+        input_text = self.placeholder + input_text
+        with torch.cuda.amp.autocast():
+            response, _ = self.model.chat(self.tokenizer, query=input_text, image=input_images[0], history=[], do_sample=True,
+                                          max_new_tokens=self.max_new_tokens, temperature=self.temperature)
+        return response

@@ -651,3 +651,285 @@ class ARC(Dataset):
 
         for d in data:
             self.data.append(d)
+
+class VQAv2(Dataset):
+    """
+    VQAv2 is a dataset class for the Visual Question Answering v2 dataset. 
+    This dataset is loaded from huggingface datasets: vqa_v2 (validation set).
+
+    Reference:
+    https://huggingface.co/datasets/HuggingFaceM4/VQAv2
+    Making the V in VQA Matter: Elevating the Role of Image Understanding in Visual Question Answering (https://arxiv.org/abs/1612.00837)
+
+    Example data format:
+    {
+        'question_type': 'what is',
+        'multiple_choice_answer': 'picnic table',
+        'answers': [{'answer': 'table', 'answer_confidence': 'yes', 'answer_id': 1},
+        {'answer': 'table', 'answer_confidence': 'yes', 'answer_id': 2},
+        {'answer': 'table', 'answer_confidence': 'yes', 'answer_id': 3},
+        {'answer': 'picnic table', 'answer_confidence': 'yes', 'answer_id': 4},
+        {'answer': 'picnic table', 'answer_confidence': 'yes', 'answer_id': 5},
+        {'answer': 'picnic table', 'answer_confidence': 'yes', 'answer_id': 6},
+        {'answer': 'picnic table', 'answer_confidence': 'yes', 'answer_id': 7},
+        {'answer': 'picnic table', 'answer_confidence': 'yes', 'answer_id': 8},
+        {'answer': 'skateboard', 'answer_confidence': 'yes', 'answer_id': 9},
+        {'answer': 'picnic table', 'answer_confidence': 'yes', 'answer_id': 10}],
+        'image_id': 262148,
+        'answer_type': 'other',
+        'question_id': 262148002,
+        'question': 'What is he on top of?',
+        'image': <PIL.JpegImagePlugin.JpegImageFile image mode=RGB size=640x512>
+    }
+    """
+    def __init__(self):
+        data = load_dataset("HuggingFaceM4/VQAv2", split="validation")
+        self.data = data
+    
+    def __getitem__(self, idx):
+        assert len(self.data) > 0, "Empty dataset. Please load data first."
+        return {"images": [self.data[idx]['image']],
+                "answers": self.data[idx]['answers'],
+                "question": self.data[idx]['question'],}
+
+class NoCaps(Dataset):
+    """
+    NoCaps is a dataset class for the NoCaps dataset. 
+    This dataset is loaded from huggingface datasets: nocaps (validation set).
+
+    Reference:
+    https://huggingface.co/datasets/HuggingFaceM4/NoCaps
+    nocaps: novel object captioning at scale (https://arxiv.org/abs/1812.08658)
+
+    Example data format:
+    {
+        'image': <PIL.JpegImagePlugin.JpegImageFile image mode=L size=732x1024>,
+        'image_coco_url': 'https://s3.amazonaws.com/nocaps/val/0013ea2087020901.jpg',
+        'image_date_captured': '2018-11-06 11:04:33',
+        'image_file_name': '0013ea2087020901.jpg',
+        'image_height': 1024,
+        'image_width': 732,
+        'image_id': 0,
+        'image_license': 0,
+        'image_open_images_id': '0013ea2087020901',
+        'annotations_ids': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+        'annotations_captions': ['A baby is standing in front of a house.',
+        'A little girl in a white jacket and sandals.',
+        'A young child stands in front of a house.',
+        'A child is wearing a white shirt and standing on a side walk. ',
+        'A little boy is standing in his diaper with a white shirt on.',
+        'A child wearing a diaper and shoes stands on the sidewalk.',
+        'A child is wearing a light-colored shirt during the daytime.',
+        'A little kid standing on the pavement in a shirt. ',
+        'Black and white photo of a little girl smiling.',
+        'a cute baby is standing alone with white shirt']
+    }
+    """
+    def __init__(self):
+        data = load_dataset("HuggingFaceM4/NoCaps", split="validation")
+        self.data = data
+    
+    def __getitem__(self, idx):
+        assert len(self.data) > 0, "Empty dataset. Please load data first."
+        return {"images": [self.data[idx]['image']],
+                "answers": self.data[idx]['annotations_captions']}
+
+class MathVista(Dataset):
+    """
+    MathVista is a dataset class for the MathVista dataset. 
+    This dataset is loaded from huggingface datasets: math_vista (testmini set).
+
+    Reference:
+    https://huggingface.co/datasets/AI4Math/MathVista
+    MathVista: Evaluating Mathematical Reasoning of Foundation Models in Visual Contexts (https://arxiv.org/abs/2310.02255)
+
+    Example data format:
+    {
+        'pid': '1',
+        'question': "When a spring does work on an object, we cannot find the work by simply multiplying the spring force by the object's displacement. The reason is that there is no one value for the force-it changes. However, we can split the displacement up into an infinite number of tiny parts and then approximate the force in each as being constant. Integration sums the work done in all those parts. Here we use the generic result of the integration.\r\n\r\nIn Figure, a cumin canister of mass $m=0.40 \\mathrm{~kg}$ slides across a horizontal frictionless counter with speed $v=0.50 \\mathrm{~m} / \\mathrm{s}$. It then runs into and compresses a spring of spring constant $k=750 \\mathrm{~N} / \\mathrm{m}$. When the canister is momentarily stopped by the spring, by what distance $d$ is the spring compressed?",
+        'image': 'images/1.jpg',
+        'decoded_image': <PIL.PngImagePlugin.PngImageFile image mode=RGBA size=1514x720>,
+        'choices': None,
+        'unit': None,
+        'precision': 1.0,
+        'answer': '1.2',
+        'question_type': 'free_form',
+        'answer_type': 'float',
+        'metadata': {'category': 'math-targeted-vqa',
+        'context': 'scientific figure',
+        'grade': 'college',
+        'img_height': 720,
+        'img_width': 1514,
+        'language': 'english',
+        'skills': ['scientific reasoning'],
+        'source': 'SciBench',
+        'split': 'testmini',
+        'task': 'textbook question answering'},
+        'query': "Hint: Please answer the question requiring a floating-point number with one decimal place and provide the final value, e.g., 1.2, 1.3, 1.4, at the end.\nQuestion: When a spring does work on an object, we cannot find the work by simply multiplying the spring force by the object's displacement. The reason is that there is no one value for the force-it changes. However, we can split the displacement up into an infinite number of tiny parts and then approximate the force in each as being constant. Integration sums the work done in all those parts. Here we use the generic result of the integration.\r\n\r\nIn Figure, a cumin canister of mass $m=0.40 \\mathrm{~kg}$ slides across a horizontal frictionless counter with speed $v=0.50 \\mathrm{~m} / \\mathrm{s}$. It then runs into and compresses a spring of spring constant $k=750 \\mathrm{~N} / \\mathrm{m}$. When the canister is momentarily stopped by the spring, by what distance $d$ is the spring compressed?"
+    }
+        
+    """
+    def __init__(self):
+        data = load_dataset("AI4Math/MathVista", split="testmini")
+        self.data = data
+
+    def __getitem__(self, idx):
+        assert len(self.data) > 0, "Empty dataset. Please load data first."
+        return {"images": [self.data[idx]['decoded_image']],
+                "answer": self.data[idx]['answer'],
+                "question":  self.data[idx]['question'] + "\nANSWER TYPE: " + self.data[idx]['answer_type'],}
+
+class AI2D(Dataset):
+    """
+    AI2D is a dataset class for the AI2D dataset. 
+    This dataset is loaded from huggingface datasets: ai2d (test set).
+
+    Reference:
+    https://huggingface.co/datasets/lmms-lab/ai2d
+    A Diagram Is Worth A Dozen Images (https://arxiv.org/abs/1603.07396)
+
+    Example data format:
+    {
+        'question': 'which of these define dairy item',
+        'options': ['c', 'D', 'b', 'a'],
+        'answer': '1',
+        'image': <PIL.PngImagePlugin.PngImageFile image mode=RGB size=600x449>
+    }
+    """
+    def __init__(self):
+        data = load_dataset("lmms-lab/ai2d", split="test")
+        self.data = []
+
+        for d in data:
+            choices_dict = dict(enumerate(d['options']))
+            choices = ''
+            for k, v in choices_dict.items():
+                choices += f"\n{k}: {v}"
+
+            self.data.append({
+                "images": [d['image']],
+                "question": d['question'] + choices,
+                "answer": d['answer']
+            })
+
+class ChartQA(Dataset):
+    """
+    ChartQA is a dataset class for the ChartQA dataset.
+    This dataset is loaded from huggingface datasets: chart_qa (test set).
+
+    Reference:
+    https://huggingface.co/datasets/lmms-lab/ChartQA
+    ChartQA: A Benchmark for Question Answering about Charts with Visual and Logical Reasoning (https://arxiv.org/abs/2203.10244)
+
+    Example data format:
+    {
+        'type': 'human_test',
+        'question': 'How many food item is shown in the bar graph?',
+        'answer': '14',
+        'image': <PIL.PngImagePlugin.PngImageFile image mode=RGBA size=850x600>
+    }
+    """
+    def __init__(self):
+        data = load_dataset("lmms-lab/ChartQA", split="test")
+        self.data = data
+    
+    def __getitem__(self, idx):
+        assert len(self.data) > 0, "Empty dataset. Please load data first."
+        return {"images": [self.data[idx]['image']],
+                "answer": self.data[idx]['answer'],
+                "question":  self.data[idx]['question'],}
+
+class ScienceQA(Dataset):
+    """
+    ScienceQA is a dataset class for the ScienceQA dataset.
+    This dataset is loaded from huggingface datasets: science_qa (validation set).
+
+    Reference:
+    https://huggingface.co/datasets/derek-thomas/ScienceQA
+    Learn to Explain: Multimodal Reasoning via Thought Chains for Science Question Answering (https://arxiv.org/abs/2209.09513)
+
+    Example data format:
+    {
+        'image': None,
+        'question': 'Which figure of speech is used in this text?\nSing, O goddess, the anger of Achilles son of Peleus, that brought countless ills upon the Achaeans.\n—Homer, The Iliad',
+        'choices': ['chiasmus', 'apostrophe'],
+        'answer': 1,
+        'hint': '',
+        'task': 'closed choice',
+        'grade': 'grade11',
+        'subject': 'language science',
+        'topic': 'figurative-language',
+        'category': 'Literary devices',
+        'skill': 'Classify the figure of speech: anaphora, antithesis, apostrophe, assonance, chiasmus, understatement',
+        'lecture': 'Figures of speech are words or phrases that use language in a nonliteral or unusual way. They can make writing more expressive.\nAnaphora is the repetition of the same word or words at the beginning of several phrases or clauses.\nWe are united. We are powerful. We are winners.\nAntithesis involves contrasting opposing ideas within a parallel grammatical structure.\nI want to help, not to hurt.\nApostrophe is a direct address to an absent person or a nonhuman entity.\nOh, little bird, what makes you sing so beautifully?\nAssonance is the repetition of a vowel sound in a series of nearby words.\nTry to light the fire.\nChiasmus is an expression in which the second half parallels the first but reverses the order of words.\nNever let a fool kiss you or a kiss fool you.\nUnderstatement involves deliberately representing something as less serious or important than it really is.\nAs you know, it can get a little cold in the Antarctic.',
+        'solution': 'The text uses apostrophe, a direct address to an absent person or a nonhuman entity.\nO goddess is a direct address to a goddess, a nonhuman entity.'}
+    }
+    """
+    def __init__(self):
+        data = load_dataset("derek-thomas/ScienceQA", split="validation")
+        self.data = []
+
+        for d in data:
+            if d['image'] is not None:
+
+                choices_dict = dict(enumerate(d['choices']))
+                choices = ''
+                for k, v in choices_dict.items():
+                    choices += f"\n{k}: {v}"
+
+                self.data.append({
+                    "images": [d['image']],
+                    "question": d['question'] + choices,
+                    "answer": d['answer']
+                })
+
+class MMMU(Dataset):
+    """
+    MMMU is a dataset class for the MMMU dataset. 
+    This dataset is loaded from huggingface datasets: mmlu (validation set).
+
+    Reference:
+    https://huggingface.co/datasets/lmms-lab/MMMU
+    MMMU: A Massive Multi-discipline Multimodal Understanding and Reasoning Benchmark for Expert AGI (https://arxiv.org/abs/2311.16502)
+
+    {
+        'id': 'validation_Accounting_1',
+        'question': '<image 1> Baxter Company has a relevant range of production between 15,000 and 30,000 units. The following cost data represents average variable costs per unit for 25,000 units of production. If 30,000 units are produced, what are the per unit manufacturing overhead costs incurred?',
+        'options': "['$6', '$7', '$8', '$9']",
+        'explanation': '',
+        'image_1': <PIL.PngImagePlugin.PngImageFile image mode=RGBA size=733x237>,
+        'image_2': None,
+        'image_3': None,
+        'image_4': None,
+        'image_5': None,
+        'image_6': None,
+        'image_7': None,
+        'img_type': "['Tables']",
+        'answer': 'B',
+        'topic_difficulty': 'Medium',
+        'question_type': 'multiple-choice',
+        'subfield': 'Managerial Accounting'
+    }
+    """
+    def __init__(self):
+        data = load_dataset("lmms-lab/MMMU", split="validation")
+        self.data = []
+
+        for d in data:
+                
+            choices_dict = dict(enumerate(eval(d['options'])))
+            choices = ''
+            for k, v in choices_dict.items():
+                choices += f"\n{chr(ord('A') + int(k))}: {v}"
+            question = d['question'] + choices
+
+            images = []
+            for i in range(1, 7):
+                if f'image {i}' in question:
+                    if d[f'image_{i}'].mode == 'P':
+                        d[f'image_{i}'] = d[f'image_{i}'].convert('RGBA')
+                    images.append(d[f'image_{i}'])
+
+            self.data.append({"images": images,
+                              "answer": d['answer'],
+                              "question": question})

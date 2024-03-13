@@ -133,3 +133,51 @@ class Eval:
             processed_gts.append(gt)
 
         return sum(a == b for a, b in zip(processed_preds, processed_gts)) / len(processed_gts)
+
+    @staticmethod
+    def compute_vqa_accuracy(preds, gts):
+        """
+        Computes vqa accuracy for the VQAv2 dataset.
+
+        Parameters:
+        -----------
+        preds : list
+            A list of predictions.
+        gts : list
+            A list of answers.
+
+        Returns:
+        --------
+        float
+            The vqa accuracy.
+        """
+        from .vqa.eval_vqa import VQAEval
+        metric = VQAEval(n=3)
+        dict_gts = {i: {"answers": val} for i, val in enumerate(gts)}
+        dict_preds = {i: {"answer": val} for i, val in enumerate(preds)}
+        score = metric.evaluate(dict_gts, dict_preds, list(range(len(preds))))
+        return score
+    
+    @staticmethod
+    def compute_cider(preds, gts):
+        """
+        Computes the CIDEr score for image captioning tasks.
+
+        Parameters:
+        -----------
+        preds : list
+            A list of predictions.
+        gts : list
+            A list of ground truth captions.
+
+        Returns:
+        --------
+        float
+            The CIDEr score.
+        """
+        from .cider.cider import Cider
+        metric = Cider()
+        dict_gts = {i: val for i, val in enumerate(gts)}
+        dict_preds = {i: [val] for i, val in enumerate(preds)}
+        score, _ = metric.compute_score(gts=dict_gts, res=dict_preds)
+        return score
