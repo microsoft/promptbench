@@ -28,32 +28,18 @@ print(pb.SUPPORTED_DATASETS_VLM)
 dataset = pb.DatasetLoader.load_dataset("mmmu")
 
 # print the first 5 examples
-dataset[:5]
+for idx in range(5):
+    print(dataset[idx])
 ```
 
     All supported datasets: 
     ['vqav2', 'nocaps', 'science_qa', 'math_vista', 'ai2d', 'mmmu', 'chart_qa']
-
-
-
-
-
-    [{'images': [<PIL.PngImagePlugin.PngImageFile image mode=RGBA size=733x237>],
-      'answer': 'B',
-      'question': '<image 1> Baxter Company has a relevant range of production between 15,000 and 30,000 units. The following cost data represents average variable costs per unit for 25,000 units of production. If 30,000 units are produced, what are the per unit manufacturing overhead costs incurred?\nA: $6\nB: $7\nC: $8\nD: $9'},
-     {'images': [<PIL.PngImagePlugin.PngImageFile image mode=RGBA size=342x310>],
-      'answer': 'C',
-      'question': 'Assume accounts have normal balances, solve for the one missing account balance: Dividends. Equipment was recently purchased, so there is neither depreciation expense nor accumulated depreciation. <image 1>\nA: $194,815\nB: $182,815\nC: $12,000\nD: $9,000'},
-     {'images': [<PIL.PngImagePlugin.PngImageFile image mode=RGBA size=336x169>],
-      'answer': 'B',
-      'question': 'Maxwell Software, Inc., has the following mutually exclusive projects.Suppose the company uses the NPV rule to rank these two projects.<image 1> Which project should be chosen if the appropriate discount rate is 15 percent?\nA: Project A\nB: Project B'},
-     {'images': [<PIL.PngImagePlugin.PngImageFile image mode=RGBA size=1222x237>],
-      'answer': 'D',
-      'question': "Each situation below relates to an independent company's Owners' Equity. <image 1> Calculate the missing values of company 2.\nA: $1,620\nB: $12,000\nC: $51,180\nD: $0"},
-     {'images': [<PIL.PngImagePlugin.PngImageFile image mode=RGBA size=1219x217>],
-      'answer': 'B',
-      'question': 'The following data show the units in beginning work in process inventory, the number of units started, the number of units transferred, and the percent completion of the ending work in process for conversion. Given that materials are added at the beginning of the process, what are the equivalent units for conversion costs for each quarter using the weighted-average method? Assume that the quarters are independent.<image 1>\nA: 132,625\nB: 134,485\nC: 135,332\nD: 132,685'}]
-
+    Images already saved to local, loading file:  /home/v-mingxia/promptbench/promptbench/data/mmmu/validation.json
+    {'images': [<PIL.PngImagePlugin.PngImageFile image mode=RGBA size=733x237 at 0x7F13BA2CD160>], 'image_paths': ['/home/v-mingxia/promptbench/promptbench/data/mmmu/validation/0_image_1.png'], 'answer': 'B', 'question': '<image 1> Baxter Company has a relevant range of production between 15,000 and 30,000 units. The following cost data represents average variable costs per unit for 25,000 units of production. If 30,000 units are produced, what are the per unit manufacturing overhead costs incurred?\nA: $6\nB: $7\nC: $8\nD: $9'}
+    {'images': [<PIL.PngImagePlugin.PngImageFile image mode=RGBA size=342x310 at 0x7F13BA2CD550>], 'image_paths': ['/home/v-mingxia/promptbench/promptbench/data/mmmu/validation/1_image_1.png'], 'answer': 'C', 'question': 'Assume accounts have normal balances, solve for the one missing account balance: Dividends. Equipment was recently purchased, so there is neither depreciation expense nor accumulated depreciation. <image 1>\nA: $194,815\nB: $182,815\nC: $12,000\nD: $9,000'}
+    {'images': [<PIL.PngImagePlugin.PngImageFile image mode=RGBA size=336x169 at 0x7F13BA2CD130>], 'image_paths': ['/home/v-mingxia/promptbench/promptbench/data/mmmu/validation/2_image_1.png'], 'answer': 'B', 'question': 'Maxwell Software, Inc., has the following mutually exclusive projects.Suppose the company uses the NPV rule to rank these two projects.<image 1> Which project should be chosen if the appropriate discount rate is 15 percent?\nA: Project A\nB: Project B'}
+    {'images': [<PIL.PngImagePlugin.PngImageFile image mode=RGBA size=1222x237 at 0x7F13BA2CD460>], 'image_paths': ['/home/v-mingxia/promptbench/promptbench/data/mmmu/validation/3_image_1.png'], 'answer': 'D', 'question': "Each situation below relates to an independent company's Owners' Equity. <image 1> Calculate the missing values of company 2.\nA: $1,620\nB: $12,000\nC: $51,180\nD: $0"}
+    {'images': [<PIL.PngImagePlugin.PngImageFile image mode=RGBA size=1219x217 at 0x7F13BA2CD400>], 'image_paths': ['/home/v-mingxia/promptbench/promptbench/data/mmmu/validation/4_image_1.png'], 'answer': 'B', 'question': 'The following data show the units in beginning work in process inventory, the number of units started, the number of units transferred, and the percent completion of the ending work in process for conversion. Given that materials are added at the beginning of the process, what are the equivalent units for conversion costs for each quarter using the weighted-average method? Assume that the quarters are independent.<image 1>\nA: 132,625\nB: 134,485\nC: 135,332\nD: 132,685'}
 
 
 ## Load models
@@ -104,7 +90,7 @@ for prompt in prompts:
     for data in tqdm(dataset):
         # process input
         input_text = pb.InputProcess.basic_format(prompt, data)
-        input_images = data['images']
+        input_images = data['images']  # please use data['image_paths'] instead of data['images'] for models that only support image path/url, such as GPT-4v
         label = data['answer']
         raw_pred = model(input_images, input_text)
         # process output
