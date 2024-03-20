@@ -327,7 +327,7 @@ class MMLU(Dataset):
     MMLU is a dataset class for the Multimodal Multi-Task Learning Understanding dataset, covering various educational and professional fields.
     MMLU dataset is loaded from huggingface datasets: lukaemon/mmlu (test set).
     
-    Reference: https://huggingface.co/datasets/lukaemon/mmlu/viewer/abstract_algebra/test
+    Reference: https://huggingface.co/datasets/cais/mmlu/viewer/abstract_algebra/test
 
     Example data format:
     [{'input': "This question refers to the following information.\nRead the the following quotation to answer questions.\nThe various modes of worship which prevailed in the Roman world were all considered by the people as equally true; by the philosopher as equally false; and by the magistrate as equally useful.\nEdward Gibbon, The Decline and Fall of the Roman Empire, 1776–1788\nGibbon's interpretation of the state of religious worship in ancient Rome could be summarized as", 'A': "In ancient Rome, religious worship was decentralized and tended to vary with one's social position.", 'B': 'In ancient Rome, religious worship was the source of much social tension and turmoil.', 'C': 'In ancient Rome, religious worship was homogeneous and highly centralized.', 'D': 'In ancient Rome, religious worship was revolutionized by the introduction of Christianity.', 'target': 'A', 'task': 'high_school_european_history'}, ...]
@@ -348,7 +348,7 @@ class MMLU(Dataset):
                     'electrical_engineering', 'astronomy', 'college_biology']
 
         for task in self.tasks:
-            data = load_dataset("lukaemon/mmlu", task)["test"]
+            data = load_dataset("cais/mmlu", task)["test"]
             for d in data:
                 d["task"] = task
                 self.data.append(d)
