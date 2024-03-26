@@ -6,19 +6,17 @@ Please contact us if you want the results of your models shown in this leaderboa
 
 ### All Results
 
-|  | GPT3.5 -Turbo |  |  |  | GPT4-1106 |  |  |  |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-|  | gsm8k | bigbench_date | bigbench_object_tracking | csqa | gsm8k | bigbench_date | bigbench_object_tracking | csqa |
-| baseline | 47.15 | 57.99 | 39.2 | 72.48 | 92.19 | 87.80 | 96.27 | 79.69 |
-| CoT | 40.33 | 49.32 | 63.20 | 67.81 | 85.89 | 92.14 | 90.26 | 85.59 |
-| CoT(zero-shot) | 18.50 | 80.49 | 66.00 | 65.85 | 87.34 | 87.53 | 99.07 | 79.85 |
-| expert prompting | 21.15 | 61.79 | 56.53 | 74.45 | 88.70 | 87.26 | 98.93 | 79.85 |
-| emotion prompt | 57.24 | 66.12 | 29.87 | 70.68 | 90.83 | 87.80 | 95.73 | 80.34 |
-
-|  | GPT3.5-Turbo |  | GPT4-1106 |  |
-| --- | --- | --- | --- | --- |
-|  | gsm8k | last-letter-concat | gsm8k | last-letter-concat |
-| baseline | 47.15 | 7.2 | 92.19 | 25.2 |
-| least to most | 75.28 | 79.8 | 79.38 | 96.2 |
+| Model           | benchmark               | baseline | CoT   | CoT(zero-shot) | expert prompting | emotion prompt | least to most |
+|-----------------|-------------------------|----------|-------|----------------|------------------|----------------|---------------|
+| GPT3.5 -Turbo   | gsm8k                   | 47.15    | 40.33 | 18.5           | 21.15            | 57.24          |               |
+| GPT3.5 -Turbo   | bigbench_date           | 57.99    | 49.32 | 80.49          | 61.79            | 66.12          |               |
+| GPT3.5 -Turbo   | bigbench_object_tracking| 39.2     | 63.2  | 66             | 56.53            | 29.87          |               |
+| GPT3.5 -Turbo   | csqa                    | 72.48    | 67.81 | 65.85          | 74.45            | 70.68          |               |
+| GPT3.5 -Turbo   | last-letter-concat      | 7.2      |       |                |                  |                | 79.8          |
+| GPT4-1106       | gsm8k                   | 92.19    | 85.89 | 87.34          | 88.7             | 90.83          |               |
+| GPT4-1106       | bigbench_date           | 87.8     | 92.14 | 87.53          | 87.26            | 87.8           |               |
+| GPT4-1106       | bigbench_object_tracking| 96.27    | 90.26 | 99.07          | 98.93            | 95.73          |               |
+| GPT4-1106       | csqa                    | 79.69    | 85.59 | 79.85          | 79.85            | 80.34          |               |
+| GPT4-1106       | last-letter-concat      | 25.2     |       |                |                  |                | 96.2          |
 
 *"This is very important to my career." is used in emotion prompt*
