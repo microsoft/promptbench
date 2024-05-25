@@ -131,27 +131,29 @@ def process_dyval_inputs(prompt, dataset):
 def process_dyval_training_sample(sample, dataset_type):
 
     prompt = DYVAL_PROMPTS[dataset_type][0]
-    for order, input_text in sample["descriptions"].items():
-        if dataset_type in ["arithmetic", "bool_logic", "deductive_logic"]:
-            var = sample["vars"]
-            problem = prompt.format(input_text, var)
-        else:
-            problem = prompt.format(input_text)
+    # for order, input_text in sample["descriptions"].items():
+    #     if dataset_type in ["arithmetic", "bool_logic", "deductive_logic"]:
+    #         var = sample["vars"]
+    #         problem = prompt.format(descriptions=input_text, vars=var)
+    #     else:
+    #         problem = prompt.format(descriptions=input_text)
                     
-        sample["descriptions"][order] = problem
+    #     sample["descriptions"][order] = problem
+
+    input_text = sample["descriptions"]["topological"]
     
     final_response = "\n\nThus, the answer is <<<"
     answer = sample["answers"]
     if dataset_type in ["arithmetic", "bool_logic", "deductive_logic"]:
         var = sample['vars']
-        problem = prompt.format(input_text, var)
+        problem = prompt.format(descriptions=input_text, vars=var)
         if dataset_type == "arithmetic":
             final_response += str(round_value(answer)) + ">>>"
         else:
             final_response += str(answer) + ">>>"
         
     else:
-        problem = prompt.format(input_text)
+        problem = prompt.format(descriptions=input_text)
         
         if dataset_type == "linear_equation":
             final_response += str(round_value(answer[0])) + " " + str(round_value(answer[1])) + ">>>"
