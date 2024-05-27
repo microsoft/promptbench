@@ -15,6 +15,10 @@ class Eval:
         Computes the F1 score for the SQuAD V2 dataset.
     compute_bleu(preds, gts)
         Computes the BLEU score for translation tasks.
+    compute_rouge(hypotheses, gts)
+        Computes the ROUGE score
+    compute_meteor(preds, gts)
+        Computes the METEOR score
     compute_math_accuracy(dataset, preds, gts)
         Computes accuracy for math dataset.
     """
@@ -83,7 +87,7 @@ class Eval:
         return score["f1"]
 
     @staticmethod
-    def compute_bleu(preds, gts):
+    def compute_bleu(preds, gts, smooth=False):
         """
         Computes the BLEU score for translation tasks.
 
@@ -101,8 +105,57 @@ class Eval:
         """
         from .bleu.bleu import Bleu
         metric = Bleu()
-        results = metric.compute(predictions=preds, references=gts)
+        results = metric.compute(predictions=preds, references=gts, smooth=smooth)
         return results['bleu']
+
+    @staticmethod
+    def compute_rouge(preds, gts):
+        """
+        Computes the ROUGE score for translation tasks.
+
+        Parameters:
+        -----------
+        preds : list
+            A list of hypotheses.
+        gts : list
+            A list of references.
+
+        Returns:
+        --------
+        dict:
+            The ROUGE-1, ROUGE-2, ROUGE-L score.
+
+            "rouge_1": rouge_1_f,
+            "rouge_2": rouge_2_f,
+            "rouge_l": rouge_l_f
+        """
+
+        from .rouge.rouge import Rouge
+        metric = Rouge()
+        results = metric.compute(predictions=preds, references=gts)
+        return results
+
+    @staticmethod
+    def compute_meteor(preds, gts):
+        """
+        Computes the METEOR score.
+
+        Parameters:
+        -----------
+        preds : list
+            A list of predictions.
+        gts : list
+            A list of ground truth translations.
+
+        Returns:
+        --------
+        float
+            The METEOR score.
+        """
+        from .meteor.meteor import Meteor
+        metric = Meteor()
+        results = metric.compute(predictions=preds, references=gts)
+        return results['meteor']
 
     @staticmethod
     def compute_math_accuracy(preds, gts):
