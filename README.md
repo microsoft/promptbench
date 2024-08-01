@@ -124,6 +124,7 @@ To install the required packages, you can create a conda environment:
 
 ```sh
 conda create --name promptbench python=3.9
+conda activate promptbench
 ```
 
 then use pip to install required packages:
