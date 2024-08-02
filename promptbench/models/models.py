@@ -1000,3 +1000,97 @@ class InternLMVisionModel(VLMBaseModel):
             response, _ = self.model.chat(self.tokenizer, query=input_text, image=input_images[0], history=[], do_sample=True,
                                           max_new_tokens=self.max_new_tokens, temperature=self.temperature)
         return response
+
+class HuggingFaceModel(LMMBaseModel):
+    """
+    Language model class for interfacing with Hugging Face's models.
+
+    Inherits from LMMBaseModel and sets up a model interface for Hugging Face models.
+
+    Parameters:
+    -----------
+    model : str
+        The name of the Hugging Face model.
+    max_new_tokens : int
+        The maximum number of new tokens to be generated.
+    temperature : float
+        The temperature for text generation (default is 0).
+    device: str
+        The device to use for inference (default is 'auto').
+    dtype: str
+
+    Parameters of predict method:
+    ----------------
+    input_text: str
+        The input text.
+
+    """
+    def __init__(self, model_name, max_new_tokens, temperature, device, dtype):
+        super().__init__(model_name, max_new_tokens, temperature, device)
+        from transformers import AutoTokenizer, AutoModelForCausalLM
+        model = model_name
+        
+        self.tokenizer = AutoTokenizer.from_pretrained(model, trust_remote_code=True, torch_dtype=dtype, device_map=device)
+        self.model = AutoModelForCausalLM.from_pretrained(model, trust_remote_code=True, torch_dtype=dtype, device_map=device)
+
+    
+    def predict(self, input_text, **kwargs):
+        if self.device == 'auto':
+            device = 'cuda' if torch.cuda.is_available() else 'cpu'
+        else:
+            device = self.device
+        input_ids = self.tokenizer(input_text, return_tensors="pt").input_ids.to(device)
+
+        outputs = self.model.generate(input_ids, 
+                                     max_new_tokens=self.max_new_tokens, 
+                                     temperature=self.temperature,
+                                     **kwargs)
+        
+        out = self.tokenizer.decode(outputs[0])
+        return out[len(input_text):]
+
+class CustomAPIModel(LMMBaseModel):
+    """
+    Language model class for interfacing with custom API models.
+    
+    Inherits from LMMBaseModel and sets up a model interface for custom API models.
+    
+    """
+    def __init__(self, model_name, max_new_tokens, temperature, api_key, *args, **kwargs):
+        super().__init__(model_name, max_new_tokens, temperature, *args, **kwargs)
+        self.api_key = api_key
+    
+    def predict(self, input_text, **kwargs):
+        pass
+
+class YourModel(ABC):
+    """
+    Language model class for interfacing with custom models.
+    
+    Inherits from LMMBaseModel and sets up a model interface for custom models.
+    
+    ----------
+    Parameters:
+    ckpt_path : str
+        The path to the model checkpoint.
+    max_new_tokens : int
+        The maximum number of new tokens to be generated.
+    temperature : float
+        The temperature for text generation (default is 0).
+    
+    """
+    
+    def __init__(self, ckpt_path, max_new_tokens, temperature, *args, **kwargs):
+        self.model = None
+        self.tokenizer = None
+        self.max_new_tokens = max_new_tokens
+        self.temperature = temperature
+        
+        self.load_model(ckpt_path)
+    
+    def load_model(self, ckpt_path):
+        pass
+    
+    def predict(self, input_text, **kwargs):
+        pass
+    

@@ -26,7 +26,7 @@ with pathlib.Path('requirements.txt').open() as requirements_txt:
 
 setup(
     name='promptbench',
-    version='0.0.3',
+    version='0.0.4',
     description='PromptBench is a powerful tool designed to scrutinize and analyze the interaction of large language models with various prompts. It provides a convenient infrastructure to simulate **black-box** adversarial  **prompt attacks** on the models and evaluate their performances.',
     long_description=long_description,
     long_description_content_type='text/markdown',

@@ -69,6 +69,7 @@
 <!-- News and Updates -->
 
 ## News and Updates
+- [26/05/2024] Add support for GPT-4o.
 - [13/03/2024] Add support for multi-modal models and datasets.
 - [05/01/2024] Add support for BigBench Hard, DROP, ARC datasets.
 - [16/12/2023] Add support for Gemini, Mistral, Mixtral, Baichuan, Yi models.
@@ -123,6 +124,7 @@ To install the required packages, you can create a conda environment:
 
 ```sh
 conda create --name promptbench python=3.9
+conda activate promptbench
 ```
 
 then use pip to install required packages:

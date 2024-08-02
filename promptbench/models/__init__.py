@@ -9,7 +9,7 @@ MODEL_LIST = {
     LlamaModel: ['llama2-7b', 'llama2-7b-chat', 'llama2-13b', 'llama2-13b-chat', 'llama2-70b', 'llama2-70b-chat',],
     PhiModel: ['phi-1.5', 'phi-2'],
     PaLMModel: ['palm'],
-    OpenAIModel: ['gpt-3.5-turbo', 'gpt-4', 'gpt-4-1106-preview', 'gpt-3.5-turbo-1106', 'gpt-4-0125-preview', 'gpt-3.5-turbo-0125'],
+    OpenAIModel: ['gpt-3.5-turbo', 'gpt-4', 'gpt-4-1106-preview', 'gpt-3.5-turbo-1106', 'gpt-4-0125-preview', 'gpt-3.5-turbo-0125', 'gpt-4-turbo', 'gpt-4o'],
     VicunaModel: ['vicuna-7b', 'vicuna-13b', 'vicuna-13b-v1.3'],
     UL2Model: ['google/flan-ul2'],
     GeminiModel: ['gemini-pro'],
@@ -79,11 +79,11 @@ class LLMModel(object):
     def model_list():
         return SUPPORTED_MODELS
 
-    def __init__(self, model: str, max_new_tokens: int=20, temperature: float=0.0, device: str="cuda", dtype: str="auto", model_dir: str=None, system_prompt: str=None, api_key:str =None):
+    def __init__(self, model: str, max_new_tokens: int=20, temperature: float=0.0, device: str="cuda", dtype: str="auto", model_dir: str=None, system_prompt: str=None, api_key:str =None, **kwargs):
         self.model_name = model
-        self.model = self._create_model(max_new_tokens, temperature, device, dtype, model_dir, system_prompt, api_key)
+        self.model = self._create_model(max_new_tokens, temperature, device, dtype, model_dir, system_prompt, api_key, **kwargs)
 
-    def _create_model(self, max_new_tokens, temperature, device, dtype, model_dir, system_prompt, api_key):
+    def _create_model(self, max_new_tokens, temperature, device, dtype, model_dir, system_prompt, api_key, **kwargs):
         """Creates and returns the appropriate model based on the model name."""
 
         # Dictionary mapping of model names to their respective classes
