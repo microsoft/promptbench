@@ -1,9 +1,14 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
+#
+# Source Attribution:
+# The majority of this code is derived from the following sources:
+# - PromptEval GitHub Repository: https://github.com/felipemaiapolo/prompteval
+
 import copy
 import numpy as np
 from sklearn.linear_model import LogisticRegression as LR  # type: ignore
 from tqdm import tqdm  # type: ignore
-try: from .utils import check_multicolinearity
-except ImportError: from utils import check_multicolinearity
 
 class LogisticRegression:
     """
@@ -89,7 +94,6 @@ class ExtendedRaschModel:
             self.X = np.eye(Y.shape[0])
         else:
             self.X = X
-            check_multicolinearity(X)
         self.x_dim = self.X.shape[1]
 
         # Z (examples covariates)
@@ -97,7 +101,6 @@ class ExtendedRaschModel:
             self.Z = np.eye(Y.shape[1])
         else:
             self.Z = Z
-            check_multicolinearity(Z)
         self.z_dim = self.Z.shape[1]
 
         # Formatting the data
@@ -342,33 +345,38 @@ def StratSample(seen_examples, max_seen, random_seed, active_arms=None, random_c
     else:
         active_arms = list(range(rows))
 
-    current_ones = np.sum(matrix)  # noqa
     local_state = np.random.RandomState(random_seed)
-
+    
+    # initialize the sums of each row and column
+    row_sums = matrix.sum(1)
+    col_sums = matrix.sum(0)
+    
     while True:
-        if np.sum(matrix) >= max_seen:
+        
+        if row_sums.sum() >= max_seen:
             return matrix
+        
+        min_row_sum = row_sums[active_arms].min()
+        min_sum_rows = [i for i in active_arms if row_sums[i] == min_row_sum]
+        next_row = local_state.choice(min_sum_rows)
+        
+        avail_columns = [i for i in range(columns) if not matrix[next_row, i]]
 
-        next_row = local_state.choice(
-            [
-                i
-                for i in range(len(active_arms))
-                if (matrix[active_arms].sum(1) == np.min(matrix[active_arms].sum(1)))[i]
-            ]
-        )
-        next_row = active_arms[next_row]
-        avail_columns = [i for i in range(matrix.shape[1]) if matrix[next_row, i] == False]
-
-        if avail_columns == []:  # nothing else to see
+        if not avail_columns:  # nothing else to see
             return matrix
 
         if random_column:
             next_column = local_state.choice(avail_columns)
         else:
-            next_columns = [i for i in avail_columns if matrix[:, i].sum() == matrix[:, avail_columns].sum(0).min()]
-            next_column = local_state.choice(next_columns)
+            # the most time-consuming step, so we speed it up by reduct the repeated calculation
+            min_column_sum = col_sums[avail_columns].min()
+            min_sum_columns = [i for i in avail_columns if col_sums[i] == min_column_sum]
+            next_column = local_state.choice(min_sum_columns)
 
         matrix[next_row, next_column] = True
+        
+        row_sums[next_row] += 1
+        col_sums[next_column] += 1
 
 
 def GenXY(seen_items, Y, X, Z):

@@ -69,6 +69,7 @@
 <!-- News and Updates -->
 
 ## News and Updates
+- [14/08/2024] Merge [PromptEval](https://github.com/felipemaiapolo/prompteval), an efficient multi-prompt evaluation method, into this repository. 
 - [26/05/2024] Add support for GPT-4o.
 - [13/03/2024] Add support for multi-modal models and datasets.
 - [05/01/2024] Add support for BigBench Hard, DROP, ARC datasets.
@@ -76,6 +77,7 @@
 - [15/12/2023] Add detailed instructions for users to add new modules (models, datasets, etc.) [examples/add_new_modules.md](examples/add_new_modules.md). 
 - [05/12/2023] Published promptbench 0.0.1.
 
+*PromptEval is an efficient multi-prompt evaluation method that uses the performance of LLMs on a small amount of data to build an IRT-like model. This model is then used to predict the performance of LLMs on unseen data. Tests on MMLU, BBH, and LMentry show that this method requires sampling only 5% of the data to reduce the error between estimated and actual performance to around 2%. For more details, please refer to https://arxiv.org/abs/2405.17202.* 
 
 <!-- Introduction -->
 
@@ -287,6 +289,7 @@ Please refer to our [benchmark website](https://llm-eval.github.io/) for benchma
 
 [7] Zhou D, Schärli N, Hou L, et al. Least-to-most prompting enables complex reasoning in large language models[J]. arXiv preprint arXiv:2205.10625, 2022.
 
+[8] Felipe Maia Polo, et al. "Prompteval: Efficient Multi-prompt Evaluation of Language Models." arXiv preprint arXiv:2405.17202.
 <!-- CITE -->
 
 ## Citing promptbench and other research papers
