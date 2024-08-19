@@ -77,8 +77,6 @@
 - [15/12/2023] Add detailed instructions for users to add new modules (models, datasets, etc.) [examples/add_new_modules.md](examples/add_new_modules.md). 
 - [05/12/2023] Published promptbench 0.0.1.
 
-*PromptEval is an efficient multi-prompt evaluation method that uses the performance of LLMs on a small amount of data to build an IRT-like model. This model is then used to predict the performance of LLMs on unseen data. Tests on MMLU, BBH, and LMentry show that this method requires sampling only 5% of the data to reduce the error between estimated and actual performance to around 2%. For more details, please refer to https://arxiv.org/abs/2405.17202.* 
-
 <!-- Introduction -->
 
 ## Introduction
@@ -94,7 +92,7 @@
 2. **Prompt Engineering:** We implemented several prompt engineering methods. For example: [Few-shot Chain-of-Thought](https://arxiv.org/abs/2201.11903) [1],  [Emotion Prompt](https://arxiv.org/abs/2307.11760) [2], [Expert Prompting](https://arxiv.org/abs/2305.14688) [3] and so on.
 3. **Evaluating adversarial prompts:** promptbench integrated [prompt attacks](https://arxiv.org/abs/2306.04528) [4], enabling researchers to simulate black-box adversarial prompt attacks on models and evaluate their robustness (see details [here](promptbench/prompt_attack/README.md)).
 4. **Dynamic evaluation to mitigate potential test data contamination:** we integrated the dynamic evaluation framework [DyVal](https://arxiv.org/pdf/2309.17167) [5], which generates evaluation samples on-the-fly with controlled complexity.
-
+5. **Efficient multi-prompt evaluation**: We integrated the efficient multi-prompt evaluation method [PromptEval](https://arxiv.org/abs/2405.17202) [8]. This method uses the performance of LLMs on a small amount of data to build an IRT-like model. This model is then used to predict the performance of LLMs on unseen data. Tests on MMLU, BBH, and LMentry show that this method requires sampling only 5% of the data to reduce the error between estimated and actual performance to around 2%. 
 
 
 <!-- GETTING STARTED -->
