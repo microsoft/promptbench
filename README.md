@@ -69,6 +69,7 @@
 <!-- News and Updates -->
 
 ## News and Updates
+- [19/08/2024] Add [DyVal 2 (ICML 2024)](https://openreview.net/pdf?id=DwTgy1hXXo). 
 - [19/08/2024] Merge [PromptEval](https://github.com/felipemaiapolo/prompteval), an efficient multi-prompt evaluation method, into this repository. 
 - [26/05/2024] Add support for GPT-4o.
 - [13/03/2024] Add support for multi-modal models and datasets.
