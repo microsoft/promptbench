@@ -7,19 +7,19 @@ import numpy as np
 import copy
 
 class Visualizer:
-    def __init__(self, model: LLMModel) -> None:
+    def __init__(self, llm: LLMModel) -> None:
         """
         Initialize the Visualizer class.
 
         Parameters:
-        - model (LLMModel): The model to visualize.
+        - llm (LLMModel): The llm to visualize.
 
         Attributes:
         - model: The inference pipeline of the provided model.
         - tokenizer (Tokenizer): Tokenizer associated with the model.
         """
-        self.model = model.infer_model.pipe
-        self.tokenizer = model.infer_model.tokenizer
+        self.model = llm.model.model
+        self.tokenizer = llm.model.tokenizer
 
     def _map_subwords_to_words(self, sentence: str):
         """
