@@ -23,4 +23,16 @@ method = pb.PEMethod(
 
 # Test the method
 results = method.test(dataset, model, num_samples=5)
-print(f"Results: {results}") 
+print(f"Results: {results}")
+
+# Import the method
+from Mel_mini.Segmentation import get_mel_json
+
+# Or import the specific module
+from Mel_mini.Segmentation.mel_segmentation import get_mel_json
+
+# Use the method (will raise NotImplementedError until implemented)
+try:
+    result = get_mel_json("your prompt here")
+except NotImplementedError:
+    print("Method not yet implemented") 
